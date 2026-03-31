@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wincontrol Admin</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./script.js"></script>
+</head>
+<body>
+  <div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">W</div>
+      <div class="brandText">
+        <div class="name">WINCONTROL</div>
+        <div class="tag">Dashboard Admin · Control operativo fase 1</div>
+      </div>
+    </div>
+
+    <div class="topbarRight">
+      <div class="online">
+        <span class="dot"></span>
+        <span id="onlineAdmins">Admin online · 4 comerciales activos</span>
+      </div>
+
+      <button class="btn ghost" id="seedBtn">Reset demo</button>
+      <button class="user" title="Perfil administrador">
+        <div class="avatar">AM</div>
+        <div class="userText">
+          <div class="userName">Admin Wincontrol</div>
+          <div class="userRole">Control global / Dirección</div>
+        </div>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="pageHeader">
+      <div>
+        <h1>Dashboard Admin</h1>
+        <p class="sub" id="nowLabel">—</p>
+      </div>
+
+      <div class="headerActions">
+        <button class="btn ghost" id="exportBtn">Exportar CSV</button>
+        <button class="btn primary" id="createLeadBtn"><span class="plus">+</span>Crear lead demo</button>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Leads activos</div>
+          <div class="icon i-blue">👥</div>
+        </div>
+        <div class="value" id="statLeads">0</div>
+        <div class="miniStat" id="statLeadsSub">—</div>
+      </article>
+
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Visitas hoy</div>
+          <div class="icon i-violet">📅</div>
+        </div>
+        <div class="value" id="statVisitsToday">0</div>
+        <div class="miniStat" id="statVisitsTodaySub">—</div>
+      </article>
+
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Ofertas en curso</div>
+          <div class="icon i-orange">🏷️</div>
+        </div>
+        <div class="value" id="statOffers">0</div>
+        <div class="miniStat" id="statOffersSub">—</div>
+      </article>
+
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">SLA pendientes</div>
+          <div class="icon i-amber">⏱️</div>
+        </div>
+        <div class="value" id="statSla">0</div>
+        <div class="miniStat" id="statSlaSub">—</div>
+      </article>
+
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Conversión a oferta</div>
+          <div class="icon i-emerald">📈</div>
+        </div>
+        <div class="value" id="statConversion">—</div>
+        <div class="miniStat" id="statConversionSub">—</div>
+      </article>
+
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Slots bloqueados</div>
+          <div class="icon i-red">🚫</div>
+        </div>
+        <div class="value" id="statBlocked">0</div>
+        <div class="miniStat" id="statBlockedSub">—</div>
+      </article>
+    </section>
+
+    <section class="overviewGrid">
+      <article class="card panel">
+        <div class="panelHead">
+          <div>
+            <h2>Funnel fase 1</h2>
+            <p class="hint">Lead → visita agendada → visita finalizada → cuestionario → oferta</p>
+          </div>
+        </div>
+
+        <div class="funnel" id="funnel"></div>
+      </article>
+
+      <article class="card panel">
+        <div class="panelHead">
+          <div>
+            <h2>Canales de entrada</h2>
+            <p class="hint">Control de origen del lead y volumen</p>
+          </div>
+        </div>
+
+        <div class="sourceList" id="sourceList"></div>
+      </article>
+    </section>
+
+    <section class="overviewGrid">
+      <article class="card panel">
+        <div class="panelHead">
+          <div>
+            <h2>Equipo comercial</h2>
+            <p class="hint">Carga, visitas, ofertas y cierres por agente</p>
+          </div>
+        </div>
+
+        <div class="agentTableWrap">
+          <table class="agentTable">
+            <thead>
+              <tr>
+                <th>Comercial</th>
+                <th>Online</th>
+                <th>Visitas hoy</th>
+                <th>Pendientes</th>
+                <th>En oferta</th>
+                <th>Realizadas</th>
+                <th class="right">Carga</th>
+              </tr>
+            </thead>
+            <tbody id="agentTbody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card panel">
+        <div class="panelHead">
+          <div>
+            <h2>Centro de alertas</h2>
+            <p class="hint">Seguimiento operativo del admin</p>
+          </div>
+        </div>
+
+        <div class="alertList" id="alertList"></div>
+      </article>
+    </section>
+
+    <section class="card tableCard">
+      <div class="tableTop">
+        <div>
+          <h2>Control de visitas y operaciones</h2>
+          <p class="hint">
+            Desde aquí el admin revisa estados, SLA, conflictos de slot, cuestionario y oferta.
+          </p>
+        </div>
+
+        <div class="controls">
+          <div class="segmented" id="statusFilter">
+            <button class="seg active" data-status="all">Todas</button>
+            <button class="seg" data-status="LEAD">LEAD</button>
+            <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
+            <button class="seg" data-status="MODIFICADA">MODIFICADA</button>
+            <button class="seg" data-status="REALIZADA">REALIZADA</button>
+            <button class="seg" data-status="CUESTIONARIO">CUESTIONARIO</button>
+            <button class="seg" data-status="EN_OFERTA">EN_OFERTA</button>
+            <button class="seg danger" data-status="BLOQUEADA">BLOQUEADA</button>
+            <button class="seg danger" data-status="CANCELADA">CANCELADA</button>
+            <button class="seg danger" data-status="NO_SE_PRESENTA">NO_SE_PRESENTA</button>
+          </div>
+
+          <div class="search">
+            <span class="searchIcon">⌕</span>
+            <input id="searchInput" placeholder="Buscar por cliente, inmueble, comercial o referencia..." />
+            <button class="clear" id="clearSearch" title="Limpiar">×</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="ref">Ref <span class="sortMark"></span></th>
+              <th>Cliente</th>
+              <th class="sortable" data-sort="source">Fuente <span class="sortMark"></span></th>
+              <th class="sortable" data-sort="property">Inmueble <span class="sortMark"></span></th>
+              <th class="sortable" data-sort="agent">Comercial <span class="sortMark"></span></th>
+              <th class="sortable" data-sort="datetime">Fecha y hora <span class="sortMark"></span></th>
+              <th>SLA</th>
+              <th>Estado</th>
+              <th class="right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="9" class="loading">Cargando panel admin...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tableFooter">
+        <div class="muted" id="countLabel">—</div>
+        <div class="muted">Wincontrol · Dashboard Admin · MVP fase 1</div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerBackdrop" id="drawerBackdrop"></div>
+    <div class="drawerPanel">
+      <div class="drawerHead">
+        <div>
+          <div class="drawerTitle" id="drawerTitle">Detalle operativo</div>
+          <div class="drawerSub" id="drawerSub">—</div>
+        </div>
+        <button class="iconBtn" id="closeDrawer">×</button>
+      </div>
+
+      <div class="drawerBody" id="drawerBody"></div>
+
+      <div class="drawerActions">
+        <button class="btn ghost" id="copyLinksBtn">Copiar links</button>
+        <button class="btn danger" id="deleteBtn">Eliminar</button>
+        <button class="btn primary" id="saveBtn">Guardar</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" aria-hidden="true"></div>
+</div>
+<script src="./script.js"></script>
+</body>
+</html>
