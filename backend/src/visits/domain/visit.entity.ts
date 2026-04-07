@@ -16,4 +16,12 @@ export interface Visit {
   fecha: string;
   hora: string;
   estado: VisitStatus;
+
+  phone?: string;
+  email?: string;
+  source?: string;
+  questionnaire?: boolean;
+  offer?: boolean;
+  createdAt?: string;
+  publicId?: string;
 }

@@ -25,6 +25,41 @@ const AGENTS = [
   { name: "Lucía Navarro", online: true }
 ];
 
+const API_URL = "http://localhost:3000/api/visits";
+
+async function fetchVisits() {
+  const res = await fetch(API_URL);
+  return await res.json();
+}
+
+async function createVisit(data) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return await res.json();
+}
+
+async function updateVisit(id, data) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  if (!res.ok) throw new Error("Error updating visit");
+  return res.json();
+}
+
+async function deleteVisitApi(id) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!res.ok) throw new Error("Error deleting visit");
+}
+
 function todayISO(){
   return new Date().toISOString().slice(0,10);
 }
@@ -765,36 +800,50 @@ tbody.addEventListener("change", (e) => {
 $("#closeDrawer").onclick = closeDrawer;
 $("#drawerBackdrop").onclick = closeDrawer;
 
-$("#saveBtn").onclick = () => {
+$("#saveBtn").onclick = async () => {
   if (!state.selectedId) return;
+
   const row = state.rows.find(r => r.id === state.selectedId);
   if (!row) return;
 
-  row.status = $("#editStatus").value;
-  row.fecha = $("#editFecha").value;
-  row.hora = $("#editHora").value;
-  row.questionnaire = $("#editQuestionnaire").value === "true";
-  row.offer = $("#editOffer").value === "true";
+  const updated = {
+    ref: row.ref,
+    cliente: row.client,
+    inmueble: row.property,
+    comercial: row.agent,
+    fecha: $("#editFecha").value,
+    hora: $("#editHora").value,
+    estado: $("#editStatus").value
+  };
 
-  if (row.status === STATUS.CUESTIONARIO) row.questionnaire = true;
-  if (row.status === STATUS.EN_OFERTA) {
-    row.questionnaire = true;
-    row.offer = true;
+  try {
+    console.log("Updating ID:", row.id);
+    await updateVisit(row.id, updated);
+
+    await loadRowsFromAPI();
+
+    showToast("Operación actualizada");
+  } catch (err) {
+    console.error(err);
+    showToast("Error al actualizar");
   }
-
-  saveLS();
-  render();
-  openDrawer(row.id);
-  showToast("Operación guardada");
 };
 
-$("#deleteBtn").onclick = () => {
+$("#deleteBtn").onclick = async () => {
   if (!state.selectedId) return;
-  state.rows = state.rows.filter(r => r.id !== state.selectedId);
-  saveLS();
-  closeDrawer();
-  render();
-  showToast("Registro eliminado");
+
+  try {
+    console.log("Deleting ID:", state.selectedId);
+    await deleteVisitApi(state.selectedId);
+
+    await loadRowsFromAPI();
+
+    closeDrawer();
+    showToast("Registro eliminado");
+  } catch (err) {
+    console.error(err);
+    showToast("Error al eliminar");
+  }
 };
 
 $("#copyLinksBtn").onclick = async () => {
@@ -822,14 +871,14 @@ $("#seedBtn").onclick = () => {
   showToast("Demo restaurada");
 };
 
-$("#createLeadBtn").onclick = () => {
+$("#createLeadBtn").onclick = async () => {
   const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)].name;
   const sources = ["Idealista", "Habitaclia", "Web", "Referido"];
   const source = sources[Math.floor(Math.random() * sources.length)];
   const ref = `WC-${Math.floor(9200 + Math.random() * 100)}`;
 
   const row = {
-    id: crypto.randomUUID?.() || String(Date.now()),
+    id: String(Date.now()),
     ref,
     client: "Lead demo",
     phone: "+34 600 000 000",
@@ -846,20 +895,81 @@ $("#createLeadBtn").onclick = () => {
     publicId: ref.replace("WC-","")
   };
 
-  state.rows = [row, ...state.rows];
-  saveLS();
+  const newVisit = await createVisit({
+    ref: row.ref,
+    cliente: row.client,
+    inmueble: row.property,
+    comercial: row.agent,
+    fecha: row.fecha,
+    hora: row.hora,
+    estado: row.status,
+    source: row.source,
+    phone: row.phone,
+    email: row.email,
+    questionnaire: row.questionnaire,
+    offer: row.offer,
+    publicId: row.publicId
+  });
+  await loadRowsFromAPI();
   render();
   showToast("Lead demo creado");
 };
 
-(function init(){
+(async function init(){
   nowLabel.textContent = formatNow();
   setInterval(() => nowLabel.textContent = formatNow(), 30000);
 
-  state.rows = loadLS() || JSON.parse(JSON.stringify(demoRows));
+  try {
+    const data = await fetchVisits();
+    state.rows = data.map(v => ({
+      id: v.id,
+      ref: v.ref,
+      client: v.cliente,
+      property: v.inmueble,
+      agent: v.comercial,
+      fecha: v.fecha,
+      hora: v.hora,
+      status: v.estado,
+      source: v.source || "—",
+      phone: v.phone || "",
+      email: v.email || "",
+      questionnaire: v.questionnaire || false,
+      offer: v.offer || false,
+      publicId: v.publicId || v.id,
+      createdAt: v.createdAt
+    }));
+  } catch (err) {
+    console.error("Error cargando visitas:", err);
+    state.rows = [];
+  }
 
   const th = document.querySelector(`thead th.sortable[data-sort="${state.sort.key}"]`);
   if (th) th.setAttribute("data-dir", state.sort.dir);
 
   render();
 })();
+
+async function loadRowsFromAPI() {
+  const res = await fetch("http://localhost:3000/api/visits");
+  const data = await res.json();
+
+  state.rows = data.map(v => ({
+    id: v.id,
+    ref: v.ref,
+    client: v.cliente,
+    property: v.inmueble,
+    agent: v.comercial,
+    fecha: v.fecha,
+    hora: v.hora,
+    status: v.estado,
+    source: v.source || "",
+    phone: v.phone || "",
+    email: v.email || "",
+    questionnaire: v.questionnaire || false,
+    offer: v.offer || false,
+    publicId: v.publicId || v.id,
+    createdAt: v.createdAt
+  }));
+
+  render();
+};
