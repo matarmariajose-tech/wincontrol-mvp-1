@@ -4,7 +4,7 @@ Wincontrol is a real estate management platform designed to streamline the full 
 
 **Lead → Scheduling → Visit → Offer → Closing**
 
-This project is being developed in phases, starting with a functional MVP and evolving into a scalable production-ready system.
+This project is currently in **MVP phase**, with a functional backend, a connected frontend prototype, and a PostgreSQL database running via Docker.
 
 ---
 
@@ -13,10 +13,10 @@ This project is being developed in phases, starting with a functional MVP and ev
 The main objective is to build a platform that allows:
 
 * Lead capture and management
-* Automatic agent assignment
-* Visit scheduling with time-slot validation
-* Visit tracking and status management
-* Communication via Email and WhatsApp (future phases)
+* Visit scheduling and tracking
+* Status management across the commercial pipeline
+* Centralized data persistence (PostgreSQL)
+* Future integrations (Email, WhatsApp, external platforms)
 
 ---
 
@@ -25,42 +25,30 @@ The main objective is to build a platform that allows:
 ```
 wincontrol/
 │
-├── backend/                # API (TypeScript, Express)
+├── backend/                # API (TypeScript, Express, TypeORM)
 │   ├── src/
+│   │   ├── config/         # DB config + Swagger
 │   │   ├── leads/          # Leads module
-│   │   │   ├── domain/
-│   │   │   ├── dto/
-│   │   │   ├── infrastructure/
-│   │   │   ├── lead.controller.ts
-│   │   │   ├── lead.service.ts
-│   │   │   └── lead.routes.ts
-│   │   │
 │   │   ├── visits/         # Visits module
-│   │   │   ├── domain/
-│   │   │   ├── dto/
-│   │   │   ├── infrastructure/
-│   │   │   ├── visit.controller.ts
-│   │   │   ├── visit.service.ts
-│   │   │   └── visit.routes.ts
-│   │   │
 │   │   └── app.ts
 │   │
+│   ├── .env                # Environment variables (NOT committed)
 │   ├── package.json
 │   └── tsconfig.json
 │
 ├── frontend/
-│   └── prototype/          # UI prototypes (CodePen-based)
-│       ├── admin/          # Admin dashboard
+│   └── prototype/
+│       ├── admin/          # Admin dashboard (connected to API)
 │       │   ├── index.html
 │       │   ├── styles.css
 │       │   └── script.js
 │       │
-│       └── comercial/      # Commercial dashboard
+│       └── comercial/      # Commercial dashboard (UI prototype)
 │           ├── index.html
 │           ├── styles.css
 │           └── script.js
 │
-│
+├── docker-compose.yml      # PostgreSQL container
 ├── .gitignore
 └── README.md
 ```
@@ -69,68 +57,43 @@ wincontrol/
 
 # 🧠 Architecture
 
-The backend follows a **modular architecture inspired by Clean Architecture principles**:
+Backend follows a **modular architecture inspired by Clean Architecture**:
 
-* **domain/** → core entities
-* **dto/** → data transfer objects (input/output validation)
-* **infrastructure/** → data access layer (repositories)
+* **domain/** → entities (TypeORM)
+* **dto/** → input validation
+* **infrastructure/** → repositories (DB access)
 * **service** → business logic
 * **controller** → request handling
 * **routes** → API endpoints
 
-This structure ensures scalability, maintainability, and clear separation of concerns.
-
 ---
 
-# 👥 System Roles
+# 🗄️ Database
 
-The platform supports different user roles:
+The project uses **PostgreSQL running in Docker**.
 
-### 🟦 Commercial
+### Main Entity
 
-* Manage visits
-* Track visit status
-* Interact with clients
+**Visit**
 
-### 🟪 Admin
+Fields include:
 
-* Manage leads
-* Control system flow
-* Simulate external integrations (e.g., Idealista)
-
-> Note: Both roles currently share similar UI structures but will diverge functionally in future phases.
-
----
-
-# 🧪 Current Status
-
-**Phase: MVP - Initial Setup (Weeks 1–2)**
-
-Implemented:
-
-* Project structure (frontend + backend)
-* TypeScript backend with modular architecture
-* Basic API endpoints:
-
-  * `GET /api/leads`
-  * `POST /api/leads`
-  * `GET /api/visits`
-  * `POST /api/visits`
-* UI prototypes based on CodePen
+* ref, cliente, inmueble, comercial
+* fecha, hora, estado
+* source, phone, email
+* questionnaire, offer
+* createdAt
 
 ---
 
 # 🔗 API Endpoints
 
-### Leads
-
-* `GET /api/leads` → Retrieve all leads
-* `POST /api/leads` → Create a new lead
-
 ### Visits
 
-* `GET /api/visits` → Retrieve all visits
-* `POST /api/visits` → Create a new visit
+* GET /api/visits → Get all visits
+* POST /api/visits → Create visit
+* PUT /api/visits/:id → Update visit
+* DELETE /api/visits/:id → Delete visit
 
 ---
 
@@ -141,10 +104,19 @@ Implemented:
 * Node.js
 * TypeScript
 * Express
+* TypeORM
+* PostgreSQL
+* Swagger
 
-### Frontend (Prototype)
+### Frontend (MVP)
 
-* HTML / CSS / JavaScript (CodePen)
+* HTML / CSS / JavaScript
+* Fetch API
+
+### DevOps
+
+* Docker
+* Docker Compose
 
 ---
 
@@ -154,59 +126,142 @@ Implemented:
 
 ```
 git clone <your-repo-url>
-cd wincontrol/backend
+cd wincontrol
 ```
 
-## 2. Install dependencies
+---
+
+## 2. Start database (Docker)
 
 ```
+docker compose up -d
+```
+
+---
+
+## 3. Backend setup
+
+```
+cd backend
 npm install
 ```
 
-## 3. Run the server
+Create `.env` file inside `/backend`:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=wincontrol
+```
+
+---
+
+## 4. Run backend
 
 ```
 npm run dev
 ```
 
-## 4. Test the API
+Expected output:
+
+```
+DB connected
+Server running on port 3000
+```
+
+---
+
+## 5. Test API
+
+Health check:
 
 ```
 http://localhost:3000/health
 ```
 
+Swagger docs:
+
+```
+http://localhost:3000/api-docs
+```
+
 ---
 
-# 🧩 Frontend Prototype
+# 🖥️ Frontend
 
-The frontend is currently a **static prototype** built in CodePen and organized into:
+## Admin Dashboard
 
-* `/frontend/prototype/admin`
-* `/frontend/prototype/comercial`
+Location:
 
-These prototypes are not yet connected to the backend.
+```
+/frontend/prototype/admin
+```
+
+Features:
+
+* Create leads
+* Edit visits
+* Delete visits
+* Status tracking
+* Filtering and sorting
+* Connected to backend API
+
+---
+
+## Commercial Dashboard
+
+Location:
+
+```
+/frontend/prototype/comercial
+```
+
+Features:
+
+* UI prototype for commercial users
+* Visit visualization
+* Workflow simulation
+
+> Note: Currently not fully connected to backend.
+
+---
+
+# 🧪 Current Status
+
+**Phase: MVP - Functional Backend + DB + UI**
+
+Implemented:
+
+* Backend API (CRUD visits)
+* PostgreSQL with Docker
+* TypeORM integration
+* Admin frontend connected to API
+* Full flow working: create → edit → delete → persist
 
 ---
 
 # 🔜 Next Steps
 
-* Connect frontend to backend APIs
-* Implement persistent database (PostgreSQL / MongoDB)
-* Add authentication and role-based access
-* Integrate email (SendGrid / SES)
-* Integrate WhatsApp (Twilio / Meta API)
-* Improve UI and migrate to a modern framework (e.g., React)
+* Add TypeORM migrations
+* Persist Leads in database
+* Authentication & roles
+* Move frontend to React
+* Deploy (Docker + cloud)
+* Integrations (Email / WhatsApp)
 
 ---
 
 # 📌 Notes
 
-* This repository represents the **initial foundation of the system**
-* The architecture is designed to support future scalability and production readiness
-* The current implementation focuses on delivering a working MVP
+* Project evolved from **in-memory storage → PostgreSQL DB**
+* Frontend is still a prototype but already integrated
+* Architecture is ready to scale
 
 ---
 
 # 👨‍💻 Author
 
-Project initialized as part of a structured development plan for Wincontrol.
+Developed as part of an MVP for a real estate platform.
+

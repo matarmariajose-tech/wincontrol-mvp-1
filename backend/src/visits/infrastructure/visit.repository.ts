@@ -1,22 +1,29 @@
+import { AppDataSource } from '../../config/data-source';
 import { Visit } from '../domain/visit.entity';
 
-let visits: Visit[] = [];
+const repo = AppDataSource.getRepository(Visit);
 
 export const visitRepository = {
-  findAll: (): Visit[] => visits,
-
-  create: (visit: Visit): Visit => {
-    visits.push(visit);
-    return visit;
+  findAll: async (): Promise<Visit[]> => {
+    return await repo.find();
   },
 
-  update: (id: string, updatedVisit: Visit): Visit => {
-    const index = visits.findIndex(v => v.id === id);
-    visits[index] = updatedVisit;
-    return updatedVisit;
+  create: async (visit: Visit): Promise<Visit> => {
+    return await repo.save(visit);
   },
 
-  delete: (id: string): void => {
-    visits = visits.filter(v => v.id !== id);
+  update: async (id: string, data: Partial<Visit>): Promise<Visit> => {
+    await repo.update(id, data);
+    const updated = await repo.findOneBy({ id });
+
+    if (!updated) {
+      throw new Error('Visit not found after update');
+    }
+
+    return updated;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await repo.delete(id);
   }
 };

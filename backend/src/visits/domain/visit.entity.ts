@@ -7,21 +7,52 @@ export type VisitStatus =
   | 'CANCELADA'
   | 'NO_SE_PRESENTA';
 
-export interface Visit {
-  id: string;
-  ref: string;
-  cliente: string;
-  inmueble: string;
-  comercial: string;
-  fecha: string;
-  hora: string;
-  estado: VisitStatus;
+import { Entity, PrimaryColumn, Column } from "typeorm";
 
-  phone?: string;
-  email?: string;
+@Entity()
+export class Visit {
+  @PrimaryColumn()
+  id!: string;
+
+  @Column()
+  ref!: string;
+
+  @Column()
+  cliente!: string;
+
+  @Column()
+  inmueble!: string;
+
+  @Column()
+  comercial!: string;
+
+  @Column()
+  fecha!: string;
+
+  @Column()
+  hora!: string;
+
+  @Column()
+  estado!: VisitStatus;
+
+  @Column({ nullable: true })
   source?: string;
-  questionnaire?: boolean;
-  offer?: boolean;
-  createdAt?: string;
+
+  @Column({ nullable: true })
+  phone?: string;
+
+  @Column({ nullable: true })
+  email?: string;
+
+  @Column({ default: false })
+  questionnaire!: boolean;
+
+  @Column({ default: false })
+  offer!: boolean;
+
+  @Column({ nullable: true })
   publicId?: string;
+
+  @Column()
+  createdAt!: string;
 }

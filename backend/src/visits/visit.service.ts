@@ -3,50 +3,44 @@ import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './domain/visit.entity';
 
 export const visitService = {
-  getAll: (): Visit[] => {
-    return visitRepository.findAll();
+  getAll: async (): Promise<Visit[]> => {
+    return await visitRepository.findAll();
   },
 
-  create: (data: CreateVisitDto): Visit => {
+  create: async (data: CreateVisitDto): Promise<Visit> => {
     if (!data.ref || !data.cliente || !data.comercial) {
       throw new Error('Missing required fields');
     }
 
     const newVisit: Visit = {
       id: Date.now().toString(),
-      ...data,
+      ref: data.ref,
+      cliente: data.cliente,
+      inmueble: data.inmueble,
+      comercial: data.comercial,
+      fecha: data.fecha,
+      hora: data.hora,
+      estado: data.estado,
+
+      source: data.source,
+      phone: data.phone,
+      email: data.email,
+
+      questionnaire: data.questionnaire ?? false,
+      offer: data.offer ?? false,
+      publicId: data.publicId,
+
       createdAt: new Date().toISOString()
     };
 
-    console.log('Creating visit:', newVisit);
-
-    return visitRepository.create(newVisit);
+    return await visitRepository.create(newVisit);
   },
 
-  update: (id: string, data: Partial<CreateVisitDto>): Visit => {
-    const visits = visitRepository.findAll();
-    const index = visits.findIndex(v => v.id === id);
-
-    if (index === -1) {
-      throw new Error('Visit not found');
-    }
-
-    const updatedVisit: Visit = {
-      ...visits[index],
-      ...data
-    };
-
-    return visitRepository.update(id, updatedVisit);
+  update: async (id: string, data: Partial<CreateVisitDto>): Promise<Visit> => {
+    return await visitRepository.update(id, data);
   },
 
-  remove: (id: string): void => {
-    const visits = visitRepository.findAll();
-    const index = visits.findIndex(v => v.id === id);
-
-    if (index === -1) {
-      throw new Error('Visit not found');
-    }
-
-    visitRepository.delete(id);
+  remove: async (id: string): Promise<void> => {
+    return await visitRepository.delete(id);
   }
 };
