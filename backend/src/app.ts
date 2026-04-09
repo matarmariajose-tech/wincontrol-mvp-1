@@ -6,6 +6,7 @@ import visitRoutes from './visits/visit.routes';
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import { AppDataSource } from "./config/data-source";
+import authRoutes from './auth/auth.routes'
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/leads', leadRoutes);
 app.use('/api/visits', visitRoutes);
+app.use('/api/auth', authRoutes)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 AppDataSource.initialize()
