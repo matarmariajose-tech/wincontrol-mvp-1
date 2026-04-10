@@ -383,10 +383,24 @@ th[data-dir="desc"] .sortMark::after{content:"▼";font-size:10px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:520px){ .grid2{grid-template-columns:1fr} }
 
-.pill{
-  display:inline-flex;padding:8px 10px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.10);background:rgba(2,6,23,.35);
-  color:#fff;text-decoration:none;font-weight:900;font-size:12px;
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #7aa2ff;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.pill:hover {
+  background: var(--blue);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 .toast{
@@ -441,4 +455,55 @@ th[data-dir="desc"] .sortMark::after{content:"▼";font-size:10px}
   height: 1px;
   background: rgba(255,255,255,0.08);
   margin: 6px 0;
+}
+
+/* Estilos del Modal de Importación */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: none; /* Se controla por JS */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(180deg, var(--panel), #020617);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  animation: modalEntry 0.25s ease-out;
+}
+
+@keyframes modalEntry {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(2, 6, 23, 0.45);
+  color: var(--text);
+  margin-bottom: 24px;
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }

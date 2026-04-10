@@ -612,31 +612,51 @@ function openDrawer(id){
 
   state.selectedId = id;
   $("#drawer").setAttribute("aria-hidden","false");
-  $("#drawerTitle").textContent = `Operación ${row.ref}`;
-  $("#drawerSub").textContent = `${row.client} · ${row.status} · ${formatESDate(row.fecha)} ${row.hora}`;
-
+  $("#drawerTitle").textContent = `Editar Operación ${row.ref}`;
+  
   const links = publicLinks(row);
 
   $("#drawerBody").innerHTML = `
-    <div class="kv">
-      <div class="k">Cliente</div>
-      <div class="v">${escapeHTML(row.client)}</div>
-      <div style="margin-top:8px;color:#64748b;font-size:12px;">
-        ${escapeHTML(row.phone)} · ${escapeHTML(row.email)} · Fuente: ${escapeHTML(row.source)}
+    <div class="grid2">
+      <div class="kv">
+        <div class="k">Referencia Interna</div>
+        <div class="v"><input id="editRef" type="text" value="${escapeHTML(row.ref)}" /></div>
+      </div>
+      <div class="kv">
+        <div class="k">Public ID / ID Externo</div>
+        <div class="v"><input id="editPublicId" type="text" value="${escapeHTML(row.publicId)}" /></div>
       </div>
     </div>
 
     <div class="kv">
-      <div class="k">Inmueble</div>
-      <div class="v">${escapeHTML(row.property)}</div>
+      <div class="k">Cliente</div>
+      <div class="v"><input id="editClient" type="text" value="${escapeHTML(row.client)}" /></div>
+      <div style="margin-top:8px" class="grid2">
+        <input id="editPhone" type="text" placeholder="Teléfono" value="${escapeHTML(row.phone)}" />
+        <input id="editEmail" type="text" placeholder="Email" value="${escapeHTML(row.email)}" />
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="kv">
+        <div class="k">Inmueble</div>
+        <div class="v"><input id="editProperty" type="text" value="${escapeHTML(row.property)}" /></div>
+      </div>
+      <div class="kv">
+        <div class="k">Fuente</div>
+        <div class="v"><input id="editSource" type="text" value="${escapeHTML(row.source)}" /></div>
+      </div>
     </div>
 
     <div class="grid2">
       <div class="kv">
         <div class="k">Comercial</div>
-        <div class="v">${escapeHTML(row.agent)}</div>
+        <div class="v">
+          <select id="editAgent">
+            ${AGENTS.map(a => `<option value="${a.name}" ${a.name === row.agent ? "selected" : ""}>${a.name}</option>`).join("")}
+          </select>
+        </div>
       </div>
-
       <div class="kv">
         <div class="k">Estado</div>
         <div class="v">
@@ -652,37 +672,24 @@ function openDrawer(id){
         <div class="k">Fecha</div>
         <div class="v"><input id="editFecha" type="date" value="${row.fecha}" /></div>
       </div>
-
       <div class="kv">
         <div class="k">Hora</div>
         <div class="v"><input id="editHora" type="time" value="${row.hora}" /></div>
       </div>
     </div>
 
-    <div class="grid2">
-      <div class="kv">
-        <div class="k">Cuestionario</div>
-        <div class="v">
-          <select id="editQuestionnaire">
-            <option value="false" ${!row.questionnaire ? "selected" : ""}>No enviado</option>
-            <option value="true" ${row.questionnaire ? "selected" : ""}>Enviado / respondido</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="kv">
-        <div class="k">Oferta</div>
-        <div class="v">
-          <select id="editOffer">
-            <option value="false" ${!row.offer ? "selected" : ""}>Sin oferta</option>
-            <option value="true" ${row.offer ? "selected" : ""}>Oferta activa</option>
-          </select>
-        </div>
+    <div class="kv">
+      <div class="k">URL de origen del inmueble</div>
+      <div class="v">
+        ${row.sourceUrl
+          ? `<a class="pill" target="_blank" href="${escapeHTML(row.sourceUrl)}">${escapeHTML(row.sourceUrl)}</a>`
+          : `<span class="muted" style="font-size:11px">Sin URL de origen registrada</span>`
+        }
       </div>
     </div>
 
     <div class="kv">
-      <div class="k">Fase 1 · links públicos</div>
+      <div class="k">Fase 1 · Links públicos</div>
       <div class="v" style="display:flex;flex-direction:column;gap:8px">
         <a class="pill" target="_blank" href="${links.schedule}">${links.schedule}</a>
         <a class="pill" target="_blank" href="${links.questionnaire}">${links.questionnaire}</a>
@@ -691,12 +698,28 @@ function openDrawer(id){
     </div>
 
     <div class="kv">
-      <div class="k">Criterios admin</div>
-      <div class="v" style="font-size:13px;line-height:1.6">
-        • EN_OFERTA / REALIZADA / BLOQUEADA bloquean agenda<br>
-        • +24h sin cierre = alerta ámbar<br>
-        • +48h sin cierre = alerta roja<br>
-        • Cuestionario y oferta forman parte del seguimiento fase 1
+      <div class="k">Link de oferta comercial</div>
+      <div class="v" style="display:flex;flex-direction:column;gap:8px">
+        ${row.offer
+          ? `<a class="pill" target="_blank" href="${escapeHTML(row.offer)}" style="background:var(--blue);color:white;font-weight:bold;">${escapeHTML(row.offer)}</a>`
+          : `<span class="muted" style="font-size:11px">⚠️ Link de oferta no registrado</span>`
+        }
+        <input
+          id="editOffer"
+          type="text"
+          placeholder="Pegá el link de oferta aquí..."
+          value="${escapeHTML(row.offer || '')}"
+        />
+      </div>
+    </div>
+
+    <div class="kv">
+      <div class="k">Estado Cuestionario</div>
+      <div class="v">
+        <select id="editQuestionnaire">
+          <option value="false" ${!row.questionnaire ? "selected" : ""}>No enviado</option>
+          <option value="true" ${row.questionnaire ? "selected" : ""}>Enviado / Respondido</option>
+        </select>
       </div>
     </div>
   `;
@@ -806,26 +829,34 @@ $("#saveBtn").onclick = async () => {
   const row = state.rows.find(r => r.id === state.selectedId);
   if (!row) return;
 
+  // Recolectamos la información de todos los campos editables
   const updated = {
-    ref: row.ref,
-    cliente: row.client,
-    inmueble: row.property,
-    comercial: row.agent,
+    ref: $("#editRef").value,
+    publicId: $("#editPublicId").value,
+    cliente: $("#editClient").value,
+    phone: $("#editPhone").value,
+    email: $("#editEmail").value,
+    inmueble: $("#editProperty").value,
+    source: $("#editSource").value,
+    comercial: $("#editAgent").value,
+    estado: $("#editStatus").value,
     fecha: $("#editFecha").value,
     hora: $("#editHora").value,
-    estado: $("#editStatus").value
+    questionnaire: $("#editQuestionnaire").value === "true",
+    offer: (document.getElementById("editOffer")?.value ?? "").trim() || row.offer
   };
 
   try {
-    console.log("Updating ID:", row.id);
+    // Llamada a tu función async que hace el PUT a http://localhost:3000/api/visits
     await updateVisit(row.id, updated);
+    
+    // Recargamos los datos del servidor para que la tabla se actualice
+    await loadRowsFromAPI(); 
 
-    await loadRowsFromAPI();
-
-    showToast("Operación actualizada");
+    showToast("Operación actualizada con éxito");
   } catch (err) {
-    console.error(err);
-    showToast("Error al actualizar");
+    console.error("Error al guardar:", err);
+    showToast("Error al conectar con el servidor");
   }
 };
 
@@ -864,56 +895,56 @@ $("#copyLinksBtn").onclick = async () => {
 
 $("#exportBtn").onclick = () => exportCSV(state.rows);
 
-$("#seedBtn").onclick = () => {
-  state.rows = JSON.parse(JSON.stringify(demoRows));
-  saveLS();
-  render();
-  showToast("Demo restaurada");
-};
+// $("#seedBtn").onclick = () => {
+//   state.rows = JSON.parse(JSON.stringify(demoRows));
+//   saveLS();
+//   render();
+//   showToast("Demo restaurada");
+// };
 
-$("#createLeadBtn").onclick = async () => {
-  const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)].name;
-  const sources = ["Idealista", "Habitaclia", "Web", "Referido"];
-  const source = sources[Math.floor(Math.random() * sources.length)];
-  const ref = `WC-${Math.floor(9200 + Math.random() * 100)}`;
+// $("#createLeadBtn").onclick = async () => {
+//   const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)].name;
+//   const sources = ["Idealista", "Habitaclia", "Web", "Referido"];
+//   const source = sources[Math.floor(Math.random() * sources.length)];
+//   const ref = `WC-${Math.floor(9200 + Math.random() * 100)}`;
 
-  const row = {
-    id: String(Date.now()),
-    ref,
-    client: "Lead demo",
-    phone: "+34 600 000 000",
-    email: "lead@demo.com",
-    source,
-    property: "Piso 2 hab · Demo",
-    agent,
-    fecha: plusDays(1),
-    hora: "18:30",
-    status: STATUS.LEAD,
-    createdAt: new Date().toISOString(),
-    questionnaire: false,
-    offer: false,
-    publicId: ref.replace("WC-","")
-  };
+//   const row = {
+//     id: String(Date.now()),
+//     ref,
+//     client: "Lead demo",
+//     phone: "+34 600 000 000",
+//     email: "lead@demo.com",
+//     source,
+//     property: "Piso 2 hab · Demo",
+//     agent,
+//     fecha: plusDays(1),
+//     hora: "18:30",
+//     status: STATUS.LEAD,
+//     createdAt: new Date().toISOString(),
+//     questionnaire: false,
+//     offer: false,
+//     publicId: ref.replace("WC-","")
+//   };
 
-  const newVisit = await createVisit({
-    ref: row.ref,
-    cliente: row.client,
-    inmueble: row.property,
-    comercial: row.agent,
-    fecha: row.fecha,
-    hora: row.hora,
-    estado: row.status,
-    source: row.source,
-    phone: row.phone,
-    email: row.email,
-    questionnaire: row.questionnaire,
-    offer: row.offer,
-    publicId: row.publicId
-  });
-  await loadRowsFromAPI();
-  render();
-  showToast("Lead demo creado");
-};
+//   const newVisit = await createVisit({
+//     ref: row.ref,
+//     cliente: row.client,
+//     inmueble: row.property,
+//     comercial: row.agent,
+//     fecha: row.fecha,
+//     hora: row.hora,
+//     estado: row.status,
+//     source: row.source,
+//     phone: row.phone,
+//     email: row.email,
+//     questionnaire: row.questionnaire,
+//     offer: row.offer,
+//     publicId: row.publicId
+//   });
+//   await loadRowsFromAPI();
+//   render();
+//   showToast("Lead demo creado");
+// };
 
 (async function init(){
   nowLabel.textContent = formatNow();
@@ -934,7 +965,8 @@ $("#createLeadBtn").onclick = async () => {
       phone: v.phone || "",
       email: v.email || "",
       questionnaire: v.questionnaire || false,
-      offer: v.offer || false,
+      offer: v.offer && v.offer !== true ? v.offer : "",
+      sourceUrl: v.sourceUrl || "",
       publicId: v.publicId || v.id,
       createdAt: v.createdAt
     }));
@@ -966,10 +998,92 @@ async function loadRowsFromAPI() {
     phone: v.phone || "",
     email: v.email || "",
     questionnaire: v.questionnaire || false,
-    offer: v.offer || false,
+    offer: v.offer ? v.offer : "",
+    sourceUrl: v.sourceUrl || "",
     publicId: v.publicId || v.id,
     createdAt: v.createdAt
   }));
 
   render();
 };
+
+// Lógica del Modal
+function openCreateLeadModal() {
+  const modal = document.getElementById('createLeadModal');
+  modal.style.display = 'flex';
+  document.getElementById('lead-url').value = '';
+  document.getElementById('lead-url').focus();
+}
+
+function closeCreateLeadModal() {
+  document.getElementById('createLeadModal').style.display = 'none';
+}
+
+// Cerrar si tocan fuera del cuadro blanco
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('createLeadModal');
+  if (e.target === modal) closeCreateLeadModal();
+});
+
+// Procesar el link
+function parseLink(url) {
+  let source = 'Web';
+  if (url.toLowerCase().includes('idealista')) source = 'Idealista';
+  if (url.toLowerCase().includes('habitaclia')) source = 'Habitaclia';
+
+  const match = url.match(/(\d+)/);
+  const publicId = match ? match[0] : Math.floor(Math.random() * 10000).toString();
+
+  return { source, publicId };
+}
+
+// Guardar en Base de Datos
+async function createLeadFromLink() {
+  const urlInput = document.getElementById('lead-url');
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    showToast('Pegá un link para continuar');
+    return;
+  }
+
+  const { source, publicId } = parseLink(url);
+  
+  // Objeto formateado para tu API
+  const newLead = {
+    ref: `WC-${publicId}`,
+    cliente: "Nuevo Lead",
+    inmueble: "Propiedad importada",
+    comercial: "Sin asignar",
+    fecha: todayISO(),
+    hora: "00:00",
+    estado: STATUS.LEAD,
+    source: source,
+    phone: "",
+    email: "",
+    questionnaire: false,
+    sourceUrl: url,
+    offer: "",
+    publicId: publicId
+  };
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newLead)
+    });
+
+    if (!res.ok) throw new Error('Error en el servidor');
+
+    showToast(`Lead de ${source} creado con éxito`);
+    closeCreateLeadModal();
+    
+    // Recarga la tabla automáticamente
+    await loadRowsFromAPI(); 
+
+  } catch (err) {
+    console.error(err);
+    showToast('No se pudo guardar el lead');
+  }
+}

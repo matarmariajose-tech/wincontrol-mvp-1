@@ -13,7 +13,8 @@ export interface CreateVisitDto {
   email?: string;
   source?: string;
   questionnaire?: boolean;
-  offer?: boolean;
+  offer?: string | null;
+  sourceUrl?: string | null;
   createdAt?: string;
   publicId?: string;
 }

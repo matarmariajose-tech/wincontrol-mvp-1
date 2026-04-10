@@ -47,8 +47,11 @@ export class Visit {
   @Column({ default: false })
   questionnaire!: boolean;
 
-  @Column({ default: false })
-  offer!: boolean;
+  @Column({ type: "text", nullable: true, default: null })
+  offer?: string | null;
+
+  @Column({ type: "text", nullable: true, default: null })
+  sourceUrl?: string | null;
 
   @Column({ nullable: true })
   publicId?: string;

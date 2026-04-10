@@ -23,7 +23,7 @@
         <span id="onlineAdmins">Admin online · 4 comerciales activos</span>
       </div>
 
-      <button class="btn ghost" id="seedBtn">Reset demo</button>
+      <!-- <button class="btn ghost" id="seedBtn">Reset demo</button> -->
       <div class="user-wrapper">
         <button class="btn ghost" class="user" id="userBtn">
           <div class="avatar" id="userAvatar">AM</div>
@@ -52,7 +52,10 @@
 
       <div class="headerActions">
         <button class="btn ghost" id="exportBtn">Exportar CSV</button>
-        <button class="btn primary" id="createLeadBtn"><span class="plus">+</span>Crear lead demo</button>
+        <!-- <button class="btn primary" id="createLeadBtn"><span class="plus">+</span>Crear lead demo</button> -->
+        <button class="btn primary" onclick="openCreateLeadModal()">
+          <span class="plus">+</span> Importar Lead
+        </button>
       </div>
     </section>
 
@@ -257,7 +260,24 @@
 
   <div class="toast" id="toast" aria-hidden="true"></div>
 </div>
-<script src="./script.js"></script>
+<div id="createLeadModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Nuevo Lead desde link</h3>
+    <p class="hint">Pegá la URL de Idealista o Habitaclia para importar la referencia.</p>
+    
+    <input
+      id="lead-url"
+      type="text"
+      placeholder="https://www.idealista.com/inmueble/..."
+      class="modal-input"
+    />
+    
+    <div class="modal-actions">
+      <button onclick="closeCreateLeadModal()" class="btn ghost">Cancelar</button>
+      <button onclick="createLeadFromLink()" class="btn primary">Importar ahora</button>
+    </div>
+  </div>
+</div>
 <script>
   const user = JSON.parse(localStorage.getItem('wc_user'));
 
@@ -306,5 +326,6 @@
     window.location.href = '../login/index.html';
   });
 </script>
+<script src="./script.js"></script>
 </body>
 </html>

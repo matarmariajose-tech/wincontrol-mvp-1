@@ -27,7 +27,8 @@ export const visitService = {
       email: data.email,
 
       questionnaire: data.questionnaire ?? false,
-      offer: data.offer ?? false,
+      offer: data.offer ?? null,
+      sourceUrl: data.sourceUrl ?? null,
       publicId: data.publicId,
 
       createdAt: new Date().toISOString()
