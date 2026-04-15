@@ -612,7 +612,7 @@
         <label>Contraseña</label>
         <div class="field-wrap">
           <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
-          <button class="toggle-pwd" onclick="togglePwd('login-password', this)" tabindex="-1">👁</button>
+          <button class="toggle-pwd" onclick="togglePwd('login-password', this)" tabindex="-1">Show</button>
         </div>
       </div>
 
@@ -638,7 +638,7 @@
         </button>
         <button class="role-btn comercial" data-role="comercial">
           <div class="role-check">✓</div>
-          <div class="role-icon">📊</div>
+          <div class="role-icon">👤</div>
           <div class="role-name">Comercial</div>
           <div class="role-desc">Gestión de visitas y leads</div>
         </button>
@@ -658,7 +658,7 @@
         <label>Contraseña</label>
         <div class="field-wrap">
           <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
-          <button class="toggle-pwd" onclick="togglePwd('reg-password', this)" tabindex="-1">👁</button>
+          <button class="toggle-pwd" onclick="togglePwd('reg-password', this)" tabindex="-1">Show</button>
         </div>
       </div>
 
@@ -666,7 +666,7 @@
         <label>Confirmar contraseña</label>
         <div class="field-wrap">
           <input id="reg-password2" type="password" placeholder="Repetí tu contraseña" autocomplete="new-password" />
-          <button class="toggle-pwd" onclick="togglePwd('reg-password2', this)" tabindex="-1">👁</button>
+          <button class="toggle-pwd" onclick="togglePwd('reg-password2', this)" tabindex="-1">Show</button>
         </div>
       </div>
 
@@ -726,10 +726,10 @@
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
         input.type = 'text';
-        btn.textContent = '🙈';
+        btn.textContent = 'Hide';
       } else {
         input.type = 'password';
-        btn.textContent = '👁';
+        btn.textContent = 'Show';
       }
     }
 
@@ -748,8 +748,8 @@
     // ─── Redirigir según rol ─────────────────────────────────────────────────
     // Cambiá estas URLs por las URLs reales de tus páginas CodePen o de tu servidor
     const ROUTES = {
-      admin:     '../admin/index.html',       // ← tu página admin
-      comercial: '../comercial/index.html'    // ← tu página comercial/usuario
+      admin:     '../admin/',       // ← tu página admin
+      comercial: '../comercial/'    // ← tu página comercial/usuario
     };
 
     function redirectTo(role) {

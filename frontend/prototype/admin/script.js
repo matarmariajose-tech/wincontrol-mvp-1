@@ -5,6 +5,7 @@ const STATUS = {
   PENDIENTE: "PENDIENTE",
   MODIFICADA: "MODIFICADA",
   REALIZADA: "REALIZADA",
+  CONCERTADA: "CONCERTADA",
   CUESTIONARIO: "CUESTIONARIO",
   EN_OFERTA: "EN_OFERTA",
   BLOQUEADA: "BLOQUEADA",
@@ -15,7 +16,8 @@ const STATUS = {
 const BLOCKING_STATES = new Set([
   STATUS.EN_OFERTA,
   STATUS.REALIZADA,
-  STATUS.BLOQUEADA
+  STATUS.BLOQUEADA,
+  STATUS.CONCERTADA
 ]);
 
 const AGENTS = [
@@ -288,7 +290,7 @@ function escapeHTML(s=""){
 }
 
 function getSlaLevel(row){
-  if ([STATUS.REALIZADA, STATUS.CANCELADA, STATUS.NO_SE_PRESENTA, STATUS.EN_OFERTA, STATUS.CUESTIONARIO].includes(row.status)) {
+  if ([STATUS.REALIZADA, STATUS.CANCELADA, STATUS.NO_SE_PRESENTA, STATUS.EN_OFERTA, STATUS.CUESTIONARIO, STATUS.CONCERTADA].includes(row.status)) {
     return "ok";
   }
 
@@ -311,6 +313,7 @@ function statusBadge(status){
     case STATUS.PENDIENTE: return `<span class="badge b-blue">PENDIENTE</span>`;
     case STATUS.MODIFICADA: return `<span class="badge b-violet">MODIFICADA</span>`;
     case STATUS.REALIZADA: return `<span class="badge b-emerald">REALIZADA</span>`;
+    case STATUS.CONCERTADA: return `<span class="badge b-emerald">CONCERTADA</span>`;
     case STATUS.CUESTIONARIO: return `<span class="badge b-violet">CUESTIONARIO</span>`;
     case STATUS.EN_OFERTA: return `<span class="badge b-orange">EN_OFERTA</span>`;
     case STATUS.BLOQUEADA: return `<span class="badge b-amber">BLOQUEADA</span>`;
@@ -365,7 +368,7 @@ function renderFunnel(){
   const total = Math.max(state.rows.length, 1);
   const steps = [
     { label:"Leads", count: state.rows.filter(r => r.status === STATUS.LEAD).length },
-    { label:"Visitas", count: state.rows.filter(r => [STATUS.PENDIENTE, STATUS.MODIFICADA, STATUS.BLOQUEADA, STATUS.REALIZADA, STATUS.CANCELADA, STATUS.NO_SE_PRESENTA, STATUS.CUESTIONARIO, STATUS.EN_OFERTA].includes(r.status)).length },
+    { label:"Visitas", count: state.rows.filter(r => [STATUS.PENDIENTE, STATUS.MODIFICADA, STATUS.BLOQUEADA, STATUS.REALIZADA, STATUS.CANCELADA, STATUS.NO_SE_PRESENTA, STATUS.CUESTIONARIO, STATUS.EN_OFERTA, STATUS.CONCERTADA].includes(r.status)).length },
     { label:"Finalizadas", count: state.rows.filter(r => [STATUS.REALIZADA, STATUS.CANCELADA, STATUS.NO_SE_PRESENTA].includes(r.status)).length },
     { label:"Cuestionario", count: state.rows.filter(r => r.questionnaire || r.status === STATUS.CUESTIONARIO || r.status === STATUS.EN_OFERTA).length },
     { label:"Oferta", count: state.rows.filter(r => r.offer || r.status === STATUS.EN_OFERTA).length }
@@ -1051,7 +1054,7 @@ async function createLeadFromLink() {
   
   // Objeto formateado para tu API
   const newLead = {
-    ref: `WC-${publicId}`,
+    ref: `W-${publicId}`,
     cliente: "Nuevo Lead",
     inmueble: "Propiedad importada",
     comercial: "Sin asignar",
