@@ -3,6 +3,7 @@ import "dotenv/config";
 import { DataSource } from "typeorm";
 import { Visit } from "../visits/domain/visit.entity";
 import { User } from "../users/user.entity";
+import { Lead } from "../leads/domain/lead.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -13,5 +14,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true, // solo dev
   logging: false,
-  entities: [User, Visit],
+  entities: [User, Visit, Lead],
 });

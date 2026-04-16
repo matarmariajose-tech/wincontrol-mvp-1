@@ -1,61 +1,46 @@
-export type VisitStatus =
-  | 'PENDIENTE'
-  | 'MODIFICADA'
-  | 'EN_OFERTA'
-  | 'REALIZADA'
-  | 'BLOQUEADA'
-  | 'CANCELADA'
-  | 'NO_SE_PRESENTA';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-import { Entity, PrimaryColumn, Column } from "typeorm";
+export enum VisitStatus {
+  PENDIENTE = 'PENDIENTE',
+  MODIFICADA = 'MODIFICADA',
+  EN_OFERTA = 'EN_OFERTA',
+  CONCERTADA = 'CONCERTADA',
+  REALIZADA = 'REALIZADA',
+  BLOQUEADA = 'BLOQUEADA',
+  CANCELADA = 'CANCELADA',
+  NO_SE_PRESENTA = 'NO_SE_PRESENTA',
+}
 
-@Entity()
+@Entity('visits')
 export class Visit {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
   ref!: string;
 
   @Column()
-  cliente!: string;
+  inmueble!: string;
 
   @Column()
-  inmueble!: string;
+  clienteId!: string;
 
   @Column()
   comercial!: string;
 
-  @Column()
+  @Column({ type: 'date' })
   fecha!: string;
 
-  @Column()
+  @Column({ type: 'time' })
   hora!: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: VisitStatus,
+    default: VisitStatus.PENDIENTE,
+  })
   estado!: VisitStatus;
 
   @Column({ nullable: true })
-  source?: string;
-
-  @Column({ nullable: true })
-  phone?: string;
-
-  @Column({ nullable: true })
-  email?: string;
-
-  @Column({ default: false })
-  questionnaire!: boolean;
-
-  @Column({ type: "text", nullable: true, default: null })
-  offer?: string | null;
-
-  @Column({ type: "text", nullable: true, default: null })
-  sourceUrl?: string | null;
-
-  @Column({ nullable: true })
   publicId?: string;
-
-  @Column()
-  createdAt!: string;
 }

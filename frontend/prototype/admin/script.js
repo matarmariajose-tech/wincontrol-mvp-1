@@ -27,14 +27,14 @@ const AGENTS = [
   { name: "Lucía Navarro", online: true }
 ];
 
-const API_URL = "http://localhost:3000/api/visits";
+const API_URL = "http://localhost:3000/api/leads";
 
-async function fetchVisits() {
+async function fetchLeads() {
   const res = await fetch(API_URL);
   return await res.json();
 }
 
-async function createVisit(data) {
+async function createLead(data) {
   const res = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -43,23 +43,23 @@ async function createVisit(data) {
   return await res.json();
 }
 
-async function updateVisit(id, data) {
+async function updateLead(id, data) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
 
-  if (!res.ok) throw new Error("Error updating visit");
+  if (!res.ok) throw new Error("Error updating lead");
   return res.json();
 }
 
-async function deleteVisitApi(id) {
+async function deleteLeadApi(id) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "DELETE"
   });
 
-  if (!res.ok) throw new Error("Error deleting visit");
+  if (!res.ok) throw new Error("Error deleting lead");
 }
 
 function todayISO(){
@@ -850,8 +850,8 @@ $("#saveBtn").onclick = async () => {
   };
 
   try {
-    // Llamada a tu función async que hace el PUT a http://localhost:3000/api/visits
-    await updateVisit(row.id, updated);
+    // Llamada a tu función async que hace el PUT a http://localhost:3000/api/leads
+    await updateLead(row.id, updated);
     
     // Recargamos los datos del servidor para que la tabla se actualice
     await loadRowsFromAPI(); 
@@ -868,7 +868,7 @@ $("#deleteBtn").onclick = async () => {
 
   try {
     console.log("Deleting ID:", state.selectedId);
-    await deleteVisitApi(state.selectedId);
+    await deleteLeadApi(state.selectedId);
 
     await loadRowsFromAPI();
 
@@ -954,7 +954,7 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
   setInterval(() => nowLabel.textContent = formatNow(), 30000);
 
   try {
-    const data = await fetchVisits();
+    const data = await fetchLeads();
     state.rows = data.map(v => ({
       id: v.id,
       ref: v.ref,
@@ -974,7 +974,7 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
       createdAt: v.createdAt
     }));
   } catch (err) {
-    console.error("Error cargando visitas:", err);
+    console.error("Error cargando leads:", err);
     state.rows = [];
   }
 
@@ -985,7 +985,7 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
 })();
 
 async function loadRowsFromAPI() {
-  const res = await fetch("http://localhost:3000/api/visits");
+  const res = await fetch("http://localhost:3000/api/leads");
   const data = await res.json();
 
   state.rows = data.map(v => ({

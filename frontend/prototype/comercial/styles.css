@@ -324,8 +324,24 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
 }
 
 /* Drawer + Modals */
-.drawer, .modal{ position:fixed; inset:0; display:none; z-index:80; }
-.drawer[aria-hidden="false"], .modal[aria-hidden="false"]{ display:block; }
+.drawer, .modal{
+  position:fixed;
+  inset:0;
+  display:flex;              
+  align-items:center;        
+  justify-content:center;    
+  z-index:80;
+
+  opacity:0;
+  pointer-events:none;
+  transition: all .2s ease;
+}
+
+.drawer[aria-hidden="false"],
+.modal[aria-hidden="false"]{
+  opacity:1;
+  pointer-events:auto;
+}
 .drawerBackdrop, .modalBackdrop{
   position:absolute; inset:0;
   background: rgba(0,0,0,.55);
@@ -375,14 +391,15 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
 @media (max-width: 520px){ .grid2{ grid-template-columns: 1fr; } }
 
 .modalPanel{
-  position:absolute; left:50%; top:50%;
-  transform: translate(-50%,-50%);
-  width: 720px; max-width: calc(100% - 24px);
+  position:relative;   /* 👈 ya NO absolute */
+  width: 720px;
+  max-width: calc(100% - 24px);
+  max-height: 90vh;    /* 👈 evita que se rompa */
+  overflow-y: auto;    /* 👈 scroll interno */
   background: linear-gradient(180deg, rgba(11,18,32,.98), rgba(2,6,23,.92));
   border:1px solid rgba(255,255,255,.10);
   border-radius: 18px;
   box-shadow: var(--shadow);
-  overflow:hidden;
 }
 .modalHead{
   padding:14px;

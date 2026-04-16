@@ -1,14 +1,14 @@
-<!-- HTML (CodePen) -->
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wincontrol Comercial</title>
   <link rel="stylesheet" href="./styles.css" />
-  <script src="./script.js"></script>
 </head>
 
+<body>
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -19,22 +19,25 @@
       </div>
     </div>
 
-    <div class="topbarRight">
-      <div class="online">
-        <span class="dot"></span>
-        <span id="onlineAgents">3 agentes online</span>
-      </div>
+```
+<div class="topbarRight">
+  <div class="online">
+    <span class="dot"></span>
+    <span id="onlineAgents">3 agentes online</span>
+  </div>
 
-      <button class="btn ghost" id="flowBtn">Simular flujo Idealista</button>
+  <button class="btn ghost" id="flowBtn">Simular flujo Idealista</button>
 
-      <button class="user" id="userBtn" title="Perfil">
-        <div class="avatar">MJ</div>
-        <div class="userText">
-          <div class="userName">María José Matar</div>
-          <div class="userRole">Senior Tech Lead</div>
-        </div>
-      </button>
+  <button class="user" id="userBtn" title="Perfil">
+    <div class="avatar">MJ</div>
+    <div class="userText">
+      <div class="userName">María José Matar</div>
+      <div class="userRole">Senior Tech Lead</div>
     </div>
+  </button>
+</div>
+```
+
   </header>
 
   <main class="container">
@@ -44,106 +47,110 @@
         <p class="sub" id="nowLabel">—</p>
       </div>
 
-      <div class="headerActions">
-        <button class="btn ghost" id="exportBtn">Exportar CSV</button>
-        <button class="btn primary" id="newVisitBtn"><span class="plus">+</span>Nueva visita</button>
-      </div>
-    </section>
+```
+  <div class="headerActions">
+    <button class="btn ghost" id="exportBtn">Exportar CSV</button>
+    <button class="btn primary" id="newVisitBtn"><span class="plus">+</span>Nueva visita</button>
+  </div>
+</section>
 
-    <section class="stats">
-      <article class="card stat">
-        <div class="cardHead">
-          <div class="label">Visitas hoy</div>
-          <div class="icon i-blue">📅</div>
-        </div>
-        <div class="value" id="statToday">0</div>
-      </article>
+<section class="stats">
+  <article class="card stat">
+    <div class="cardHead">
+      <div class="label">Visitas hoy</div>
+      <div class="icon i-blue">📅</div>
+    </div>
+    <div class="value" id="statToday">0</div>
+  </article>
 
-      <article class="card stat">
-        <div class="cardHead">
-          <div class="label">Pendientes de finalizar</div>
-          <div class="icon i-amber">⏱️</div>
-        </div>
-        <div class="value" id="statPending">0</div>
-      </article>
+  <article class="card stat">
+    <div class="cardHead">
+      <div class="label">Pendientes de finalizar</div>
+      <div class="icon i-amber">⏱️</div>
+    </div>
+    <div class="value" id="statPending">0</div>
+  </article>
 
-      <article class="card stat">
-        <div class="cardHead">
-          <div class="label">En oferta</div>
-          <div class="icon i-orange">🏷️</div>
-        </div>
-        <div class="value" id="statOffers">0</div>
-      </article>
+  <article class="card stat">
+    <div class="cardHead">
+      <div class="label">En oferta</div>
+      <div class="icon i-orange">🏷️</div>
+    </div>
+    <div class="value" id="statOffers">0</div>
+  </article>
 
-      <article class="card stat">
-        <div class="cardHead">
-          <div class="label">Tasa conversión</div>
-          <div class="icon i-emerald">✅</div>
-        </div>
-        <div class="value" id="statConv">—</div>
-      </article>
-    </section>
+  <article class="card stat">
+    <div class="cardHead">
+      <div class="label">Tasa conversión</div>
+      <div class="icon i-emerald">✅</div>
+    </div>
+    <div class="value" id="statConv">—</div>
+  </article>
+</section>
 
-    <section class="card tableCard">
-      <div class="tableTop">
-        <div>
-          <h2>Próximas visitas y trazabilidad</h2>
-          <p class="hint">
-            • Click fila: ficha completa
-            • Estado: desplegable editable
-            • Si pones MODIFICADA, podrás re-agendar (valida calendario)
-            • EN_OFERTA / REALIZADA bloquean el calendario
-          </p>
-        </div>
+<section class="card tableCard">
+  <div class="tableTop">
+    <div>
+      <h2>Próximas visitas y trazabilidad</h2>
+      <p class="hint">
+        • Click fila: ficha completa
+        • Estado: desplegable editable
+        • Si pones MODIFICADA, podrás re-agendar (valida calendario)
+        • EN_OFERTA / REALIZADA bloquean el calendario
+      </p>
+    </div>
 
-        <div class="controls">
-          <div class="segmented" id="statusFilter">
-            <button class="seg active" data-status="all">Todas</button>
-            <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
-            <button class="seg" data-status="MODIFICADA">MODIFICADA</button>
-            <button class="seg" data-status="EN_OFERTA">EN OFERTA</button>
-            <button class="seg" data-status="CONCERTADA">CONCERTADA</button>
-            <button class="seg" data-status="REALIZADA">REALIZADA</button>
-            <button class="seg danger" data-status="BLOQUEADA">BLOQUEADA</button>
-            <button class="seg danger" data-status="CANCELADA">CANCELADA</button>
-            <button class="seg danger" data-status="NO_SE_PRESENTA">NO SE PRESENTA</button>
-          </div>
-
-          <div class="search">
-            <span class="searchIcon">⌕</span>
-            <input id="searchInput" placeholder="Buscar por cliente, inmueble o referencia..." />
-            <button class="clear" id="clearSearch" title="Limpiar">×</button>
-          </div>
-        </div>
+    <div class="controls">
+      <div class="segmented" id="statusFilter">
+        <button class="seg active" data-status="all">Todas</button>
+        <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
+        <button class="seg" data-status="MODIFICADA">MODIFICADA</button>
+        <button class="seg" data-status="EN_OFERTA">EN OFERTA</button>
+        <button class="seg" data-status="CONCERTADA">CONCERTADA</button>
+        <button class="seg" data-status="REALIZADA">REALIZADA</button>
+        <button class="seg danger" data-status="BLOQUEADA">BLOQUEADA</button>
+        <button class="seg danger" data-status="CANCELADA">CANCELADA</button>
+        <button class="seg danger" data-status="NO_SE_PRESENTA">NO SE PRESENTA</button>
       </div>
 
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th class="sortable" data-sort="ref">Ref <span class="sortMark"></span></th>
-              <th class="sortable" data-sort="inmueble">Inmueble <span class="sortMark"></span></th>
-              <th>Cliente</th>
-              <th class="sortable" data-sort="comercial">Comercial <span class="sortMark"></span></th>
-              <th class="sortable" data-sort="datetime">Fecha y hora <span class="sortMark"></span></th>
-              <th>Estado</th>
-              <th class="right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <tr><td colspan="7" class="loading">Cargando visitas...</td></tr>
-          </tbody>
-        </table>
+      <div class="search">
+        <span class="searchIcon">⌕</span>
+        <input id="searchInput" placeholder="Buscar por cliente, inmueble o referencia..." />
+        <button class="clear" id="clearSearch" title="Limpiar">×</button>
       </div>
+    </div>
+  </div>
 
-      <div class="tableFooter">
-        <div class="muted" id="countLabel">—</div>
-        <div class="muted">Wincontrol MVP Fase 1 • Links públicos /public/*</div>
-      </div>
-    </section>
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" data-sort="ref">Ref <span class="sortMark"></span></th>
+          <th class="sortable" data-sort="inmueble">Inmueble <span class="sortMark"></span></th>
+          <th>Cliente</th>
+          <th class="sortable" data-sort="comercial">Comercial <span class="sortMark"></span></th>
+          <th class="sortable" data-sort="datetime">Fecha y hora <span class="sortMark"></span></th>
+          <th>Estado</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="7" class="loading">Cargando visitas...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tableFooter">
+    <div class="muted" id="countLabel">—</div>
+    <div class="muted">Wincontrol MVP Fase 1 • Links públicos /public/*</div>
+  </div>
+</section>
+```
+
   </main>
 
-  <!-- Drawer (Ficha completa) -->
+  <!-- Drawer -->
+
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawerBackdrop" id="drawerBackdrop"></div>
     <div class="drawerPanel">
@@ -152,151 +159,98 @@
           <div class="drawerTitle" id="drawerTitle">Ficha completa</div>
           <div class="drawerSub" id="drawerSub">—</div>
         </div>
-        <button class="iconBtn" id="closeDrawer" title="Cerrar">×</button>
+        <button class="iconBtn" id="closeDrawer">×</button>
       </div>
-
       <div class="drawerBody" id="drawerBody"></div>
-
       <div class="drawerActions">
-        <button class="btn ghost" id="copyPublicLinksBtn">Copiar links públicos</button>
+        <button class="btn ghost" id="copyPublicLinksBtn">Copiar links</button>
         <button class="btn danger" id="deleteBtn">Eliminar</button>
         <button class="btn primary" id="saveBtn">Guardar</button>
       </div>
     </div>
   </aside>
 
+  <!-- Modal -->
+
   <!-- Modal (Nueva visita / Agendar) -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modalBackdrop" id="modalBackdrop"></div>
-    <div class="modalPanel">
-      <div class="modalHead">
-        <div>
-          <div class="modalTitle" id="modalTitle">Nueva visita</div>
-          <div class="modalSub" id="modalSub">Calendario con validación de slot</div>
-        </div>
-        <button class="iconBtn" id="closeModal" title="Cerrar">×</button>
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modalBackdrop" id="modalBackdrop"></div>
+
+  <div class="modalPanel">
+    <div class="modalHead">
+      <div>
+        <div class="modalTitle">Nueva visita</div>
+        <div class="modalSub">Calendario con validación de slot</div>
       </div>
-
-      <form id="newVisitForm" class="form">
-        <div class="grid">
-          <label>
-            <span>Referencia</span>
-            <input name="ref" placeholder="WC-7843" required />
-          </label>
-
-          <label>
-            <span>Cliente</span>
-            <select name="clienteId" id="clienteSelect"></select>
-          </label>
-
-          <label>
-            <span>Fecha</span>
-            <input name="fecha" type="date" required />
-          </label>
-
-          <label>
-            <span>Hora</span>
-            <input name="hora" type="time" required />
-          </label>
-
-          <label>
-            <span>Estado</span>
-            <select name="estado">
-              <option value="PENDIENTE">PENDIENTE</option>
-              <option value="MODIFICADA">MODIFICADA</option>
-              <option value="EN_OFERTA">EN_OFERTA</option>
-              <option value="REALIZADA">REALIZADA</option>
-              <option value="BLOQUEADA">BLOQUEADA</option>
-              <option value="CANCELADA">CANCELADA</option>
-              <option value="NO_SE_PRESENTA">NO_SE_PRESENTA</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Comercial</span>
-            <input name="comercial" placeholder="Sara López" required />
-          </label>
-
-          <label class="full">
-            <span>Inmueble</span>
-            <input name="inmueble" placeholder="Piso 3 hab - Gràcia" required />
-          </label>
-        </div>
-
-        <div class="modalActions">
-          <button type="button" class="btn ghost" id="seedBtn">Cargar demo</button>
-          <button type="submit" class="btn primary">Guardar visita</button>
-        </div>
-
-        <div class="calendarHint" id="calendarHint">—</div>
-      </form>
+      <button class="iconBtn" id="closeModal">×</button>
     </div>
-  </div>
 
-  <!-- Modal (Flujo Idealista) -->
-  <div class="modal" id="flowModal" aria-hidden="true">
-    <div class="modalBackdrop" id="flowBackdrop"></div>
-    <div class="modalPanel">
-      <div class="modalHead">
-        <div>
-          <div class="modalTitle">Flujo simulado (Idealista → visita → cuestionario → oferta)</div>
-          <div class="modalSub">Links reales (localhost) para enseñar el MVP</div>
-        </div>
-        <button class="iconBtn" id="closeFlow" title="Cerrar">×</button>
+    <form id="newVisitForm" class="form">
+      <div class="grid">
+
+        <label>
+          <span>Referencia</span>
+          <input name="ref" placeholder="W-7843" required />
+        </label>
+
+        <label>
+          <span>Cliente</span>
+          <select name="clienteId" id="clienteSelect">
+            <option>Laura Méndez • Idealista</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Fecha</span>
+          <input name="fecha" type="date" required />
+        </label>
+
+        <label>
+          <span>Hora</span>
+          <input name="hora" type="time" required />
+        </label>
+
+        <label>
+          <span>Estado</span>
+          <select name="estado">
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="MODIFICADA">MODIFICADA</option>
+            <option value="EN_OFERTA">EN_OFERTA</option>
+            <option value="REALIZADA">REALIZADA</option>
+            <option value="BLOQUEADA">BLOQUEADA</option>
+            <option value="CANCELADA">CANCELADA</option>
+            <option value="NO_SE_PRESENTA">NO_SE_PRESENTA</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Comercial</span>
+          <input name="comercial" placeholder="Sara López" required />
+        </label>
+
+        <label class="full">
+          <span>Inmueble</span>
+          <input name="inmueble" placeholder="Piso 3 hab - Gràcia" required />
+        </label>
+
       </div>
 
-      <div class="flowBody">
-        <div class="step">
-          <div class="stepNum">1</div>
-          <div class="stepContent">
-            <div class="stepTitle">Lead entra desde Idealista</div>
-            <div class="stepDesc">Se crea contacto + link público para agendar.</div>
-            <div class="links">
-              <a class="pill" id="linkSchedule" href="http://localhost:3000/public/schedule/123" target="_blank">/public/schedule/123</a>
-              <button class="mini" data-copy="#linkSchedule">Copiar</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="stepNum">2</div>
-          <div class="stepContent">
-            <div class="stepTitle">Agenda visita</div>
-            <div class="stepDesc">Al elegir slot, se crea visita PENDIENTE y bloquea si pasa a EN_OFERTA / REALIZADA.</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="stepNum">3</div>
-          <div class="stepContent">
-            <div class="stepTitle">Responde cuestionario financiero/documental</div>
-            <div class="links">
-              <a class="pill" id="linkQuestionnaire" href="http://localhost:3000/public/questionnaire/123" target="_blank">/public/questionnaire/123</a>
-              <button class="mini" data-copy="#linkQuestionnaire">Copiar</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="stepNum">4</div>
-          <div class="stepContent">
-            <div class="stepTitle">Hace oferta</div>
-            <div class="stepDesc">Estado pasa a EN_OFERTA → el calendario queda bloqueado para ese slot.</div>
-            <div class="links">
-              <a class="pill" id="linkOffer" href="http://localhost:3000/public/offer/123" target="_blank">/public/offer/123</a>
-              <button class="mini" data-copy="#linkOffer">Copiar</button>
-              <button class="mini primary" id="applyOfferBtn">Aplicar “EN_OFERTA” a una visita</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flowActions">
-          <button class="btn ghost" id="createIdealistaLead">Crear visita demo desde Idealista</button>
-          <button class="btn primary" id="copyAllLinks">Copiar todos los links</button>
-        </div>
+      <div class="modalActions">
+        <button type="button" class="btn ghost">Cargar demo</button>
+        <button type="submit" class="btn primary">Guardar visita</button>
       </div>
-    </div>
-  </div>
 
-  <div class="toast" id="toast" aria-hidden="true"></div>
+      <div class="calendarHint">
+        Selecciona fecha/hora para validar disponibilidad.
+      </div>
+    </form>
+  </div>
 </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="./script.js"></script>
+
+</body>
+</html>
