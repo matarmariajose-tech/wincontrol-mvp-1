@@ -125,12 +125,12 @@ async function loadVisitsFromAPI() {
     console.error(err);
     // fallback demo
     state.visits = [
-      { id:"1", ref:"WC-7842", inmueble:"Piso 3 hab - Gràcia",        clienteId:"c1", comercial:"Toni Ruiz",  fecha:"2025-02-21", hora:"10:30", estado:STATUS.PENDIENTE },
-      { id:"2", ref:"WC-7841", inmueble:"Ático 2 hab - Eixample",      clienteId:"c2", comercial:"Sara López", fecha:"2025-02-21", hora:"12:00", estado:STATUS.MODIFICADA },
-      { id:"3", ref:"WC-7840", inmueble:"Casa con piscina - Sant Cugat",clienteId:"c3", comercial:"Marc Puig", fecha:"2025-02-20", hora:"16:45", estado:STATUS.BLOQUEADA },
-      { id:"4", ref:"WC-7839", inmueble:"Estudio - Poblenou",           clienteId:"c4", comercial:"Toni Ruiz", fecha:"2025-02-20", hora:"09:15", estado:STATUS.CANCELADA },
-      { id:"5", ref:"WC-7838", inmueble:"Piso 4 hab - Les Corts",       clienteId:"c5", comercial:"Sara López",fecha:"2025-02-19", hora:"11:00", estado:STATUS.REALIZADA },
-      { id:"6", ref:"WC-7837", inmueble:"Dúplex - Sarrià",              clienteId:"c6", comercial:"Marc Puig", fecha:"2025-02-21", hora:"15:30", estado:STATUS.EN_OFERTA },
+      { id:"1", ref:"W-7842", inmueble:"Piso 3 hab - Gràcia",        clienteId:"c1", comercial:"Toni Ruiz",  fecha:"2025-02-21", hora:"10:30", estado:STATUS.PENDIENTE },
+      { id:"2", ref:"W-7841", inmueble:"Ático 2 hab - Eixample",      clienteId:"c2", comercial:"Sara López", fecha:"2025-02-21", hora:"12:00", estado:STATUS.MODIFICADA },
+      { id:"3", ref:"W-7840", inmueble:"Casa con piscina - Sant Cugat",clienteId:"c3", comercial:"Marc Puig", fecha:"2025-02-20", hora:"16:45", estado:STATUS.BLOQUEADA },
+      { id:"4", ref:"W-7839", inmueble:"Estudio - Poblenou",           clienteId:"c4", comercial:"Toni Ruiz", fecha:"2025-02-20", hora:"09:15", estado:STATUS.CANCELADA },
+      { id:"5", ref:"W-7838", inmueble:"Piso 4 hab - Les Corts",       clienteId:"c5", comercial:"Sara López",fecha:"2025-02-19", hora:"11:00", estado:STATUS.REALIZADA },
+      { id:"6", ref:"W-7837", inmueble:"Dúplex - Sarrià",              clienteId:"c6", comercial:"Marc Puig", fecha:"2025-02-21", hora:"15:30", estado:STATUS.EN_OFERTA },
     ];
     render();
   }
@@ -527,14 +527,14 @@ modalBackdrop.onclick = closeModalUI;
 
 seedBtn.onclick = () => {
   const rnd = Math.floor(7800 + Math.random() * 80);
-  newVisitForm.ref.value      = `WC-${rnd}`;
+  newVisitForm.ref.value      = `W-${rnd}`;
   newVisitForm.fecha.value    = new Date().toISOString().slice(0,10);
   newVisitForm.hora.value     = "17:15";
   newVisitForm.estado.value   = STATUS.PENDIENTE;
   newVisitForm.inmueble.value = "Piso 2 hab - Sants";
   newVisitForm.comercial.value= "Sara López";
   const c = state.contacts[Math.floor(Math.random() * state.contacts.length)];
-  newVisitForm.clienteId.value = c.id;
+  newVisitForm.cliente.value   = "Laura Méndez";
   updateCalendarHint();
   showToast("Demo cargada");
 };
@@ -550,11 +550,11 @@ newVisitForm.addEventListener("submit", async (e) => {
   const fd = new FormData(newVisitForm);
   const payload = {
     ref:       String(fd.get("ref")).trim(),
-    clienteId: String(fd.get("clienteId")),
+    cliente:   String(fd.get("cliente")).trim(),
     fecha:     String(fd.get("fecha")),
     hora:      String(fd.get("hora")),
     estado:    String(fd.get("estado")),
-    comercial: String(fd.get("comercial")).trim(),
+    comercial: String(fd.get("comercial")),
     inmueble:  String(fd.get("inmueble")).trim(),
     publicId:  "123",
   };
@@ -658,7 +658,7 @@ copyAllLinks.onclick = async () => {
 createIdealistaLead.onclick = async () => {
   const iso = new Date().toISOString().slice(0,10);
   const payload = {
-    ref:       `WC-${Math.floor(7900 + Math.random() * 80)}`,
+    ref:       `W-${Math.floor(7900 + Math.random() * 80)}`,
     clienteId: "c1",
     fecha:     iso,
     hora:      "18:00",
@@ -709,7 +709,6 @@ exportBtn.onclick = () => exportCSV(state.visits);
 
   state.contacts = loadLS(CONTACTS_KEY) || demoContacts;
   saveLS(CONTACTS_KEY, state.contacts);
-  renderClienteOptions();
 
   const th = document.querySelector(`thead th.sortable[data-sort="${state.sort.key}"]`);
   if (th) th.setAttribute("data-dir", state.sort.dir);
@@ -718,3 +717,45 @@ exportBtn.onclick = () => exportCSV(state.visits);
   tbody.innerHTML = `<tr><td colspan="7" class="loading">Cargando desde servidor...</td></tr>`;
   loadVisitsFromAPI();
 })();
+
+const user = JSON.parse(localStorage.getItem('wc_user'));
+
+if (user) {
+  document.querySelector('.userName').textContent = user.name;
+  document.querySelector('.userRole').textContent = user.email;
+
+  const initials = user.name
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .substring(0,2)
+    .toUpperCase();
+
+  document.querySelector('.avatar').textContent = initials;
+}
+
+const userBtn = document.getElementById('userBtn');
+const dropdown = document.getElementById('userDropdown');
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (userBtn && dropdown) {
+  userBtn.addEventListener('click', () => {
+    dropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!userBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('show');
+    }
+  });
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('wc_token');
+    localStorage.removeItem('wc_user');
+    localStorage.removeItem('wc_role');
+
+    window.location.href = '../login/index.html';
+  });
+}

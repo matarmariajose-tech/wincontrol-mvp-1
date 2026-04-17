@@ -3,7 +3,8 @@ import { leadService } from './lead.service';
 
 export const getLeads = async (req: Request, res: Response) => {
   try {
-    const leads = await leadService.getAll();
+    const adminId = (req as any).user.id;
+    const leads = await leadService.getAll(adminId);
     res.json(leads);
   } catch (error) {
     console.error('ERROR REAL:', error);
@@ -13,7 +14,8 @@ export const getLeads = async (req: Request, res: Response) => {
 
 export const createLead = async (req: Request, res: Response) => {
   try {
-    const lead = await leadService.create(req.body);
+    const adminId = (req as any).user.id;
+    const lead = await leadService.create({ ...req.body, adminId });
     res.status(201).json(lead);
   } catch (error: any) {
     res.status(400).json({ message: error.message });

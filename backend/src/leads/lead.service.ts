@@ -3,8 +3,8 @@ import { CreateLeadDto } from './dto/create-lead.dto';
 import { Lead } from './domain/lead.entity';
 
 export const leadService = {
-  getAll: async (): Promise<Lead[]> => {
-    return await leadRepository.findAll();
+  getAll: async (adminId: string): Promise<Lead[]> => {
+    return await leadRepository.findAll(adminId);
   },
 
   create: async (data: CreateLeadDto): Promise<Lead> => {
@@ -31,7 +31,9 @@ export const leadService = {
       sourceUrl: data.sourceUrl ?? null,
       publicId: data.publicId,
 
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+
+      adminId: data.adminId
     };
 
     return await leadRepository.create(newLead);

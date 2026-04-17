@@ -17,4 +17,5 @@ export interface CreateLeadDto {
   sourceUrl?: string | null;
   createdAt?: string;
   publicId?: string;
+  adminId: string;
 }

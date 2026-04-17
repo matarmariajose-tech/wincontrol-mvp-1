@@ -508,3 +508,47 @@ input:focus, select:focus{
   font-size:13px;
 }
 .toast.show{ display:block; }
+
+.user-wrapper{
+  position: relative;
+}
+
+.dropdown{
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 220px;
+  background: rgba(11,18,32,.98);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
+  box-shadow: var(--shadow2);
+  display: none;
+  flex-direction: column;
+  padding: 8px;
+  z-index: 100;
+}
+
+.dropdown.show{
+  display: flex;
+}
+
+.dropdown button{
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 10px;
+  text-align: left;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.dropdown button:hover{
+  background: rgba(148,163,184,.12);
+}
+
+.dropdown hr{
+  border: none;
+  border-top: 1px solid rgba(255,255,255,.08);
+  margin: 6px 0;
+}

@@ -5,8 +5,11 @@ import {
   updateLead,
   deleteLead
 } from './lead.controller';
+import { authMiddleware } from '../auth/auth.middleware';
 
 const router = Router();
+
+router.use(authMiddleware);
 
 /**
  * @swagger

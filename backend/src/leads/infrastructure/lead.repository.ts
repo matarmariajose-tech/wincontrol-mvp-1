@@ -4,8 +4,8 @@ import { Lead } from '../domain/lead.entity';
 const repo = AppDataSource.getRepository(Lead);
 
 export const leadRepository = {
-  findAll: async (): Promise<Lead[]> => {
-    return await repo.find();
+  findAll: async (adminId: string): Promise<Lead[]> => {
+    return await repo.find({ where: { adminId } });
   },
 
   create: async (lead: Lead): Promise<Lead> => {

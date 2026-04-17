@@ -29,15 +29,23 @@ const AGENTS = [
 
 const API_URL = "http://localhost:3000/api/leads";
 
+function authHeaders() {
+  const token = localStorage.getItem('wc_token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+}
+
 async function fetchLeads() {
-  const res = await fetch(API_URL);
+  const res = await fetch(API_URL, { headers: authHeaders() });
   return await res.json();
 }
 
 async function createLead(data) {
   const res = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify(data),
   });
   return await res.json();
@@ -46,7 +54,7 @@ async function createLead(data) {
 async function updateLead(id, data) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify(data)
   });
 
@@ -56,7 +64,8 @@ async function updateLead(id, data) {
 
 async function deleteLeadApi(id) {
   const res = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    headers: authHeaders()
   });
 
   if (!res.ok) throw new Error("Error deleting lead");
@@ -985,7 +994,7 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
 })();
 
 async function loadRowsFromAPI() {
-  const res = await fetch("http://localhost:3000/api/leads");
+  const res = await fetch(API_URL, { headers: authHeaders() });
   const data = await res.json();
 
   state.rows = data.map(v => ({
@@ -1073,7 +1082,7 @@ async function createLeadFromLink() {
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify(newLead)
     });
 

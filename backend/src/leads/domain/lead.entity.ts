@@ -59,4 +59,7 @@ export class Lead {
 
   @Column()
   createdAt!: string;
+
+  @Column({ nullable: false })
+  adminId!: string;
 }
