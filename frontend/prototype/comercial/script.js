@@ -1,6 +1,5 @@
 // JS (CodePen) — conectado a API REST /api/visits
 const API = "http://localhost:3000/api/visits";
-const CONTACTS_KEY = "wincontrol_contacts_v1";
 
 const STATUS = {
   PENDIENTE:      "PENDIENTE",
@@ -18,18 +17,8 @@ const EDITABLE_STATES = [
 ];
 const BLOCKING_STATES = new Set([STATUS.EN_OFERTA, STATUS.REALIZADA, STATUS.BLOQUEADA, STATUS.CONCERTADA]);
 
-const demoContacts = [
-  { id:"c1", nombre:"Laura Méndez",   telefono:"+34 600 111 222", email:"laura@demo.com",   fuente:"Idealista", score:"Alta" },
-  { id:"c2", nombre:"Carlos Herrera", telefono:"+34 600 333 444", email:"carlos@demo.com",  fuente:"Fotocasa",  score:"Media" },
-  { id:"c3", nombre:"Ana Beltrán",    telefono:"+34 600 555 666", email:"ana@demo.com",      fuente:"Idealista", score:"Alta" },
-  { id:"c4", nombre:"Javier Soto",    telefono:"+34 600 777 888", email:"javier@demo.com",  fuente:"Referido",  score:"Media" },
-  { id:"c5", nombre:"Marta Vidal",    telefono:"+34 600 999 000", email:"marta@demo.com",   fuente:"Idealista", score:"Alta" },
-  { id:"c6", nombre:"Roberto Campos", telefono:"+34 601 010 101", email:"roberto@demo.com", fuente:"Fotocasa",  score:"Baja" },
-];
-
 let state = {
-  visits: [],       // datos vienen del backend
-  contacts: [],
+  visits: [],
   search: "",
   status: "all",
   sort: { key: "datetime", dir: "asc" },
@@ -59,7 +48,6 @@ const modalBackdrop = $("#modalBackdrop");
 const newVisitForm  = $("#newVisitForm");
 const seedBtn       = $("#seedBtn");
 const calendarHint  = $("#calendarHint");
-const clienteSelect = $("#clienteSelect");
 
 const drawer            = $("#drawer");
 const closeDrawer       = $("#closeDrawer");
@@ -79,6 +67,15 @@ const copyAllLinks      = $("#copyAllLinks");
 const createIdealistaLead = $("#createIdealistaLead");
 const applyOfferBtn     = $("#applyOfferBtn");
 const exportBtn         = $("#exportBtn");
+
+// ─── authHeaders ────────────────────────────────────────────────────────────────────
+function authHeaders() {
+  const token = localStorage.getItem('wc_token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+}
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg) {
@@ -102,7 +99,7 @@ function loadLS(key){
 // ─── API helpers ─────────────────────────────────────────────────────────────
 async function apiFetch(path = "", options = {}) {
   const res = await fetch(`${API}${path}`, {
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     ...options,
   });
 
@@ -150,7 +147,6 @@ function formatNow() {
   return `${date} • ${time}`;
 }
 function visitDateTime(v){ return new Date(`${v.fecha}T${v.hora}:00`).getTime(); }
-function getContact(id){ return state.contacts.find(c => c.id === id); }
 
 function computeStats(visits) {
   const todayIso = new Date().toISOString().slice(0,10);
@@ -199,9 +195,8 @@ function applyFilters(){
   return state.visits.filter(v => {
     if (st !== "all" && v.estado !== st) return false;
     if (!s) return true;
-    const c = getContact(v.clienteId);
     return (
-      (c?.nombre || "").toLowerCase().includes(s) ||
+      (v.cliente || "").toLowerCase().includes(s) ||
       String(v.inmueble||"").toLowerCase().includes(s) ||
       String(v.ref||"").toLowerCase().includes(s)
     );
@@ -253,25 +248,14 @@ function render(){
   }
 
   tbody.innerHTML = sorted.map(v => {
-    const c = getContact(v.clienteId);
-    const cliente = c?.nombre ?? "—";
+    const cliente = v.cliente ?? "—";
     const date = formatESDate(v.fecha);
     return `
       <tr data-id="${v.id}">
         <td class="mono">${escapeHTML(v.ref)}</td>
         <td><strong style="color:#fff">${escapeHTML(v.inmueble)}</strong></td>
 
-        <td class="clientCell">
-          <button class="clientBtn" data-action="toggleClient" data-id="${v.id}">
-            ${escapeHTML(cliente)} <span class="chev">▾</span>
-          </button>
-          <div class="popover" id="pop_${v.id}">
-            <div class="popRow"><div class="popK">Teléfono</div><div class="popV">${escapeHTML(c?.telefono||"—")}</div></div>
-            <div class="popRow"><div class="popK">Email</div><div class="popV">${escapeHTML(c?.email||"—")}</div></div>
-            <div class="popRow"><div class="popK">Fuente</div><div class="popV">${escapeHTML(c?.fuente||"—")}</div></div>
-            <div class="popRow"><div class="popK">Score</div><div class="popV">${escapeHTML(c?.score||"—")}</div></div>
-          </div>
-        </td>
+        <td>${escapeHTML(cliente)}</td>
 
         <td>${escapeHTML(v.comercial)}</td>
 
@@ -312,7 +296,6 @@ function openDrawer(id){
   state.selectedId = id;
   drawer.setAttribute("aria-hidden","false");
 
-  const c = getContact(v.clienteId);
   const date = formatESDate(v.fecha);
   drawerTitle.textContent = `Ficha completa • ${v.ref}`;
   drawerSub.textContent   = `${date} • ${v.hora} • ${v.estado}`;
@@ -320,13 +303,21 @@ function openDrawer(id){
   const links = publicLinksForVisit(v);
 
   drawerBody.innerHTML = `
-    <div class="kv"><div class="k">Inmueble</div><div class="v">${escapeHTML(v.inmueble)}</div></div>
-
     <div class="kv"><div class="k">Cliente</div><div class="v">
-      ${escapeHTML(c?.nombre||"—")}
-      <div style="margin-top:8px;color:#64748b;font-size:12px;">
-        ${escapeHTML(c?.telefono||"—")} • ${escapeHTML(c?.email||"—")} • ${escapeHTML(c?.fuente||"—")}
-      </div>
+      <input id="editCliente" type="text" value="${escapeHTML(v.cliente||'')}" />
+    </div></div>
+
+    <div class="kv"><div class="k">Inmueble</div><div class="v">
+      <input id="editInmueble" type="text" value="${escapeHTML(v.inmueble||'')}" />
+    </div></div>
+
+    <div class="kv"><div class="k">Comercial</div><div class="v">
+      <select id="editComercial">
+        <option value="Sara López"    ${v.comercial==="Sara López"    ?"selected":""}>Sara López</option>
+        <option value="Toni Ruiz"     ${v.comercial==="Toni Ruiz"     ?"selected":""}>Toni Ruiz</option>
+        <option value="Marc Puig"     ${v.comercial==="Marc Puig"     ?"selected":""}>Marc Puig</option>
+        <option value="Lucía Navarro" ${v.comercial==="Lucía Navarro" ?"selected":""}>Lucía Navarro</option>
+      </select>
     </div></div>
 
     <div class="grid2">
@@ -417,11 +408,6 @@ function updateCalendarHint(){
   }
 }
 
-function renderClienteOptions(){
-  clienteSelect.innerHTML = state.contacts
-    .map(c => `<option value="${c.id}">${c.nombre} • ${c.fuente}</option>`).join("");
-}
-
 function setSort(key){
   const ths = $$("thead th.sortable");
   if (state.sort.key === key) state.sort.dir = state.sort.dir === "asc" ? "desc" : "asc";
@@ -478,7 +464,12 @@ saveBtn.onclick = async () => {
     showToast("⛔ Slot bloqueado"); return;
   }
 
-  const changes = { estado: est };
+  const changes = { 
+    estado: est,
+    cliente:   $("#editCliente")?.value.trim(),
+    inmueble:  $("#editInmueble")?.value.trim(),
+    comercial: $("#editComercial")?.value,
+  };
   if (est === STATUS.MODIFICADA){ changes.fecha = fecha; changes.hora = hora; }
 
   try {
@@ -533,7 +524,6 @@ seedBtn.onclick = () => {
   newVisitForm.estado.value   = STATUS.PENDIENTE;
   newVisitForm.inmueble.value = "Piso 2 hab - Sants";
   newVisitForm.comercial.value= "Sara López";
-  const c = state.contacts[Math.floor(Math.random() * state.contacts.length)];
   newVisitForm.cliente.value   = "Laura Méndez";
   updateCalendarHint();
   showToast("Demo cargada");
@@ -659,7 +649,7 @@ createIdealistaLead.onclick = async () => {
   const iso = new Date().toISOString().slice(0,10);
   const payload = {
     ref:       `W-${Math.floor(7900 + Math.random() * 80)}`,
-    clienteId: "c1",
+    cliente:   "Lead Idealista",
     fecha:     iso,
     hora:      "18:00",
     estado:    STATUS.PENDIENTE,
@@ -706,9 +696,6 @@ exportBtn.onclick = () => exportCSV(state.visits);
 (function init(){
   nowLabel.textContent = formatNow();
   setInterval(() => { nowLabel.textContent = formatNow(); }, 30_000);
-
-  state.contacts = loadLS(CONTACTS_KEY) || demoContacts;
-  saveLS(CONTACTS_KEY, state.contacts);
 
   const th = document.querySelector(`thead th.sortable[data-sort="${state.sort.key}"]`);
   if (th) th.setAttribute("data-dir", state.sort.dir);

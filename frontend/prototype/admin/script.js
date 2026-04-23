@@ -813,23 +813,29 @@ tbody.addEventListener("click", (e) => {
   openDrawer(tr.dataset.id);
 });
 
-tbody.addEventListener("change", (e) => {
+tbody.addEventListener("change", async (e) => {
   const select = e.target.closest("select[data-action='setState']");
   if (!select) return;
 
   const row = state.rows.find(r => r.id === select.dataset.id);
   if (!row) return;
 
-  row.status = select.value;
-  if (row.status === STATUS.CUESTIONARIO) row.questionnaire = true;
-  if (row.status === STATUS.EN_OFERTA) {
-    row.questionnaire = true;
-    row.offer = true;
-  }
+  const newStatus = select.value;
 
-  saveLS();
-  render();
-  showToast(`Estado actualizado a ${row.status}`);
+  try {
+    await updateLead(row.id, {
+      estado: newStatus,
+      questionnaire: newStatus === STATUS.CUESTIONARIO || newStatus === STATUS.EN_OFERTA,
+      offer: newStatus === STATUS.EN_OFERTA ? true : row.offer
+    });
+
+    await loadRowsFromAPI();
+
+    showToast(`Estado actualizado a ${newStatus}`);
+  } catch (err) {
+    console.error(err);
+    showToast("Error al guardar estado");
+  }
 });
 
 $("#closeDrawer").onclick = closeDrawer;

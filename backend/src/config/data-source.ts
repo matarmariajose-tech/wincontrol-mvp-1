@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { Visit } from "../visits/domain/visit.entity";
 import { User } from "../users/user.entity";
 import { Lead } from "../leads/domain/lead.entity";
+import { Property } from "../properties/property.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -14,5 +15,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true, // solo dev
   logging: false,
-  entities: [User, Visit, Lead],
+  entities: [User, Visit, Lead, Property],
 });

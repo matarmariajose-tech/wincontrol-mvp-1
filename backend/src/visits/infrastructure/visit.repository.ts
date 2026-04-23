@@ -1,29 +1,29 @@
-// infrastructure/visit.repository.ts
+import { AppDataSource } from '../../config/data-source';
 import { Visit } from '../domain/visit.entity';
- 
-let visits: Visit[] = [];
- 
+
+const repo = AppDataSource.getRepository(Visit);
+
 export const visitRepository = {
-  findAll: (): Visit[] => visits,
- 
-  findById: (id: string): Visit | undefined =>
-    visits.find(v => v.id === id),
- 
-  create: (visit: Visit): Visit => {
-    visits.push(visit);
-    return visit;
+  findAll: async (adminId: string): Promise<Visit[]> => {
+    return await repo.find({ where: { adminId } });
   },
- 
-  update: (id: string, changes: Partial<Visit>): Visit | null => {
-    const idx = visits.findIndex(v => v.id === id);
-    if (idx === -1) return null;
-    visits[idx] = { ...visits[idx], ...changes };
-    return visits[idx];
+
+  findById: async (id: string): Promise<Visit | null> => {
+    return await repo.findOneBy({ id });
   },
- 
-  delete: (id: string): boolean => {
-    const before = visits.length;
-    visits = visits.filter(v => v.id !== id);
-    return visits.length < before;
+
+  create: async (visit: Partial<Visit>): Promise<Visit> => {
+    const newVisit = repo.create(visit);
+    return await repo.save(newVisit);
+  },
+
+  update: async (id: string, changes: Partial<Visit>): Promise<Visit | null> => {
+    await repo.update(id, changes);
+    return await repo.findOneBy({ id });
+  },
+
+  delete: async (id: string): Promise<boolean> => {
+    const result = await repo.delete(id);
+    return (result.affected ?? 0) > 0;
   },
 };

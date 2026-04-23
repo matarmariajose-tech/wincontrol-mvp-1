@@ -22,8 +22,8 @@ export class Visit {
   @Column()
   inmueble!: string;
 
-  @Column()
-  clienteId!: string;
+  @Column({ nullable: true })
+  cliente?: string;
 
   @Column()
   comercial!: string;
@@ -43,4 +43,7 @@ export class Visit {
 
   @Column({ nullable: true })
   publicId?: string;
+
+  @Column({ nullable: true })
+  adminId?: string;
 }
