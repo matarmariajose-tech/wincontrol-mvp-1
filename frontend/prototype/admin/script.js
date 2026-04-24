@@ -27,7 +27,7 @@ const AGENTS = [
   { name: "Lucía Navarro", online: true }
 ];
 
-const API_URL = "http://localhost:3000/api/leads";
+const API_URL = `${CONFIG.API_URL}/api/leads`;
 
 function authHeaders() {
   const token = localStorage.getItem('wc_token');

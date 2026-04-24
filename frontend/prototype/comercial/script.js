@@ -1,5 +1,5 @@
 // JS (CodePen) — conectado a API REST /api/visits
-const API = "http://localhost:3000/api/visits";
+const API = `${CONFIG.API_URL}/api/visits`;
 
 const STATUS = {
   PENDIENTE:      "PENDIENTE",

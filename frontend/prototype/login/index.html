@@ -683,6 +683,8 @@
     <a href="#">Soporte</a>
   </div>
 
+  <script src="../../config.js"></script>
+
   <script>
     // ─── Estado de roles seleccionados ───────────────────────────────────────
     const selectedRole = { login: null, register: null };
@@ -792,7 +794,7 @@
         // ── Conectar con tu backend ──────────────────────────────────────────
         // Ejemplo de llamada real:
         //
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+        const res = await fetch(`${CONFIG.API_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, role })
@@ -860,7 +862,7 @@
         // ── Conectar con tu backend ──────────────────────────────────────────
         // Ejemplo de llamada real:
         //
-        const res = await fetch('http://localhost:3000/api/auth/register', {
+        const res = await fetch(`${CONFIG.API_URL}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password: pwd1, role })
