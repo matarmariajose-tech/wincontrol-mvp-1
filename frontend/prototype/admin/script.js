@@ -618,7 +618,22 @@ function render(){
   renderTable();
 }
 
-function openDrawer(id){
+const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
+
+async function loadComerciales(selectId) {
+  try {
+    const res = await fetch(COMERCIALES_API, { headers: authHeaders() });
+    const data = await res.json();
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    select.innerHTML = data.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
+    return data;
+  } catch (e) {
+    showToast('⚠️ No se pudieron cargar los comerciales');
+  }
+}
+
+async function openDrawer(id){
   const row = state.rows.find(r => r.id === id);
   if (!row) return;
 
@@ -663,10 +678,9 @@ function openDrawer(id){
     <div class="grid2">
       <div class="kv">
         <div class="k">Comercial</div>
-        <div class="v">
-          <select id="editAgent">
-            ${AGENTS.map(a => `<option value="${a.name}" ${a.name === row.agent ? "selected" : ""}>${a.name}</option>`).join("")}
-          </select>
+        <div class="v" style="display:flex; gap:8px; align-items:center;">
+          <select id="editAgent" style="flex:1"></select>
+          <button type="button" id="addComercialBtnDrawer" class="btn ghost" style="white-space:nowrap">+ Nuevo</button>
         </div>
       </div>
       <div class="kv">
@@ -735,6 +749,28 @@ function openDrawer(id){
       </div>
     </div>
   `;
+
+  await loadComerciales('editAgent');
+  document.getElementById('editAgent').value = row.agent;
+
+  document.getElementById('addComercialBtnDrawer').addEventListener('click', async () => {
+    const nombre = prompt('Nombre del nuevo comercial:');
+    if (!nombre?.trim()) return;
+
+    try {
+      const res = await fetch(COMERCIALES_API, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ nombre: nombre.trim() })
+      });
+      if (!res.ok) throw new Error();
+      showToast(`✅ ${nombre} agregado`);
+      await loadComerciales('editAgent');
+      document.getElementById('editAgent').value = nombre.trim();
+    } catch (e) {
+      showToast('⚠️ Error al crear comercial');
+    }
+  });
 }
 
 function closeDrawer(){

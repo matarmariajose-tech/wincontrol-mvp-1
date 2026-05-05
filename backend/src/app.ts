@@ -8,6 +8,7 @@ import { swaggerSpec } from "./config/swagger";
 import { AppDataSource } from "./config/data-source";
 import authRoutes from './auth/auth.routes'
 import propertyRoutes from './properties/property.routes';
+import comercialRoutes from './comerciales/comercial.routes'
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/api/leads', leadRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/auth', authRoutes)
 app.use('/api/properties', propertyRoutes);
+app.use('/api/comerciales', comercialRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 AppDataSource.initialize()

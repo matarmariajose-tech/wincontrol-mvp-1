@@ -5,6 +5,7 @@ import { Visit } from "../visits/domain/visit.entity";
 import { User } from "../users/user.entity";
 import { Lead } from "../leads/domain/lead.entity";
 import { Property } from "../properties/property.entity";
+import { Comercial } from '../comerciales/comercial.entity';
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -22,5 +23,5 @@ export const AppDataSource = new DataSource({
       }),
   synchronize: true,
   logging: false,
-  entities: [User, Visit, Lead, Property],
+  entities: [User, Visit, Lead, Property, Comercial],
 });

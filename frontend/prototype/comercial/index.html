@@ -189,7 +189,23 @@
         <div class="grid">
           <label>
             <span>Referencia</span>
-            <input name="ref" placeholder="W-7843" required />
+            <div style="position:relative">
+              <input name="ref" id="refInput" placeholder="Buscar por ref o dirección..." required autocomplete="off" />
+              <div id="refDropdown" style="
+                display:none;
+                position:absolute;
+                top:100%;
+                left:0;
+                right:0;
+                background:rgba(2,6,23,.98);
+                border:1px solid rgba(255,255,255,.10);
+                border-radius:14px;
+                margin-top:4px;
+                max-height:200px;
+                overflow-y:auto;
+                z-index:100;
+              "></div>
+            </div>
           </label>
  
           <label>
@@ -223,12 +239,10 @@
  
           <label>
             <span>Comercial</span>
-            <select name="comercial">
-              <option value="Sara López">Sara López</option>
-              <option value="Toni Ruiz">Toni Ruiz</option>
-              <option value="Marc Puig">Marc Puig</option>
-              <option value="Lucía Navarro">Lucía Navarro</option>
-            </select>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <select name="comercial" id="comercialSelect" style="flex:1"></select>
+              <button type="button" id="addComercialBtn" class="btn ghost" style="white-space:nowrap">+ Nuevo</button>
+            </div>
           </label>
  
           <label class="full">

@@ -290,7 +290,7 @@ function publicLinksForVisit(v){
   };
 }
 
-function openDrawer(id){
+async function openDrawer(id){
   const v = state.visits.find(x => x.id === id);
   if (!v) return;
   state.selectedId = id;
@@ -312,12 +312,7 @@ function openDrawer(id){
     </div></div>
 
     <div class="kv"><div class="k">Comercial</div><div class="v">
-      <select id="editComercial">
-        <option value="Sara López"    ${v.comercial==="Sara López"    ?"selected":""}>Sara López</option>
-        <option value="Toni Ruiz"     ${v.comercial==="Toni Ruiz"     ?"selected":""}>Toni Ruiz</option>
-        <option value="Marc Puig"     ${v.comercial==="Marc Puig"     ?"selected":""}>Marc Puig</option>
-        <option value="Lucía Navarro" ${v.comercial==="Lucía Navarro" ?"selected":""}>Lucía Navarro</option>
-      </select>
+      <select id="editComercial"></select>
     </div></div>
 
     <div class="grid2">
@@ -362,6 +357,9 @@ function openDrawer(id){
       </div>
     </div>
   `;
+
+  await loadComerciales('editComercial');
+  document.getElementById('editComercial').value = v.comercial;
 
   const quickChange = async (newStatus) => {
     try {
@@ -692,6 +690,100 @@ applyOfferBtn.onclick = async () => {
 
 exportBtn.onclick = () => exportCSV(state.visits);
 
+const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
+
+async function loadComerciales(selectId = 'comercialSelect') {
+  try {
+    const res = await fetch(COMERCIALES_API, { headers: authHeaders() });
+    const data = await res.json();
+    const select = document.getElementById(selectId);
+    select.innerHTML = data.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
+  } catch (e) {
+    showToast('⚠️ No se pudieron cargar los comerciales');
+  }
+}
+
+document.getElementById('addComercialBtn').addEventListener('click', async () => {
+  const nombre = prompt('Nombre del nuevo comercial:');
+  if (!nombre?.trim()) return;
+
+  try {
+    const res = await fetch(COMERCIALES_API, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ nombre: nombre.trim() })
+    });
+    if (!res.ok) throw new Error();
+    showToast(`✅ ${nombre} agregado`);
+    await loadComerciales();
+    document.getElementById('comercialSelect').value = nombre.trim();
+  } catch (e) {
+    showToast('⚠️ Error al crear comercial');
+  }
+});
+
+const PROPERTIES_API = `${CONFIG.API_URL}/api/properties`;
+let allProperties = [];
+
+async function loadProperties() {
+  try {
+    const res = await fetch(PROPERTIES_API, { headers: authHeaders() });
+    allProperties = await res.json();
+  } catch (e) {
+    showToast('⚠️ No se pudieron cargar las propiedades');
+  }
+}
+
+function getRef(property) {
+  return property.sourceUrl?.match(/inmueble\/(\d+)/)?.[1] || '';
+}
+
+document.getElementById('refInput').addEventListener('input', (e) => {
+  const query = e.target.value.trim().toLowerCase();
+  const dropdown = document.getElementById('refDropdown');
+
+  if (!query) { dropdown.style.display = 'none'; return; }
+
+  const matches = allProperties.filter(p => {
+    const ref = getRef(p);
+    return ref.includes(query) || p.title?.toLowerCase().includes(query);
+  }).slice(0, 8);
+
+  if (!matches.length) { dropdown.style.display = 'none'; return; }
+
+  dropdown.style.display = 'block';
+  dropdown.innerHTML = matches.map(p => {
+    const ref = getRef(p);
+    return `
+      <div class="refOption" data-ref="${ref}" data-title="${escapeHTML(p.title)}" style="
+        padding:10px 14px;
+        cursor:pointer;
+        border-bottom:1px solid rgba(255,255,255,.06);
+        font-size:13px;
+      ">
+        <div style="color:#7aa2ff;font-weight:900;font-family:monospace">${ref}</div>
+        <div style="color:#94a3b8;margin-top:2px">${escapeHTML(p.title)}</div>
+      </div>
+    `;
+  }).join('');
+
+  dropdown.querySelectorAll('.refOption').forEach(opt => {
+    opt.addEventListener('mouseenter', () => opt.style.background = 'rgba(148,163,184,.08)');
+    opt.addEventListener('mouseleave', () => opt.style.background = 'transparent');
+    opt.addEventListener('click', () => {
+      document.getElementById('refInput').value = opt.dataset.ref;
+      newVisitForm.inmueble.value = opt.dataset.title;
+      dropdown.style.display = 'none';
+    });
+  });
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#refInput') && !e.target.closest('#refDropdown')) {
+    document.getElementById('refDropdown').style.display = 'none';
+  }
+});
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (function init(){
   nowLabel.textContent = formatNow();
@@ -703,6 +795,8 @@ exportBtn.onclick = () => exportCSV(state.visits);
   // Cargar visitas desde la API
   tbody.innerHTML = `<tr><td colspan="7" class="loading">Cargando desde servidor...</td></tr>`;
   loadVisitsFromAPI();
+  loadComerciales();
+  loadProperties();
 })();
 
 const user = JSON.parse(localStorage.getItem('wc_user'));
