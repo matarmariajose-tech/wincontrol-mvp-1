@@ -25,6 +25,9 @@ export class Visit {
   @Column({ nullable: true })
   cliente?: string;
 
+  @Column({ nullable: true })
+  clienteEmail?: string;
+
   @Column()
   comercial!: string;
 

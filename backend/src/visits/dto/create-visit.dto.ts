@@ -5,6 +5,7 @@ export interface CreateVisitDto {
   ref: string;
   inmueble: string;
   cliente: string;
+  clienteEmail?: string;
   comercial: string;
   fecha: string;
   hora: string;

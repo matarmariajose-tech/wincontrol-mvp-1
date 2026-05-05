@@ -307,6 +307,10 @@ async function openDrawer(id){
       <input id="editCliente" type="text" value="${escapeHTML(v.cliente||'')}" />
     </div></div>
 
+    <div class="kv"><div class="k">Email del cliente</div><div class="v">
+      <input id="editClienteEmail" type="email" value="${escapeHTML(v.clienteEmail||'')}" />
+    </div></div>
+
     <div class="kv"><div class="k">Inmueble</div><div class="v">
       <input id="editInmueble" type="text" value="${escapeHTML(v.inmueble||'')}" />
     </div></div>
@@ -465,6 +469,7 @@ saveBtn.onclick = async () => {
   const changes = { 
     estado: est,
     cliente:   $("#editCliente")?.value.trim(),
+    clienteEmail: $("#editClienteEmail")?.value.trim(),
     inmueble:  $("#editInmueble")?.value.trim(),
     comercial: $("#editComercial")?.value,
   };
@@ -539,6 +544,7 @@ newVisitForm.addEventListener("submit", async (e) => {
   const payload = {
     ref:       String(fd.get("ref")).trim(),
     cliente:   String(fd.get("cliente")).trim(),
+    clienteEmail: String(fd.get("clienteEmail")).trim(),
     fecha:     String(fd.get("fecha")),
     hora:      String(fd.get("hora")),
     estado:    String(fd.get("estado")),

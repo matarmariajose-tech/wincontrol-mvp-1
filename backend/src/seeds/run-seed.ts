@@ -27,6 +27,7 @@ async function main() {
       price: p.price ? Number(p.price) : undefined,
       bedrooms,
       sqm,
+      floor: p.floor || undefined,
       sourceUrl: p.url,
       source: 'testa-homes',
     });

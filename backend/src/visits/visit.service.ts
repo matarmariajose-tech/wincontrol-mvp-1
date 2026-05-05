@@ -1,6 +1,7 @@
 import { visitRepository } from './infrastructure/visit.repository';
 import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './domain/visit.entity';
+import { sendVisitConfirmation } from '../mail/mailer';
 
 const BLOCKING_STATES = new Set(['EN_OFERTA', 'REALIZADA', 'BLOQUEADA', 'CONCERTADA']);
 
@@ -23,7 +24,25 @@ export const visitService = {
         return { ok: false, error: 'Slot bloqueado: ya existe una visita en ese horario.' };
       }
     }
+
     const visit = await visitRepository.create(data);
+
+    if (data.clienteEmail) {
+      try {
+        await sendVisitConfirmation({
+          toEmail:   data.clienteEmail,
+          toName:    data.cliente,
+          comercial: data.comercial,
+          fecha:     data.fecha,
+          hora:      data.hora,
+          inmueble:  data.inmueble,
+          ref:       data.ref,
+        });
+      } catch (err) {
+        console.error('Error enviando mail:', err);
+      }
+    }
+
     return { ok: true, visit };
   },
 
