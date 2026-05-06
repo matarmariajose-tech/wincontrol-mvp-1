@@ -1,14 +1,6 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-export const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVisitConfirmation({
   toEmail,
@@ -27,8 +19,8 @@ export async function sendVisitConfirmation({
   inmueble: string;
   ref: string;
 }) {
-  await transporter.sendMail({
-    from: `"Wincontrol" <${process.env.MAIL_USER}>`,
+  await resend.emails.send({
+    from: 'Wincontrol <onboarding@resend.dev>',
     to: toEmail,
     subject: `Confirmación de visita · ${ref}`,
     html: `
@@ -42,7 +34,6 @@ export async function sendVisitConfirmation({
         <li><strong>Hora:</strong> ${hora}</li>
         <li><strong>Comercial asignado:</strong> ${comercial}</li>
       </ul>
-      <p>Si tenés alguna duda, no dudes en contactarnos.</p>
       <p>Saludos,<br/>El equipo de Wincontrol</p>
     `,
   });
