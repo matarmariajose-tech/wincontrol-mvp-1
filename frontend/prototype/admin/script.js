@@ -754,22 +754,65 @@ async function openDrawer(id){
   document.getElementById('editAgent').value = row.agent;
 
   document.getElementById('addComercialBtnDrawer').addEventListener('click', async () => {
-    const nombre = prompt('Nombre del nuevo comercial:');
-    if (!nombre?.trim()) return;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,.6);
+      display:flex; align-items:center; justify-content:center; z-index:200;
+    `;
+    overlay.innerHTML = `
+      <div style="
+        background:rgba(11,18,32,.98); border:1px solid rgba(255,255,255,.10);
+        border-radius:18px; padding:24px; width:360px; display:flex; flex-direction:column; gap:14px;
+      ">
+        <div style="font-size:16px; font-weight:900; color:#fff">Nuevo comercial</div>
+        <div>
+          <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:6px;">NOMBRE</label>
+          <input id="newComercialNombre" type="text" placeholder="Nombre completo" style="
+            width:100%; padding:11px 12px; border-radius:14px;
+            border:1px solid rgba(255,255,255,.08); background:rgba(2,6,23,.45);
+            color:#e5e7eb; font-size:14px; outline:none; box-sizing:border-box;
+          " />
+        </div>
+        <div>
+          <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:6px;">EMAIL</label>
+          <input id="newComercialEmail" type="email" placeholder="comercial@email.com" style="
+            width:100%; padding:11px 12px; border-radius:14px;
+            border:1px solid rgba(255,255,255,.08); background:rgba(2,6,23,.45);
+            color:#e5e7eb; font-size:14px; outline:none; box-sizing:border-box;
+          " />
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button id="cancelComercial" class="btn ghost">Cancelar</button>
+          <button id="confirmComercial" class="btn primary">Crear</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('newComercialNombre').focus();
 
-    try {
-      const res = await fetch(COMERCIALES_API, {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({ nombre: nombre.trim() })
-      });
-      if (!res.ok) throw new Error();
-      showToast(`✅ ${nombre} agregado`);
-      await loadComerciales('editAgent');
-      document.getElementById('editAgent').value = nombre.trim();
-    } catch (e) {
-      showToast('⚠️ Error al crear comercial');
-    }
+    document.getElementById('cancelComercial').onclick = () => overlay.remove();
+
+    document.getElementById('confirmComercial').onclick = async () => {
+      const nombre = document.getElementById('newComercialNombre').value.trim();
+      const email  = document.getElementById('newComercialEmail').value.trim();
+
+      if (!nombre) { showToast('⚠️ El nombre es obligatorio'); return; }
+
+      try {
+        const res = await fetch(COMERCIALES_API, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ nombre, email })
+        });
+        if (!res.ok) throw new Error();
+        showToast(`✅ ${nombre} agregado`);
+        overlay.remove();
+        await loadComerciales('editAgent');
+        document.getElementById('editAgent').value = nombre;
+      } catch (e) {
+        showToast('⚠️ Error al crear comercial');
+      }
+    };
   });
 }
 

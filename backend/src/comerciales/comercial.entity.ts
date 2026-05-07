@@ -7,4 +7,7 @@ export class Comercial {
 
   @Column()
   nombre!: string;
+
+  @Column({ nullable: true})
+  email?: string;
 }

@@ -38,3 +38,40 @@ export async function sendVisitConfirmation({
     `,
   });
 }
+
+export async function sendVisitNotificationToComercial({
+  toEmail,
+  comercial,
+  clienteNombre,
+  fecha,
+  hora,
+  inmueble,
+  ref,
+}: {
+  toEmail: string;
+  comercial: string;
+  clienteNombre: string;
+  fecha: string;
+  hora: string;
+  inmueble: string;
+  ref: string;
+}) {
+  await resend.emails.send({
+    from: 'Wincontrol <onboarding@resend.dev>',
+    to: toEmail,
+    subject: `Nueva visita asignada · ${ref}`,
+    html: `
+      <h2>Nueva visita asignada</h2>
+      <p>Hola <strong>${comercial}</strong>,</p>
+      <p>Se te ha asignado una nueva visita:</p>
+      <ul>
+        <li><strong>Cliente:</strong> ${clienteNombre}</li>
+        <li><strong>Inmueble:</strong> ${inmueble}</li>
+        <li><strong>Referencia:</strong> ${ref}</li>
+        <li><strong>Fecha:</strong> ${fecha}</li>
+        <li><strong>Hora:</strong> ${hora}</li>
+      </ul>
+      <p>Saludos,<br/>El equipo de Wincontrol</p>
+    `,
+  });
+}

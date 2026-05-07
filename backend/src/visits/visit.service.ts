@@ -1,7 +1,9 @@
 import { visitRepository } from './infrastructure/visit.repository';
 import { CreateVisitDto } from './dto/create-visit.dto';
 import { Visit } from './domain/visit.entity';
-import { sendVisitConfirmation } from '../mail/mailer';
+import { sendVisitConfirmation, sendVisitNotificationToComercial } from '../mail/mailer';
+import { AppDataSource } from '../config/data-source';
+import { Comercial } from '../comerciales/comercial.entity';
 
 const BLOCKING_STATES = new Set(['EN_OFERTA', 'REALIZADA', 'BLOQUEADA', 'CONCERTADA']);
 
@@ -39,8 +41,26 @@ export const visitService = {
           ref:       data.ref,
         });
       } catch (err) {
-        console.error('Error enviando mail:', err);
+        console.error('Error enviando mail al cliente:', err);
       }
+    }
+
+    try {
+      const repo = AppDataSource.getRepository(Comercial);
+      const comercialData = await repo.findOneBy({ nombre: data.comercial });
+      if (comercialData?.email) {
+        await sendVisitNotificationToComercial({
+          toEmail:       comercialData.email,
+          comercial:     data.comercial,
+          clienteNombre: data.cliente,
+          fecha:         data.fecha,
+          hora:          data.hora,
+          inmueble:      data.inmueble,
+          ref:           data.ref,
+        });
+      }
+    } catch (err) {
+      console.error('Error enviando mail al comercial:', err);
     }
 
     return { ok: true, visit };

@@ -709,25 +709,6 @@ async function loadComerciales(selectId = 'comercialSelect') {
   }
 }
 
-document.getElementById('addComercialBtn').addEventListener('click', async () => {
-  const nombre = prompt('Nombre del nuevo comercial:');
-  if (!nombre?.trim()) return;
-
-  try {
-    const res = await fetch(COMERCIALES_API, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ nombre: nombre.trim() })
-    });
-    if (!res.ok) throw new Error();
-    showToast(`✅ ${nombre} agregado`);
-    await loadComerciales();
-    document.getElementById('comercialSelect').value = nombre.trim();
-  } catch (e) {
-    showToast('⚠️ Error al crear comercial');
-  }
-});
-
 const PROPERTIES_API = `${CONFIG.API_URL}/api/properties`;
 let allProperties = [];
 
