@@ -29,16 +29,20 @@ export const visitService = {
 
     const visit = await visitRepository.create(data);
 
+    const repo = AppDataSource.getRepository(Comercial);
+    const comercialData = await repo.findOneBy({ nombre: data.comercial });
+
     if (data.clienteEmail) {
       try {
         await sendVisitConfirmation({
-          toEmail:   data.clienteEmail,
-          toName:    data.cliente,
-          comercial: data.comercial,
-          fecha:     data.fecha,
-          hora:      data.hora,
-          inmueble:  data.inmueble,
-          ref:       data.ref,
+          toEmail:        data.clienteEmail,
+          toName:         data.cliente,
+          comercial:      data.comercial,
+          comercialEmail: comercialData?.email,
+          fecha:          data.fecha,
+          hora:           data.hora,
+          inmueble:       data.inmueble,
+          ref:            data.ref,
         });
       } catch (err) {
         console.error('Error enviando mail al cliente:', err);
@@ -46,13 +50,13 @@ export const visitService = {
     }
 
     try {
-      const repo = AppDataSource.getRepository(Comercial);
-      const comercialData = await repo.findOneBy({ nombre: data.comercial });
       if (comercialData?.email) {
         await sendVisitNotificationToComercial({
           toEmail:       comercialData.email,
           comercial:     data.comercial,
           clienteNombre: data.cliente,
+          clienteEmail:  data.clienteEmail,
+          clientePhone:  data.clientePhone,
           fecha:         data.fecha,
           hora:          data.hora,
           inmueble:      data.inmueble,

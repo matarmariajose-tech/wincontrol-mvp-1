@@ -545,6 +545,7 @@ newVisitForm.addEventListener("submit", async (e) => {
     ref:       String(fd.get("ref")).trim(),
     cliente:   String(fd.get("cliente")).trim(),
     clienteEmail: String(fd.get("clienteEmail")).trim(),
+    clientePhone: String(fd.get("clientePhone")).trim(),
     fecha:     String(fd.get("fecha")),
     hora:      String(fd.get("hora")),
     estado:    String(fd.get("estado")),
