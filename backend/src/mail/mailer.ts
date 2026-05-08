@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = 'Wincontrol <visitas@send.winallcontrol.com>';
+const FROM_EMAIL = 'Wincontrol <visitas@winallcontrol.com>';
 
 export async function sendVisitConfirmation({
   toEmail,
