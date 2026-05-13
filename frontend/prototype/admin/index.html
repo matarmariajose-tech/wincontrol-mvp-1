@@ -261,6 +261,41 @@
 
   <div class="toast" id="toast" aria-hidden="true"></div>
 </div>
+
+<div class="card tableCard" style="margin-top:20px;">
+  <div class="tableTop">
+    <div>
+      <h2>Visitas creadas</h2>
+      <p class="hint">
+        Todas las visitas generadas desde el panel comercial.
+      </p>
+    </div>
+  </div>
+
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Inmueble</th>
+          <th>Cliente</th>
+          <th>Comercial</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+
+      <tbody id="visitsAdminTbody">
+        <tr>
+          <td colspan="6" class="loading">
+            Cargando visitas...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <div id="createLeadModal" class="modal-overlay">
   <div class="modal-content">
     <h3>Nuevo Lead desde link</h3>

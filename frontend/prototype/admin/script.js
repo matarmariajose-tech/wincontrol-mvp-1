@@ -28,6 +28,10 @@ const AGENTS = [
 ];
 
 const API_URL = `${CONFIG.API_URL}/api/leads`;
+const VISITS_API = `${CONFIG.API_URL}/api/visits`;
+const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
+
+window.adminComerciales = [];
 
 function authHeaders() {
   const token = localStorage.getItem('wc_token');
@@ -618,8 +622,6 @@ function render(){
   renderTable();
 }
 
-const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
-
 async function loadComerciales(selectId) {
   try {
     const res = await fetch(COMERCIALES_API, { headers: authHeaders() });
@@ -1076,6 +1078,7 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
   if (th) th.setAttribute("data-dir", state.sort.dir);
 
   render();
+  await loadVisitsAdmin();
 })();
 
 async function loadRowsFromAPI() {
@@ -1184,3 +1187,177 @@ async function createLeadFromLink() {
     showToast('No se pudo guardar el lead');
   }
 }
+
+async function loadVisitsAdmin() {
+  try {
+
+    const comercialesRes = await fetch(COMERCIALES_API, {
+      headers: authHeaders()
+    });
+
+    window.adminComerciales = await comercialesRes.json();
+
+    const res = await fetch(VISITS_API, {
+      headers: authHeaders()
+    });
+
+    const visits = await res.json();
+
+    renderVisitsAdmin(visits);
+
+  } catch (err) {
+
+    console.error(err);
+
+    document.getElementById('visitsAdminTbody').innerHTML = `
+      <tr>
+        <td colspan="6" class="loading">
+          Error cargando visitas
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function renderVisitsAdmin(visits) {
+
+  const tbody = document.getElementById('visitsAdminTbody');
+
+  if (!visits.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="loading">
+          No hay visitas
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = visits.map(v => `
+    <tr>
+
+      <td class="mono">
+        ${v.ref || '-'}
+      </td>
+
+      <td>
+        <strong style="color:#fff">
+          ${v.inmueble || '-'}
+        </strong>
+      </td>
+
+      <td>
+        ${v.cliente || '-'}
+      </td>
+
+      <td>
+        <select
+          class="adminVisitCommercial"
+          data-id="${v.id}"
+        >
+          ${window.adminComerciales.map(c => `
+            <option
+              value="${c.nombre}"
+              ${c.nombre === v.comercial ? 'selected' : ''}
+            >
+              ${c.nombre}
+            </option>
+          `).join('')}
+        </select>
+      </td>
+
+      <td>
+        ${v.fecha || '-'} • ${v.hora || '-'}
+      </td>
+
+      <td>
+        <select
+          class="adminVisitStatus"
+          data-id="${v.id}"
+        >
+          <option value="PENDIENTE" ${v.estado === 'PENDIENTE' ? 'selected' : ''}>
+            PENDIENTE
+          </option>
+
+          <option value="MODIFICADA" ${v.estado === 'MODIFICADA' ? 'selected' : ''}>
+            MODIFICADA
+          </option>
+
+          <option value="EN_OFERTA" ${v.estado === 'EN_OFERTA' ? 'selected' : ''}>
+            EN_OFERTA
+          </option>
+
+          <option value="REALIZADA" ${v.estado === 'REALIZADA' ? 'selected' : ''}>
+            REALIZADA
+          </option>
+
+          <option value="BLOQUEADA" ${v.estado === 'BLOQUEADA' ? 'selected' : ''}>
+            BLOQUEADA
+          </option>
+
+          <option value="CANCELADA" ${v.estado === 'CANCELADA' ? 'selected' : ''}>
+            CANCELADA
+          </option>
+
+          <option value="NO_SE_PRESENTA" ${v.estado === 'NO_SE_PRESENTA' ? 'selected' : ''}>
+            NO_SE_PRESENTA
+          </option>
+        </select>
+      </td>
+
+    </tr>
+  `).join('');
+}
+
+document.addEventListener('change', async (e) => {
+
+  // ESTADO
+  if (e.target.classList.contains('adminVisitStatus')) {
+
+    const id = e.target.dataset.id;
+    const estado = e.target.value;
+
+    try {
+
+      await fetch(`${VISITS_API}/${id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ estado })
+      });
+
+      showToast('Estado actualizado');
+
+    } catch (err) {
+
+      console.error(err);
+      showToast('⚠️ Error actualizando estado');
+
+    }
+  }
+
+  // COMERCIAL
+  if (e.target.classList.contains('adminVisitCommercial')) {
+
+    const id = e.target.dataset.id;
+    const comercial = e.target.value;
+
+    try {
+
+      await fetch(`${VISITS_API}/${id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ comercial })
+      });
+
+      showToast('Comercial actualizado');
+
+    } catch (err) {
+
+      console.error(err);
+      showToast('⚠️ Error actualizando comercial');
+
+    }
+  }
+
+});
