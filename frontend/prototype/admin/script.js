@@ -28,7 +28,7 @@ const AGENTS = [
 ];
 
 const API_URL = `${CONFIG.API_URL}/api/leads`;
-const VISITS_API = `${CONFIG.API_URL}/api/visits`;
+const VISITS_API = `${CONFIG.API_URL}/api/visits/admin/all`;
 const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
 
 window.adminComerciales = [];
@@ -1253,7 +1253,7 @@ function renderVisitsAdmin(visits) {
 
       <td>
         <select
-          class="adminVisitCommercial"
+          class="stateSelect adminVisitCommercial"
           data-id="${v.id}"
         >
           ${window.adminComerciales.map(c => `
@@ -1273,7 +1273,7 @@ function renderVisitsAdmin(visits) {
 
       <td>
         <select
-          class="adminVisitStatus"
+          class="stateSelect adminVisitStatus"
           data-id="${v.id}"
         >
           <option value="PENDIENTE" ${v.estado === 'PENDIENTE' ? 'selected' : ''}>

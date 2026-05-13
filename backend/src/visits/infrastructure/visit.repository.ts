@@ -26,4 +26,13 @@ export const visitRepository = {
     const result = await repo.delete(id);
     return (result.affected ?? 0) > 0;
   },
+
+  findAllAdmin: async (): Promise<Visit[]> => {
+    return await repo.find({
+      order: {
+        fecha: 'DESC',
+        hora: 'DESC'
+      }
+    });
+  },
 };

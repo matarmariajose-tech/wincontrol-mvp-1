@@ -91,4 +91,8 @@ export const visitService = {
   delete: async (id: string): Promise<boolean> => {
     return await visitRepository.delete(id);
   },
+
+  getAllAdmin: async (): Promise<Visit[]> => {
+    return await visitRepository.findAllAdmin();
+  },
 };

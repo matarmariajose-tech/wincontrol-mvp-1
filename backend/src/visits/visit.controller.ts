@@ -52,5 +52,13 @@ export const deleteVisit: RequestHandler = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: 'Error deleting visit' });
+  };
+};
+
+export const getAllVisitsAdmin: RequestHandler = async (req, res) => {
+  try {
+    res.json(await visitService.getAllAdmin());
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching admin visits' });
   }
 };
