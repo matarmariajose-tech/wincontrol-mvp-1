@@ -28,7 +28,8 @@ const AGENTS = [
 ];
 
 const API_URL = `${CONFIG.API_URL}/api/leads`;
-const VISITS_API = `${CONFIG.API_URL}/api/visits/admin/all`;
+const VISITS_API = `${CONFIG.API_URL}/api/visits`;
+const VISITS_ADMIN_API = `${CONFIG.API_URL}/api/visits/admin/all`;
 const COMERCIALES_API = `${CONFIG.API_URL}/api/comerciales`;
 
 window.adminComerciales = [];
@@ -1197,7 +1198,7 @@ async function loadVisitsAdmin() {
 
     window.adminComerciales = await comercialesRes.json();
 
-    const res = await fetch(VISITS_API, {
+    const res = await fetch(VISITS_ADMIN_API, {
       headers: authHeaders()
     });
 
