@@ -9,6 +9,7 @@ export async function sendVisitConfirmation({
   toName,
   comercial,
   comercialEmail,
+  comercialPhone,
   fecha,
   hora,
   inmueble,
@@ -18,6 +19,7 @@ export async function sendVisitConfirmation({
   toName: string;
   comercial: string;
   comercialEmail?: string;
+  comercialPhone?: string;
   fecha: string;
   hora: string;
   inmueble: string;
@@ -39,6 +41,7 @@ export async function sendVisitConfirmation({
           <li><strong>Hora:</strong> ${hora}</li>
           <li><strong>Comercial asignado:</strong> ${comercial}</li>
           ${comercialEmail ? `<li><strong>Email del comercial:</strong> ${comercialEmail}</li>` : ''}
+          ${comercialPhone ? `<li><strong>Teléfono del comercial:</strong> ${comercialPhone}</li>` : ''}
         </ul>
         <p>Saludos,<br/>El equipo de Wincontrol</p>
       `,

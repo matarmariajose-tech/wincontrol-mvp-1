@@ -8,6 +8,9 @@ export class Comercial {
   @Column()
   nombre!: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   email?: string;
+
+  @Column({ nullable: true })
+  telefono?: string;
 }

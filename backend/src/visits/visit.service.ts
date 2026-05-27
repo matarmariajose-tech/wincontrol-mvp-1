@@ -39,6 +39,7 @@ export const visitService = {
           toName:         data.cliente,
           comercial:      data.comercial,
           comercialEmail: comercialData?.email,
+          comercialPhone: comercialData?.telefono,
           fecha:          data.fecha,
           hora:           data.hora,
           inmueble:       data.inmueble,

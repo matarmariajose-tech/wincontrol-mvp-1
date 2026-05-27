@@ -18,7 +18,11 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const repo = AppDataSource.getRepository(Comercial);
-    const nuevo = repo.create({ nombre: req.body.nombre, email: req.body.email });
+    const nuevo = repo.create({
+      nombre: req.body.nombre,
+      email: req.body.email,
+      telefono: req.body.telefono
+    });
     res.status(201).json(await repo.save(nuevo));
   } catch (e) {
     res.status(500).json({ error: 'Error creating comercial' });

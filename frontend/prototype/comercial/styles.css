@@ -431,6 +431,26 @@ input:focus, select:focus{
   border-color: rgba(37,99,235,.55);
   box-shadow: 0 0 0 6px rgba(37,99,235,.12);
 }
+input[type="date"],
+input[type="time"]{
+  accent-color: #60a5fa;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="time"]::-webkit-datetime-edit-text {
+  color: var(--text);
+}
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field {
+  color: var(--text);
+}
 .full{ grid-column: 1 / -1; }
 .modalActions{
   display:flex; justify-content:space-between; gap:10px; margin-top:12px; flex-wrap:wrap;

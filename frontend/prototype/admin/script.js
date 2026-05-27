@@ -784,6 +784,14 @@ async function openDrawer(id){
             color:#e5e7eb; font-size:14px; outline:none; box-sizing:border-box;
           " />
         </div>
+        <div>
+          <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:6px;">TELÉFONO</label>
+          <input id="newComercialTelefono" type="tel" placeholder="+34 600 000 000" style="
+            width:100%; padding:11px 12px; border-radius:14px;
+            border:1px solid rgba(255,255,255,.08); background:rgba(2,6,23,.45);
+            color:#e5e7eb; font-size:14px; outline:none; box-sizing:border-box;
+          " />
+        </div>
         <div style="display:flex; gap:10px; justify-content:flex-end;">
           <button id="cancelComercial" class="btn ghost">Cancelar</button>
           <button id="confirmComercial" class="btn primary">Crear</button>
@@ -798,6 +806,7 @@ async function openDrawer(id){
     document.getElementById('confirmComercial').onclick = async () => {
       const nombre = document.getElementById('newComercialNombre').value.trim();
       const email  = document.getElementById('newComercialEmail').value.trim();
+      const telefono = document.getElementById('newComercialTelefono').value.trim();
 
       if (!nombre) { showToast('⚠️ El nombre es obligatorio'); return; }
 
@@ -805,7 +814,7 @@ async function openDrawer(id){
         const res = await fetch(COMERCIALES_API, {
           method: 'POST',
           headers: authHeaders(),
-          body: JSON.stringify({ nombre, email })
+          body: JSON.stringify({ nombre, email, telefono })
         });
         if (!res.ok) throw new Error();
         showToast(`✅ ${nombre} agregado`);

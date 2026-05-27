@@ -52,7 +52,9 @@
 
       <div class="headerActions">
         <button class="btn ghost" id="exportBtn">Exportar CSV</button>
-        <!-- <button class="btn primary" id="createLeadBtn"><span class="plus">+</span>Crear lead demo</button> -->
+        <button class="btn" id="createComercialBtn" onclick="openCreateComercialModal()">
+          <span class="plus">+</span> Nuevo comercial
+        </button>
         <button class="btn primary" onclick="openCreateLeadModal()">
           <span class="plus">+</span> Importar Lead
         </button>
@@ -315,6 +317,22 @@
     </div>
   </div>
 </div>
+
+<div id="createComercialModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Nuevo comercial</h3>
+    <p class="hint">Creá un nuevo comercial para el equipo.</p>
+
+    <input id="comercial-nombre" type="text" placeholder="Nombre completo" class="modal-input" />
+    <input id="comercial-email" type="email" placeholder="email@empresa.com" class="modal-input" />
+    <input id="comercial-telefono" type="tel" placeholder="Teléfono" class="modal-input" />
+
+    <div class="modal-actions">
+      <button onclick="closeCreateComercialModal()" class="btn ghost">Cancelar</button>
+      <button id="createComercialConfirm" onclick="createComercial()" class="btn primary">Crear comercial</button>
+    </div>
+  </div>
+</div>
 <script>
   const user = JSON.parse(localStorage.getItem('wc_user'));
 
@@ -362,6 +380,70 @@
     // IMPORTANTE: ajustá la ruta si hace falta
     window.location.href = '../login/index.html';
   });
+</script>
+<script>
+  function openCreateComercialModal() {
+    document.getElementById('createComercialModal').style.display = 'flex';
+  }
+
+  function closeCreateComercialModal() {
+    document.getElementById('createComercialModal').style.display = 'none';
+    document.getElementById('comercial-nombre').value = '';
+    document.getElementById('comercial-email').value = '';
+    document.getElementById('comercial-telefono').value = '';
+  }
+
+  async function createComercial() {
+    const btn = document.getElementById('createComercialConfirm');
+    const nombre = document.getElementById('comercial-nombre').value.trim();
+    const email = document.getElementById('comercial-email').value.trim();
+    const telefono = document.getElementById('comercial-telefono').value.trim();
+
+    if (!nombre) {
+      showToast('El nombre es obligatorio');
+      return;
+    }
+
+    const token = localStorage.getItem('wc_token');
+
+    btn.disabled = true;
+    btn.textContent = 'Creando...';
+
+    try {
+      const res = await fetch(`${CONFIG.API_URL}/api/comerciales`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ nombre, email, telefono })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Error creando comercial');
+      }
+
+      showToast('Comercial creado');
+      closeCreateComercialModal();
+    } catch (e) {
+      showToast(e.message || 'Error de red');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Crear comercial';
+    }
+  }
+
+  function showToast(text, timeout = 3000) {
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.style.display = 'block';
+    toast.setAttribute('aria-hidden', 'false');
+    setTimeout(() => {
+      toast.style.display = 'none';
+      toast.setAttribute('aria-hidden', 'true');
+    }, timeout);
+  }
 </script>
 <script src="../../config.js"></script>
 <script src="./script.js"></script>
