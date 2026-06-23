@@ -14,11 +14,11 @@ export class Visit {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  leadId!: string;
+  @Column({ nullable: true })
+  leadId?: string;
 
-  @Column()
-  adminId!: string;
+  @Column({ nullable: true })
+  adminId?: string;
 
   @Column({ nullable: true })
   comercialId?: string;
