@@ -1,65 +1,53 @@
-export type LeadStatus =
-  | 'PENDIENTE'
-  | 'MODIFICADA'
-  | 'EN_OFERTA'
-  | 'CONCERTADA'
-  | 'REALIZADA'
-  | 'BLOQUEADA'
-  | 'CANCELADA'
-  | 'NO_SE_PRESENTA';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 
-import { Entity, PrimaryColumn, Column } from "typeorm";
+export enum LeadState {
+  LEAD_NUEVO = 'LEAD_NUEVO',
+  VISITA_AGENDADA = 'VISITA_AGENDADA',
+  VISITA_CANCELADA = 'VISITA_CANCELADA',
+  VISITA_MODIFICADA = 'VISITA_MODIFICADA',
+  PENDIENTE = 'PENDIENTE',
+  SEGUIMIENTO = 'SEGUIMIENTO',
+  INTENCION_OFERTA = 'INTENCION_OFERTA',
+  OFERTA_REALIZADA = 'OFERTA_REALIZADA',
+  VENDIDO = 'VENDIDO',
+}
 
-@Entity()
+@Entity('leads')
 export class Lead {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
-  ref!: string;
-
-  @Column()
-  cliente!: string;
-
-  @Column()
-  inmueble!: string;
-
-  @Column()
-  comercial!: string;
-
-  @Column()
-  fecha!: string;
-
-  @Column()
-  hora!: string;
-
-  @Column()
-  estado!: LeadStatus;
+  adminId!: string;
 
   @Column({ nullable: true })
-  source?: string;
+  propertyId?: number;
+
+  @Column({ nullable: true })
+  comercialId?: string;
+
+  @Column()
+  nombre!: string;
+
+  @Column({ nullable: true })
+  email?: string;
 
   @Column({ nullable: true })
   phone?: string;
 
   @Column({ nullable: true })
-  email?: string;
-
-  @Column({ default: false })
-  questionnaire!: boolean;
-
-  @Column({ type: "text", nullable: true, default: null })
-  offer?: string | null;
-
-  @Column({ type: "text", nullable: true, default: null })
-  sourceUrl?: string | null;
+  source?: string;
 
   @Column({ nullable: true })
-  publicId?: string;
+  sourceUrl?: string;
 
-  @Column()
-  createdAt!: string;
+  @Column({
+    type: 'enum',
+    enum: LeadState,
+    default: LeadState.LEAD_NUEVO,
+  })
+  estado!: LeadState;
 
-  @Column({ nullable: false })
-  adminId!: string;
+  @CreateDateColumn()
+  createdAt!: Date;
 }

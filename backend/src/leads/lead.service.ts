@@ -1,49 +1,75 @@
-import { leadRepository } from './infrastructure/lead.repository';
+import { AppDataSource } from '../config/data-source';
+import { Lead, LeadState } from './domain/lead.entity';
+import { LeadStateHistory } from './domain/lead-state-history.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import { Lead } from './domain/lead.entity';
+
+const repo = () => AppDataSource.getRepository(Lead);
+const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
 
 export const leadService = {
   getAll: async (adminId: string): Promise<Lead[]> => {
-    return await leadRepository.findAll(adminId);
+    return await repo().find({ where: { adminId } });
+  },
+
+  getById: async (id: string): Promise<Lead | null> => {
+    return await repo().findOne({ where: { id } });
   },
 
   create: async (data: CreateLeadDto): Promise<Lead> => {
-    if (!data.ref || !data.cliente || !data.comercial) {
-      throw new Error('Missing required fields');
-    }
+    if (!data.nombre) throw new Error('nombre es requerido');
 
-    const newLead: Lead = {
-      id: Date.now().toString(),
-      ref: data.ref,
-      cliente: data.cliente,
-      inmueble: data.inmueble,
-      comercial: data.comercial,
-      fecha: data.fecha,
-      hora: data.hora,
-      estado: data.estado,
-
-      source: data.source,
-      phone: data.phone,
+    const lead = repo().create({
+      adminId: data.adminId,
+      propertyId: data.propertyId,
+      comercialId: data.comercialId,
+      nombre: data.nombre,
       email: data.email,
+      phone: data.phone,
+      source: data.source,
+      sourceUrl: data.sourceUrl,
+      estado: LeadState.LEAD_NUEVO,
+    });
 
-      questionnaire: data.questionnaire ?? false,
-      offer: data.offer ?? null,
-      sourceUrl: data.sourceUrl ?? null,
-      publicId: data.publicId,
+    const saved = await repo().save(lead);
 
-      createdAt: new Date().toISOString(),
+    await historyRepo().save(historyRepo().create({
+      leadId: saved.id,
+      fromState: undefined,
+      toState: LeadState.LEAD_NUEVO,
+      changedBy: data.adminId,
+    }));
 
-      adminId: data.adminId
-    };
-
-    return await leadRepository.create(newLead);
+    return saved;
   },
 
-  update: async (id: string, data: Partial<CreateLeadDto>): Promise<Lead> => {
-    return await leadRepository.update(id, data);
+  changeState: async (id: string, newState: LeadState, userId: string): Promise<Lead> => {
+    const lead = await repo().findOne({ where: { id } });
+    if (!lead) throw new Error('Lead no encontrado');
+
+    const fromState = lead.estado;
+    lead.estado = newState;
+    const updated = await repo().save(lead);
+
+    await historyRepo().save(historyRepo().create({
+      leadId: id,
+      fromState,
+      toState: newState,
+      changedBy: userId,
+    }));
+
+    return updated;
+  },
+
+  update: async (id: string, data: Partial<CreateLeadDto>): Promise<Lead | null> => {
+    await repo().update(id, data as any);
+    return await repo().findOne({ where: { id } });
   },
 
   remove: async (id: string): Promise<void> => {
-    return await leadRepository.delete(id);
-  }
+    await repo().delete(id);
+  },
+
+  getHistory: async (leadId: string): Promise<LeadStateHistory[]> => {
+    return await historyRepo().find({ where: { leadId } });
+  },
 };

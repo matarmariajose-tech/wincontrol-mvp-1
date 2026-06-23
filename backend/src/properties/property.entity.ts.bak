@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('properties')
+@Entity()
 export class Property {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -23,21 +23,6 @@ export class Property {
   @Column({ nullable: true })
   sourceUrl!: string;
 
-  @Column({ nullable: true })
+  @Column()
   source!: string;
-
-  @Column({ nullable: true })
-  adminId?: string;
-
-  @Column({ nullable: true })
-  comercialId?: string;
-
-  @Column({ nullable: true })
-  address?: string;
-
-  @Column({ nullable: true })
-  description?: string;
-
-  @Column({ type: 'int', nullable: true, default: 1 })
-  category!: number;
 }

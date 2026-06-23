@@ -1,21 +1,13 @@
-import { LeadStatus } from '../domain/lead.entity';
+import { LeadState } from '../domain/lead.entity';
 
 export interface CreateLeadDto {
-  ref: string;
-  cliente: string;
-  inmueble: string;
-  comercial: string;
-  fecha: string;
-  hora: string;
-  estado: LeadStatus;
-
-  phone?: string;
-  email?: string;
-  source?: string;
-  questionnaire?: boolean;
-  offer?: string | null;
-  sourceUrl?: string | null;
-  createdAt?: string;
-  publicId?: string;
   adminId: string;
+  propertyId?: number;
+  comercialId?: string;
+  nombre: string;
+  email?: string;
+  phone?: string;
+  source?: string;
+  sourceUrl?: string;
+  estado?: LeadState;
 }

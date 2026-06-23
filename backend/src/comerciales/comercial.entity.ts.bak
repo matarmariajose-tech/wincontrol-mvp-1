@@ -13,7 +13,4 @@ export class Comercial {
 
   @Column({ nullable: true })
   telefono?: string;
-
-  @Column({ nullable: true })
-  adminId?: string;
 }

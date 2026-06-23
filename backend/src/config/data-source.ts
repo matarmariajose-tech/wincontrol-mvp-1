@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { Visit } from "../visits/domain/visit.entity";
 import { User } from "../users/user.entity";
 import { Lead } from "../leads/domain/lead.entity";
+import { LeadStateHistory } from "../leads/domain/lead-state-history.entity";
 import { Property } from "../properties/property.entity";
 import { Comercial } from '../comerciales/comercial.entity';
 
@@ -23,5 +24,5 @@ export const AppDataSource = new DataSource({
       }),
   synchronize: true,
   logging: false,
-  entities: [User, Visit, Lead, Property, Comercial],
+  entities: [User, Visit, Lead, LeadStateHistory, Property, Comercial],
 });

@@ -1,100 +1,107 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const FROM_EMAIL = 'Wincontrol <visitas@winallcontrol.com>';
 
-export async function sendVisitConfirmation({
+const getResend = () => {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || key === 're_placeholder') {
+    console.warn('RESEND_API_KEY no configurada — emails desactivados');
+    return null;
+  }
+  return new Resend(key);
+};
+
+export async function sendLeadWelcome({
   toEmail,
   toName,
-  comercial,
-  comercialEmail,
-  comercialPhone,
-  fecha,
-  hora,
   inmueble,
-  ref,
+  comercial,
+  comercialPhone,
+  agendaUrl,
 }: {
   toEmail: string;
   toName: string;
-  comercial: string;
-  comercialEmail?: string;
-  comercialPhone?: string;
-  fecha: string;
-  hora: string;
   inmueble: string;
-  ref: string;
+  comercial: string;
+  comercialPhone?: string;
+  agendaUrl?: string;
 }) {
+  const resend = getResend();
+  if (!resend) return;
+
   try {
-    const data = await resend.emails.send({
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: toEmail,
+      subject: `Tu ficha del inmueble · ${inmueble}`,
+      html: `
+        <h2>Hola ${toName},</h2>
+        <p>Gracias por tu interés en <strong>${inmueble}</strong>.</p>
+        <p>Tu comercial asignado es <strong>${comercial}</strong>${comercialPhone ? ` · ${comercialPhone}` : ''}.</p>
+        ${agendaUrl ? `<p><a href="${agendaUrl}" style="background:#000;color:#fff;padding:12px 24px;text-decoration:none;border-radius:4px;">Agenda tu visita aquí</a></p>` : ''}
+        <p>Saludos,<br/>El equipo de Wincontrol</p>
+      `,
+    });
+  } catch (error) {
+    console.error('Error enviando email al lead:', error);
+  }
+}
+
+export async function sendVisitConfirmation({
+  toEmail, toName, comercial, comercialPhone, fecha, hora, inmueble, ref,
+}: {
+  toEmail: string; toName: string; comercial: string;
+  comercialPhone?: string; fecha: string; hora: string; inmueble: string; ref: string;
+}) {
+  const resend = getResend();
+  if (!resend) return;
+
+  try {
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: toEmail,
       subject: `Confirmación de visita · ${ref}`,
       html: `
         <h2>Confirmación de visita</h2>
-        <p>Hola <strong>${toName}</strong>,</p>
-        <p>Tu visita ha sido registrada con los siguientes datos:</p>
+        <p>Hola <strong>${toName}</strong>, tu visita está confirmada:</p>
         <ul>
           <li><strong>Inmueble:</strong> ${inmueble}</li>
-          <li><strong>Referencia:</strong> ${ref}</li>
-          <li><strong>Fecha:</strong> ${fecha}</li>
-          <li><strong>Hora:</strong> ${hora}</li>
-          <li><strong>Comercial asignado:</strong> ${comercial}</li>
-          ${comercialEmail ? `<li><strong>Email del comercial:</strong> ${comercialEmail}</li>` : ''}
-          ${comercialPhone ? `<li><strong>Teléfono del comercial:</strong> ${comercialPhone}</li>` : ''}
+          <li><strong>Fecha:</strong> ${fecha} · ${hora}</li>
+          <li><strong>Comercial:</strong> ${comercial}${comercialPhone ? ` · ${comercialPhone}` : ''}</li>
         </ul>
         <p>Saludos,<br/>El equipo de Wincontrol</p>
       `,
     });
-    console.log('Email confirmación enviado:', data);
   } catch (error) {
     console.error('Error enviando confirmación:', error);
   }
 }
 
 export async function sendVisitNotificationToComercial({
-  toEmail,
-  comercial,
-  clienteNombre,
-  clienteEmail,
-  clientePhone,
-  fecha,
-  hora,
-  inmueble,
-  ref,
+  toEmail, comercial, clienteNombre, clientePhone, fecha, hora, inmueble, ref,
 }: {
-  toEmail: string;
-  comercial: string;
-  clienteNombre: string;
-  clienteEmail?: string;
-  clientePhone?: string;
-  fecha: string;
-  hora: string;
-  inmueble: string;
-  ref: string;
+  toEmail: string; comercial: string; clienteNombre: string;
+  clientePhone?: string; fecha: string; hora: string; inmueble: string; ref: string;
 }) {
+  const resend = getResend();
+  if (!resend) return;
+
   try {
-    const data = await resend.emails.send({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: toEmail,
       subject: `Nueva visita asignada · ${ref}`,
       html: `
         <h2>Nueva visita asignada</h2>
-        <p>Hola <strong>${comercial}</strong>,</p>
-        <p>Se te ha asignado una nueva visita:</p>
+        <p>Hola <strong>${comercial}</strong>, tienes una nueva visita:</p>
         <ul>
-          <li><strong>Cliente:</strong> ${clienteNombre}</li>
-          ${clienteEmail ? `<li><strong>Email del cliente:</strong> ${clienteEmail}</li>` : ''}
-          ${clientePhone ? `<li><strong>Teléfono del cliente:</strong> ${clientePhone}</li>` : ''}
+          <li><strong>Cliente:</strong> ${clienteNombre}${clientePhone ? ` · ${clientePhone}` : ''}</li>
           <li><strong>Inmueble:</strong> ${inmueble}</li>
-          <li><strong>Referencia:</strong> ${ref}</li>
-          <li><strong>Fecha:</strong> ${fecha}</li>
-          <li><strong>Hora:</strong> ${hora}</li>
+          <li><strong>Fecha:</strong> ${fecha} · ${hora}</li>
         </ul>
         <p>Saludos,<br/>El equipo de Wincontrol</p>
       `,
     });
-    console.log('Email comercial enviado:', data);
   } catch (error) {
     console.error('Error enviando email al comercial:', error);
   }
