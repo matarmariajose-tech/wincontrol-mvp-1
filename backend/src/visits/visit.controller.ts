@@ -1,64 +1,53 @@
-import { RequestHandler } from 'express';
+import { Request, Response } from 'express';
 import { visitService } from './visit.service';
 
-export const getVisits: RequestHandler = async (req, res) => {
-  try {
-    const adminId = (req as any).user.id;
+export const visitController = {
+  getAll: async (req: Request, res: Response) => {
+    const adminId = String((req as any).user?.id);
     res.json(await visitService.getAll(adminId));
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching visits' });
-  }
-};
+  },
 
-export const getVisitById: RequestHandler = async (req, res) => {
-  try {
-    const visit = await visitService.getById(String(req.params.id));
-    if (!visit) return res.status(404).json({ error: 'No encontrada' });
-    res.json(visit);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching visit' });
-  }
-};
+  getByLead: async (req: Request, res: Response) => {
+    res.json(await visitService.getByLead(String(req.params.leadId)));
+  },
 
-export const createVisit: RequestHandler = async (req, res) => {
-  try {
-    const adminId = (req as any).user.id;
-    const result = await visitService.create({ ...req.body, adminId });
-    if (!result.ok) return res.status(409).json({ error: result.error });
-    res.status(201).json(result.visit);
-  } catch (error) {
-    res.status(500).json({ error: 'Error creating visit' });
-  }
-};
-
-export const updateVisit: RequestHandler = async (req, res) => {
-  try {
-    const result = await visitService.update(String(req.params.id), req.body);
-    if (!result.ok) {
-      return res
-        .status(result.error === 'Visita no encontrada.' ? 404 : 409)
-        .json({ error: result.error });
+  create: async (req: Request, res: Response) => {
+    try {
+      const adminId = String((req as any).user?.id);
+      res.status(201).json(await visitService.create({ ...req.body, adminId }));
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
     }
-    res.json(result.visit);
-  } catch (error) {
-    res.status(500).json({ error: 'Error updating visit' });
-  }
-};
+  },
 
-export const deleteVisit: RequestHandler = async (req, res) => {
-  try {
-    const deleted = await visitService.delete(String(req.params.id));
-    if (!deleted) return res.status(404).json({ error: 'No encontrada' });
+  update: async (req: Request, res: Response) => {
+    try {
+      res.json(await visitService.update(String(req.params.id), req.body));
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  },
+
+  cancel: async (req: Request, res: Response) => {
+    try {
+      const adminId = String((req as any).user?.id);
+      res.json(await visitService.cancel(String(req.params.id), adminId));
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  },
+
+  complete: async (req: Request, res: Response) => {
+    try {
+      const adminId = String((req as any).user?.id);
+      res.json(await visitService.complete(String(req.params.id), adminId));
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  },
+
+  remove: async (req: Request, res: Response) => {
+    await visitService.remove(String(req.params.id));
     res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: 'Error deleting visit' });
-  };
-};
-
-export const getAllVisitsAdmin: RequestHandler = async (req, res) => {
-  try {
-    res.json(await visitService.getAllAdmin());
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching admin visits' });
-  }
+  },
 };

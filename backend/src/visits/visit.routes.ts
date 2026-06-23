@@ -1,15 +1,16 @@
 import { Router } from 'express';
-import { getVisits, getVisitById, createVisit, updateVisit, deleteVisit, getAllVisitsAdmin } from './visit.controller';
+import { visitController } from './visit.controller';
 import { authMiddleware } from '../auth/auth.middleware';
- 
-const router = Router();
 
+const router = Router();
 router.use(authMiddleware);
-router.get('/',      getVisits);
-router.get('/admin/all', getAllVisitsAdmin);
-router.get('/:id',   getVisitById);
-router.post('/',     createVisit);
-router.patch('/:id', updateVisit);
-router.delete('/:id',deleteVisit);
- 
+
+router.get('/', visitController.getAll);
+router.get('/lead/:leadId', visitController.getByLead);
+router.post('/', visitController.create);
+router.put('/:id', visitController.update);
+router.patch('/:id/cancel', visitController.cancel);
+router.patch('/:id/complete', visitController.complete);
+router.delete('/:id', visitController.remove);
+
 export default router;

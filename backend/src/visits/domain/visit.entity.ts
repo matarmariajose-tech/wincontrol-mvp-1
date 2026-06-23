@@ -1,14 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 export enum VisitStatus {
   PENDIENTE = 'PENDIENTE',
-  MODIFICADA = 'MODIFICADA',
-  EN_OFERTA = 'EN_OFERTA',
-  CONCERTADA = 'CONCERTADA',
+  CONFIRMADA = 'CONFIRMADA',
   REALIZADA = 'REALIZADA',
-  BLOQUEADA = 'BLOQUEADA',
   CANCELADA = 'CANCELADA',
   NO_SE_PRESENTA = 'NO_SE_PRESENTA',
+  MODIFICADA = 'MODIFICADA',
 }
 
 @Entity('visits')
@@ -17,22 +15,16 @@ export class Visit {
   id!: string;
 
   @Column()
-  ref!: string;
+  leadId!: string;
 
   @Column()
-  inmueble!: string;
+  adminId!: string;
 
   @Column({ nullable: true })
-  cliente?: string;
+  comercialId?: string;
 
   @Column({ nullable: true })
-  clienteEmail?: string;
-
-  @Column({ nullable: true })
-  clientePhone?: string;
-
-  @Column()
-  comercial!: string;
+  propertyId?: number;
 
   @Column({ type: 'date' })
   fecha!: string;
@@ -48,8 +40,8 @@ export class Visit {
   estado!: VisitStatus;
 
   @Column({ nullable: true })
-  publicId?: string;
+  notas?: string;
 
-  @Column({ nullable: true })
-  adminId?: string;
+  @CreateDateColumn()
+  createdAt!: Date;
 }

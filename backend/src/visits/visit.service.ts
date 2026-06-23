@@ -1,99 +1,55 @@
-import { visitRepository } from './infrastructure/visit.repository';
-import { CreateVisitDto } from './dto/create-visit.dto';
-import { Visit } from './domain/visit.entity';
-import { sendVisitConfirmation, sendVisitNotificationToComercial } from '../mail/mailer';
 import { AppDataSource } from '../config/data-source';
-import { Comercial } from '../comerciales/comercial.entity';
+import { Visit, VisitStatus } from './domain/visit.entity';
+import { Lead, LeadState } from '../leads/domain/lead.entity';
+import { LeadStateHistory } from '../leads/domain/lead-state-history.entity';
 
-const BLOCKING_STATES = new Set(['EN_OFERTA', 'REALIZADA', 'BLOQUEADA', 'CONCERTADA']);
+const repo = () => AppDataSource.getRepository(Visit);
+const leadRepo = () => AppDataSource.getRepository(Lead);
+const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
+
+const updateLeadState = async (leadId: string, toState: LeadState, changedBy: string) => {
+  const lead = await leadRepo().findOne({ where: { id: leadId } });
+  if (!lead) return;
+  const fromState = lead.estado;
+  lead.estado = toState;
+  await leadRepo().save(lead);
+  await historyRepo().save(historyRepo().create({ leadId, fromState, toState, changedBy }));
+};
 
 export const visitService = {
-  getAll: async (adminId: string): Promise<Visit[]> => {
-    return await visitRepository.findAll(adminId);
+  getAll: async (adminId: string) => repo().find({ where: { adminId } }),
+
+  getByLead: async (leadId: string) => repo().find({ where: { leadId } }),
+
+  create: async (data: Partial<Visit> & { adminId: string; leadId: string }) => {
+    if (!data.fecha || !data.hora) throw new Error('fecha y hora son requeridas');
+    const saved = await repo().save(repo().create({ ...data, estado: VisitStatus.PENDIENTE }));
+    await updateLeadState(data.leadId, LeadState.VISITA_AGENDADA, data.adminId);
+    return saved;
   },
 
-  getById: async (id: string): Promise<Visit | null> => {
-    return await visitRepository.findById(id);
+  update: async (id: string, data: Partial<Visit>) => {
+    await repo().update(id, data);
+    return repo().findOne({ where: { id } });
   },
 
-  create: async (data: CreateVisitDto): Promise<{ ok: boolean; error?: string; visit?: Visit }> => {
-    if (BLOCKING_STATES.has(data.estado)) {
-      const all = await visitRepository.findAll(data.adminId!);
-      const conflict = all.some(
-        v => v.fecha === data.fecha && v.hora === data.hora && BLOCKING_STATES.has(v.estado)
-      );
-      if (conflict) {
-        return { ok: false, error: 'Slot bloqueado: ya existe una visita en ese horario.' };
-      }
-    }
-
-    const visit = await visitRepository.create(data);
-
-    const repo = AppDataSource.getRepository(Comercial);
-    const comercialData = await repo.findOneBy({ nombre: data.comercial });
-
-    if (data.clienteEmail) {
-      try {
-        await sendVisitConfirmation({
-          toEmail:        data.clienteEmail,
-          toName:         data.cliente,
-          comercial:      data.comercial,
-          comercialEmail: comercialData?.email,
-          comercialPhone: comercialData?.telefono,
-          fecha:          data.fecha,
-          hora:           data.hora,
-          inmueble:       data.inmueble,
-          ref:            data.ref,
-        });
-      } catch (err) {
-        console.error('Error enviando mail al cliente:', err);
-      }
-    }
-
-    try {
-      if (comercialData?.email) {
-        await sendVisitNotificationToComercial({
-          toEmail:       comercialData.email,
-          comercial:     data.comercial,
-          clienteNombre: data.cliente,
-          clienteEmail:  data.clienteEmail,
-          clientePhone:  data.clientePhone,
-          fecha:         data.fecha,
-          hora:          data.hora,
-          inmueble:      data.inmueble,
-          ref:           data.ref,
-        });
-      }
-    } catch (err) {
-      console.error('Error enviando mail al comercial:', err);
-    }
-
-    return { ok: true, visit };
+  cancel: async (id: string, adminId: string) => {
+    const visit = await repo().findOne({ where: { id } });
+    if (!visit) throw new Error('Visita no encontrada');
+    visit.estado = VisitStatus.CANCELADA;
+    const saved = await repo().save(visit);
+    await updateLeadState(visit.leadId, LeadState.VISITA_CANCELADA, adminId);
+    return saved;
   },
 
-  update: async (id: string, changes: Partial<Visit>): Promise<{ ok: boolean; error?: string; visit?: Visit }> => {
-    const current = await visitRepository.findById(id);
-    if (!current) return { ok: false, error: 'Visita no encontrada.' };
-
-    if (changes.estado === 'MODIFICADA' && changes.fecha && changes.hora) {
-      const all = await visitRepository.findAll(current.adminId!);
-      const conflict = all.some(
-        v => v.id !== id && v.fecha === changes.fecha && v.hora === changes.hora && BLOCKING_STATES.has(v.estado)
-      );
-      if (conflict) {
-        return { ok: false, error: 'Slot bloqueado: no puedes mover la visita a ese horario.' };
-      }
-    }
-
-    const visit = await visitRepository.update(id, changes);
-    return { ok: true, visit: visit! };
+  complete: async (id: string, adminId: string) => {
+    const visit = await repo().findOne({ where: { id } });
+    if (!visit) throw new Error('Visita no encontrada');
+    visit.estado = VisitStatus.REALIZADA;
+    const saved = await repo().save(visit);
+    await updateLeadState(visit.leadId, LeadState.PENDIENTE, adminId);
+    return saved;
   },
 
-  delete: async (id: string): Promise<boolean> => {
-    return await visitRepository.delete(id);
-  },
-
-  getAllAdmin: async (): Promise<Visit[]> => {
-    return await visitRepository.findAllAdmin();
-  },
+  remove: async (id: string) => repo().delete(id),
 };
