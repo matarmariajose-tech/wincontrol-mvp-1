@@ -21,10 +21,10 @@ export const visitService = {
 
   getByLead: async (leadId: string) => repo().find({ where: { leadId } }),
 
-  create: async (data: Partial<Visit> & { adminId: string; leadId: string }) => {
+  create: async (data: Partial<Visit> & { adminId: string; leadId?: string }) => {
     if (!data.fecha || !data.hora) throw new Error('fecha y hora son requeridas');
     const saved = await repo().save(repo().create({ ...data, estado: VisitStatus.PENDIENTE }));
-    await updateLeadState(data.leadId, LeadState.VISITA_AGENDADA, data.adminId);
+    if (saved.leadId) await updateLeadState(saved.leadId, LeadState.VISITA_AGENDADA, data.adminId);
     return saved;
   },
 
@@ -38,7 +38,7 @@ export const visitService = {
     if (!visit) throw new Error('Visita no encontrada');
     visit.estado = VisitStatus.CANCELADA;
     const saved = await repo().save(visit);
-    await updateLeadState(visit.leadId, LeadState.VISITA_CANCELADA, adminId);
+    if (visit.leadId) await updateLeadState(visit.leadId, LeadState.VISITA_CANCELADA, adminId);
     return saved;
   },
 
@@ -47,7 +47,7 @@ export const visitService = {
     if (!visit) throw new Error('Visita no encontrada');
     visit.estado = VisitStatus.REALIZADA;
     const saved = await repo().save(visit);
-    await updateLeadState(visit.leadId, LeadState.PENDIENTE, adminId);
+    if (visit.leadId) await updateLeadState(visit.leadId, LeadState.PENDIENTE, adminId);
     return saved;
   },
 
