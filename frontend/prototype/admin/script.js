@@ -20,7 +20,7 @@ const BLOCKING_STATES = new Set([
   STATUS.CONCERTADA
 ]);
 
-const AGENTS = [
+const AGENTS_HARDCODED = [
   { name: "Sara López", online: true },
   { name: "Toni Ruiz", online: true },
   { name: "Marc Puig", online: false },
@@ -1064,12 +1064,12 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
     state.rows = data.map(v => ({
       id: v.id,
       ref: v.ref,
-      client: v.cliente,
-      property: v.inmueble,
-      agent: v.comercial,
+      client: v.nombre || v.cliente,
+      property: v.inmueble || "",
+      agent: v.comercialId || v.comercial || "",
       fecha: v.fecha,
       hora: v.hora,
-      status: v.estado,
+      status: v.estado || "LEAD_NUEVO",
       source: v.source || "—",
       phone: v.phone || "",
       email: v.email || "",
@@ -1098,12 +1098,12 @@ async function loadRowsFromAPI() {
   state.rows = data.map(v => ({
     id: v.id,
     ref: v.ref,
-    client: v.cliente,
-    property: v.inmueble,
-    agent: v.comercial,
+    client: v.nombre || v.cliente,
+    property: v.inmueble || "",
+    agent: v.comercialId || v.comercial || "",
     fecha: v.fecha,
     hora: v.hora,
-    status: v.estado,
+    status: v.estado || "LEAD_NUEVO",
     source: v.source || "",
     phone: v.phone || "",
     email: v.email || "",
