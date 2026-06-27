@@ -2,6 +2,7 @@ import { AppDataSource } from '../config/data-source';
 import { Lead, LeadState } from './domain/lead.entity';
 import { LeadStateHistory } from './domain/lead-state-history.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
+import { sendLeadWelcome } from '../mail/mailer';
 
 const repo = () => AppDataSource.getRepository(Lead);
 const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
@@ -39,24 +40,30 @@ export const leadService = {
       changedBy: data.adminId,
     }));
 
+    if (saved.email) {
+      sendLeadWelcome({
+        toEmail: saved.email,
+        toName: saved.nombre,
+        inmueble: 'Tu inmueble de interés',
+        comercial: 'Tu comercial asignado',
+      }).catch(err => console.error('Email error:', err));
+    }
+
     return saved;
   },
 
   changeState: async (id: string, newState: LeadState, userId: string): Promise<Lead> => {
     const lead = await repo().findOne({ where: { id } });
     if (!lead) throw new Error('Lead no encontrado');
-
     const fromState = lead.estado;
     lead.estado = newState;
     const updated = await repo().save(lead);
-
     await historyRepo().save(historyRepo().create({
       leadId: id,
       fromState,
       toState: newState,
       changedBy: userId,
     }));
-
     return updated;
   },
 
