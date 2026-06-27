@@ -23,7 +23,6 @@
         <span id="onlineAdmins">Admin online · 4 comerciales activos</span>
       </div>
 
-      <!-- <button class="btn ghost" id="seedBtn">Reset demo</button> -->
       <div class="user-wrapper">
         <button class="btn ghost" class="user" id="userBtn">
           <div class="avatar" id="userAvatar">AM</div>
@@ -340,10 +339,8 @@
     // Nombre completo
     document.querySelector('.userName').textContent = user.name;
 
-    // Email + role (podés cambiar formato)
     document.querySelector('.userRole').textContent = `${user.email}`;
 
-    // Iniciales (avatar)
     const initials = user.name
       .split(' ')
       .map(word => word[0])
@@ -364,20 +361,17 @@
     dropdown.classList.toggle('show');
   });
 
-  // Click afuera → cerrar dropdown
   document.addEventListener('click', (e) => {
     if (!userBtn.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove('show');
     }
   });
 
-  // Logout
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('wc_token');
     localStorage.removeItem('wc_user');
     localStorage.removeItem('wc_role');
 
-    // IMPORTANTE: ajustá la ruta si hace falta
     window.location.href = '../login/index.html';
   });
 </script>
