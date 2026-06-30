@@ -3,8 +3,12 @@ import { leadService } from './lead.service';
 import { LeadState } from './domain/lead.entity';
 
 export const getLeads = async (req: Request, res: Response) => {
-  const adminId = String((req as any).user?.id);
-  res.json(await leadService.getAll(adminId));
+  const user = (req as any).user;
+  if (user?.role === 'comercial') {
+    res.json(await leadService.getByComercial(String(user.name)));
+  } else {
+    res.json(await leadService.getAll(String(user?.id)));
+  }
 };
 
 export const createLead = async (req: Request, res: Response) => {

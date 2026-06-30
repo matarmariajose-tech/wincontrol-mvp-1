@@ -104,6 +104,10 @@ export const leadService = {
     await repo().delete(id);
   },
 
+  getByComercial: async (comercialId: string): Promise<Lead[]> => {
+    return await repo().find({ where: { comercialId } });
+  },
+
   getHistory: async (leadId: string): Promise<LeadStateHistory[]> => {
     return await historyRepo().find({ where: { leadId } });
   },

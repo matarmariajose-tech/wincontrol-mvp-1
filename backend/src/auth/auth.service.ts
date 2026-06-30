@@ -16,7 +16,7 @@ export const authService = {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const newUser = await authRepository.create({ name, email, password: hashedPassword, role });
 
-    const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: newUser.id, role: newUser.role, name: newUser.name }, JWT_SECRET, { expiresIn: '7d' });
     return { token, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } };
   },
 
@@ -24,13 +24,13 @@ export const authService = {
     if (!email || !password || !role) throw new Error('Missing credentials');
 
     const user = await authRepository.findByEmail(email);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error('Invalid credentials');
     if (user.role !== role) throw new Error('Invalid credentials');
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error('Invalid credentials');
 
-    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
     return { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
   }
 };
