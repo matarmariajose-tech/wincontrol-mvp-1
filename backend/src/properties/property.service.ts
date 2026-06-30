@@ -4,21 +4,20 @@ import { Property } from './property.entity';
 const repo = () => AppDataSource.getRepository(Property);
 
 export const propertyService = {
-  getAll: async (adminId: string) => {
-    return await repo().find({ where: { adminId } });
+  getAll: async (): Promise<Property[]> => {
+    return await repo().find();
   },
-  getById: async (id: number) => {
+
+  getById: async (id: number): Promise<Property | null> => {
     return await repo().findOne({ where: { id } });
   },
-  create: async (data: Partial<Property>) => {
-    const property = repo().create(data);
-    return await repo().save(property);
+
+  getByComercial: async (comercialId: string): Promise<Property[]> => {
+    return await repo().find({ where: { comercialId } });
   },
-  update: async (id: number, data: Partial<Property>) => {
-    await repo().update(id, data);
+
+  assignComercial: async (id: number, comercialId: string): Promise<Property | null> => {
+    await repo().update(id, { comercialId });
     return await repo().findOne({ where: { id } });
   },
-  remove: async (id: number) => {
-    await repo().delete(id);
-  }
 };

@@ -1,19 +1,11 @@
 import { Router } from 'express';
-import { AppDataSource } from '../config/data-source';
-import { Property } from './property.entity';
+import { propertyController } from './property.controller';
+import { authMiddleware } from '../auth/auth.middleware';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-  try {
-    const repo = AppDataSource.getRepository(Property);
-    const properties = await repo.find();
-
-    res.json(properties);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error fetching properties' });
-  }
-});
+router.get('/', authMiddleware, propertyController.getAll);
+router.get('/:id', authMiddleware, propertyController.getById);
+router.patch('/:id/comercial', authMiddleware, propertyController.assignComercial);
 
 export default router;

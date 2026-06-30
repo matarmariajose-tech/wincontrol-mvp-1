@@ -3,26 +3,31 @@ import { propertyService } from './property.service';
 
 export const propertyController = {
   getAll: async (req: Request, res: Response) => {
-    const adminId = (req as any).user?.id;
-    const props = await propertyService.getAll(adminId);
-    res.json(props);
+    try {
+      const properties = await propertyService.getAll();
+      res.json(properties);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching properties' });
+    }
   },
+
   getById: async (req: Request, res: Response) => {
-    const prop = await propertyService.getById(Number(req.params.id));
-    if (!prop) return res.status(404).json({ message: 'Not found' });
-    res.json(prop);
+    try {
+      const property = await propertyService.getById(Number(req.params.id));
+      if (!property) return res.status(404).json({ error: 'Not found' });
+      res.json(property);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching property' });
+    }
   },
-  create: async (req: Request, res: Response) => {
-    const adminId = (req as any).user?.id;
-    const prop = await propertyService.create({ ...req.body, adminId });
-    res.status(201).json(prop);
+
+  assignComercial: async (req: Request, res: Response) => {
+    try {
+      const { comercialId } = req.body;
+      const property = await propertyService.assignComercial(Number(req.params.id), comercialId);
+      res.json(property);
+    } catch (error) {
+      res.status(500).json({ error: 'Error assigning comercial' });
+    }
   },
-  update: async (req: Request, res: Response) => {
-    const prop = await propertyService.update(Number(req.params.id), req.body);
-    res.json(prop);
-  },
-  remove: async (req: Request, res: Response) => {
-    await propertyService.remove(Number(req.params.id));
-    res.status(204).send();
-  }
 };
