@@ -1,11 +1,15 @@
 import { AppDataSource } from '../config/data-source';
 import { Lead, LeadState } from './domain/lead.entity';
 import { LeadStateHistory } from './domain/lead-state-history.entity';
+import { Property } from '../properties/property.entity';
+import { Comercial } from '../comerciales/comercial.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { sendLeadWelcome } from '../mail/mailer';
 
 const repo = () => AppDataSource.getRepository(Lead);
 const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
+const propertyRepo = () => AppDataSource.getRepository(Property);
+const comercialRepo = () => AppDataSource.getRepository(Comercial);
 
 export const leadService = {
   getAll: async (adminId: string): Promise<Lead[]> => {
@@ -41,11 +45,35 @@ export const leadService = {
     }));
 
     if (saved.email) {
+      let inmueble = 'Tu inmueble de interés';
+      let inmuebleUrl: string | undefined;
+      let comercialNombre = 'Tu comercial asignado';
+      let comercialPhone: string | undefined;
+
+      if (saved.propertyId) {
+        const property = await propertyRepo().findOne({ where: { id: saved.propertyId } });
+        if (property) {
+          inmueble = property.title;
+          inmuebleUrl = property.sourceUrl;
+
+          const comercialId = saved.comercialId || property.comercialId;
+          if (comercialId) {
+            const comercial = await comercialRepo().findOne({ where: { nombre: comercialId } });
+            if (comercial) {
+              comercialNombre = comercial.nombre;
+              comercialPhone = comercial.telefono;
+            }
+          }
+        }
+      }
+
       sendLeadWelcome({
         toEmail: saved.email,
         toName: saved.nombre,
-        inmueble: 'Tu inmueble de interés',
-        comercial: 'Tu comercial asignado',
+        inmueble,
+        inmuebleUrl,
+        comercial: comercialNombre,
+        comercialPhone,
       }).catch(err => console.error('Email error:', err));
     }
 
