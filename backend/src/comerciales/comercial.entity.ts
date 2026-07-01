@@ -16,4 +16,10 @@ export class Comercial {
 
   @Column({ nullable: true })
   adminId?: string;
+
+  @Column({ nullable: true })
+  googleAccessToken?: string;
+
+  @Column({ nullable: true })
+  googleRefreshToken?: string;
 }

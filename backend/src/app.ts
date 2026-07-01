@@ -9,6 +9,7 @@ import { AppDataSource } from "./config/data-source";
 import authRoutes from './auth/auth.routes'
 import propertyRoutes from './properties/property.routes';
 import comercialRoutes from './comerciales/comercial.routes'
+import calendarRoutes from './calendar/calendar.routes'
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/visits', visitRoutes);
 app.use('/api/auth', authRoutes)
 app.use('/api/properties', propertyRoutes);
 app.use('/api/comerciales', comercialRoutes);
+app.use('/api/calendar', calendarRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 AppDataSource.initialize()
