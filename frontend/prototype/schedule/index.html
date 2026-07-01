@@ -348,7 +348,7 @@
       container.innerHTML = '<div class="loading"><span class="spinner"></span>Cargando horarios...</div>';
 
       try {
-        const res = await fetch(`${CONFIG.API_URL}/api/calendar/slots/${comercialId}/${selectedDate}`);
+        const res = await fetch(`${CONFIG.API_URL}/api/calendar/slots/${comercialData?.id || comercialId}/${selectedDate}`);
         const data = await res.json();
         renderSlots(data.slots || []);
       } catch {
