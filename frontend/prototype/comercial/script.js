@@ -116,7 +116,7 @@ function render() {
         <strong style="color:#fff">${escapeHTML(lead.nombre)}</strong>
         <div class="muted">${escapeHTML(lead.email || '—')}</div>
       </td>
-      <td>${escapeHTML(lead.source || '—')}</td>
+      <td>${lead.propertyTitle ? `<span style="font-size:12px;color:#fff;font-weight:600;">${escapeHTML(lead.propertyTitle)}</span>` : escapeHTML(lead.source || '—')}</td>
       <td>${escapeHTML(lead.phone || '—')}</td>
       <td>${new Date(lead.createdAt).toLocaleDateString('es-ES')}</td>
       <td>
@@ -135,7 +135,18 @@ async function loadLeads() {
     const res = await fetch(LEADS_API, { headers: authHeaders() });
     const data = await res.json();
     const user = JSON.parse(localStorage.getItem('wc_user') || '{}');
-    state.leads = data.filter(l => l.comercialId === user.name || l.comercialId === user.id);
+    const filtered = data.filter(l => l.comercialId === user.name || l.comercialId === user.id);
+
+    const propRes = await fetch(PROPERTIES_API, { headers: authHeaders() });
+    const props = await propRes.json();
+    const propMap = {};
+    props.forEach(p => propMap[p.id] = p);
+
+    state.leads = filtered.map(l => ({
+      ...l,
+      propertyTitle: l.propertyId && propMap[l.propertyId] ? propMap[l.propertyId].title : null,
+      propertyUrl: l.propertyId && propMap[l.propertyId] ? propMap[l.propertyId].sourceUrl : null,
+    }));
     render();
   } catch (err) {
     showToast('⚠️ Error cargando leads');
@@ -157,15 +168,30 @@ async function openDrawer(id) {
     </div>
     <div class="kv">
       <div class="k">Email</div>
-      <div class="v">${escapeHTML(lead.email || '—')}</div>
+      <div class="v">
+        ${lead.email
+          ? `<a href="mailto:${escapeHTML(lead.email)}" style="color:#7aa2ff">${escapeHTML(lead.email)}</a>`
+          : '—'}
+      </div>
     </div>
     <div class="kv">
       <div class="k">Teléfono</div>
-      <div class="v">${escapeHTML(lead.phone || '—')}</div>
+      <div class="v">
+        ${lead.phone
+          ? `<a href="tel:${escapeHTML(lead.phone)}" style="color:#7aa2ff">${escapeHTML(lead.phone)}</a>`
+          : '—'}
+      </div>
     </div>
     <div class="kv">
-      <div class="k">Fuente</div>
-      <div class="v">${escapeHTML(lead.source || '—')}</div>
+      <div class="k">Inmueble</div>
+      <div class="v">
+        ${lead.propertyTitle
+          ? `<span style="color:#fff;font-weight:600">${escapeHTML(lead.propertyTitle)}</span>`
+          : escapeHTML(lead.source || '—')}
+        ${lead.propertyUrl
+          ? `<a href="${escapeHTML(lead.propertyUrl)}" target="_blank" style="display:block;color:#7aa2ff;font-size:11px;margin-top:3px;">Ver en Idealista →</a>`
+          : ''}
+      </div>
     </div>
     <div class="kv">
       <div class="k">Estado</div>
@@ -176,17 +202,16 @@ async function openDrawer(id) {
       </div>
     </div>
     <div class="kv">
-      <div class="k">URL de origen</div>
-      <div class="v">
-        ${lead.sourceUrl
-          ? `<a class="pill" href="${escapeHTML(lead.sourceUrl)}" target="_blank">${escapeHTML(lead.sourceUrl)}</a>`
-          : '<span class="muted">Sin URL</span>'
-        }
-      </div>
-    </div>
-    <div class="kv">
       <div class="k">Creado</div>
       <div class="v">${new Date(lead.createdAt).toLocaleString('es-ES')}</div>
+    </div>
+    <div class="kv">
+      <div class="k">Acciones rápidas</div>
+      <div class="v" style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${lead.email ? `<a href="mailto:${escapeHTML(lead.email)}" class="btn ghost" style="font-size:12px;padding:6px 12px;">Enviar email</a>` : ''}
+        ${lead.phone ? `<a href="https://wa.me/${lead.phone.replace(/\D/g,'')}" target="_blank" class="btn ghost" style="font-size:12px;padding:6px 12px;">WhatsApp</a>` : ''}
+        <button class="btn ghost" style="font-size:12px;padding:6px 12px;" onclick="window.open('https://www.winallcontrol.com/prototype/schedule/?leadId=${lead.id}&comercialId=${escapeHTML(lead.comercialId || '')}','_blank')">Ver agenda</button>
+      </div>
     </div>
   `;
 }
