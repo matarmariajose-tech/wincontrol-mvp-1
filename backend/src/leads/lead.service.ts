@@ -74,6 +74,7 @@ export const leadService = {
         inmuebleUrl,
         comercial: comercialNombre,
         comercialPhone,
+        agendaUrl: `https://www.winallcontrol.com/prototype/schedule/?leadId=${saved.id}&comercialId=${saved.comercialId || ''}`,
       }).catch(err => console.error('Email error:', err));
     }
 
