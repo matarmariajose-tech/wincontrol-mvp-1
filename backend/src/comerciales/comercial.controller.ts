@@ -12,7 +12,7 @@ export const comercialController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const comercial = await comercialService.getById(req.params.id);
+      const comercial = await comercialService.getById(String(req.params.id));
       if (!comercial) return res.status(404).json({ error: 'Not found' });
       res.json(comercial);
     } catch (e) {
@@ -30,7 +30,7 @@ export const comercialController = {
 
   update: async (req: Request, res: Response) => {
     try {
-      const comercial = await comercialService.update(req.params.id, req.body);
+      const comercial = await comercialService.update(String(req.params.id), req.body);
       if (!comercial) return res.status(404).json({ error: 'Not found' });
       res.json(comercial);
     } catch (e) {
@@ -40,7 +40,7 @@ export const comercialController = {
 
   remove: async (req: Request, res: Response) => {
     try {
-      await comercialService.remove(req.params.id);
+      await comercialService.remove(String(req.params.id));
       res.status(204).send();
     } catch (e) {
       res.status(500).json({ error: 'Error deleting comercial' });
