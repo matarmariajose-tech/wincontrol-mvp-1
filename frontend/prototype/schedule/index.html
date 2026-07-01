@@ -288,13 +288,12 @@
       }
 
       try {
-        const [leadRes, comercialRes] = await Promise.all([
-          fetch(`${CONFIG.API_URL}/api/leads/${leadId}`),
-          fetch(`${CONFIG.API_URL}/api/comerciales/${comercialId}`),
-        ]);
-
+        const leadRes = await fetch(`${CONFIG.API_URL}/api/leads/${leadId}`);
         leadData = await leadRes.json();
-        comercialData = await comercialRes.json();
+
+        const comercialesRes = await fetch(`${CONFIG.API_URL}/api/comerciales`);
+        const comerciales = await comercialesRes.json();
+        comercialData = comerciales.find(c => c.id === comercialId || c.nombre === comercialId);
 
         document.getElementById('leadName').textContent = `Hola ${leadData.nombre}, elige tu horario`;
 
