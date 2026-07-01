@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda tu visita · Winallcontrol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.18), transparent 60%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.10), transparent 55%),
+                  #020617;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 24px;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(37,99,235,.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(37,99,235,.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      animation: fadeDown .6s ease both;
+    }
+    .logo {
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #2563eb, #1b3faa);
+      display: grid; place-items: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 900; font-size: 20px; color: #fff;
+      box-shadow: 0 8px 24px rgba(37,99,235,.35);
+    }
+    .brand-name { font-family: 'Syne', sans-serif; font-weight: 900; font-size: 20px; color: #fff; }
+    .brand-tag { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    .card {
+      width: 100%; max-width: 520px;
+      background: linear-gradient(180deg, rgba(11,18,32,.96), rgba(8,14,28,.92));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      overflow: hidden;
+      animation: fadeUp .6s ease both .1s;
+      position: relative; z-index: 1;
+    }
+
+    .card-header {
+      padding: 28px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .card-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 800;
+      color: #fff; margin-bottom: 6px;
+    }
+    .card-header p { font-size: 13px; color: #64748b; }
+
+    .property-card {
+      margin: 24px 32px 0;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .property-label { font-size: 10px; color: #475569; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    .property-title { font-size: 14px; font-weight: 600; color: #fff; }
+
+    .section { padding: 24px 32px; }
+    .section-title {
+      font-size: 11px; font-weight: 700;
+      color: #64748b; text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 16px;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .date-btn {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.45);
+      cursor: pointer;
+      transition: .2s ease;
+      color: #94a3b8;
+    }
+    .date-btn:hover { border-color: rgba(37,99,235,.4); color: #fff; }
+    .date-btn.selected {
+      border-color: rgba(37,99,235,.6);
+      background: rgba(37,99,235,.15);
+      color: #fff;
+    }
+    .date-btn.disabled { opacity: .3; cursor: not-allowed; }
+    .date-day { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+    .date-num { font-size: 16px; font-weight: 700; }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .slot-btn {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.45);
+      color: #94a3b8;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+      text-align: center;
+    }
+    .slot-btn:hover { border-color: rgba(37,99,235,.4); color: #fff; }
+    .slot-btn.selected {
+      border-color: rgba(37,99,235,.6);
+      background: rgba(37,99,235,.15);
+      color: #fff;
+    }
+    .slot-btn.busy { opacity: .3; cursor: not-allowed; text-decoration: line-through; }
+
+    .no-slots {
+      text-align: center;
+      padding: 24px;
+      color: #475569;
+      font-size: 13px;
+    }
+
+    .confirm-section {
+      padding: 24px 32px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .confirm-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(37,99,235,.45);
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      color: #fff;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .confirm-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,.3); }
+    .confirm-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .comercial-info {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 32px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .comercial-avatar {
+      width: 36px; height: 36px;
+      background: rgba(37,99,235,.15);
+      border: 1px solid rgba(37,99,235,.3);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 700; color: #3b82f6;
+    }
+    .comercial-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .comercial-phone { font-size: 12px; color: #64748b; }
+
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .success-icon {
+      width: 64px; height: 64px;
+      background: rgba(16,185,129,.15);
+      border: 1px solid rgba(16,185,129,.3);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .success-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #64748b; line-height: 1.6; }
+
+    .loading { text-align: center; padding: 32px; color: #64748b; font-size: 13px; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .footer { margin-top: 24px; font-size: 12px; color: #334155; text-align: center; position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="logo">W</div>
+    <div>
+      <div class="brand-name">WINALLCONTROL</div>
+      <div class="brand-tag">Plataforma de gestión comercial</div>
+    </div>
+  </div>
+
+  <div class="card" id="mainCard">
+    <div class="card-header">
+      <h1>Agenda tu visita</h1>
+      <p id="leadName">Cargando información...</p>
+    </div>
+
+    <div id="propertySection" style="display:none">
+      <div class="property-card">
+        <div class="property-label">Inmueble</div>
+        <div class="property-title" id="propertyTitle">—</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Selecciona una fecha</div>
+      <div class="date-grid" id="dateGrid"></div>
+
+      <div class="section-title">Horarios disponibles</div>
+      <div id="slotsContainer"><div class="no-slots">Selecciona una fecha para ver los horarios disponibles</div></div>
+    </div>
+
+    <div class="comercial-info" id="comercialInfo" style="display:none">
+      <div class="comercial-avatar" id="comercialAvatar">—</div>
+      <div>
+        <div class="comercial-name" id="comercialName">—</div>
+        <div class="comercial-phone" id="comercialPhone">—</div>
+      </div>
+    </div>
+
+    <div class="confirm-section">
+      <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmBooking()">
+        Confirmar visita
+      </button>
+    </div>
+
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <div class="success-title">¡Visita confirmada!</div>
+      <div class="success-sub" id="successSub">Tu visita ha sido registrada correctamente. Recibirás un email de confirmación.</div>
+    </div>
+  </div>
+
+  <div class="footer">Winallcontrol · Plataforma de gestión comercial</div>
+
+  <script src="../../config.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const leadId = params.get('leadId');
+    const comercialId = params.get('comercialId');
+
+    let selectedDate = null;
+    let selectedSlot = null;
+    let leadData = null;
+    let comercialData = null;
+
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const workDays = [1, 2, 3, 4, 5]; // Lunes a Viernes
+
+    async function init() {
+      if (!leadId || !comercialId) {
+        document.getElementById('leadName').textContent = 'Link inválido';
+        return;
+      }
+
+      try {
+        const [leadRes, comercialRes] = await Promise.all([
+          fetch(`${CONFIG.API_URL}/api/leads/${leadId}`),
+          fetch(`${CONFIG.API_URL}/api/comerciales/${comercialId}`),
+        ]);
+
+        leadData = await leadRes.json();
+        comercialData = await comercialRes.json();
+
+        document.getElementById('leadName').textContent = `Hola ${leadData.nombre}, elige tu horario`;
+
+        if (leadData.propertyId) {
+          const propRes = await fetch(`${CONFIG.API_URL}/api/properties/${leadData.propertyId}`);
+          const prop = await propRes.json();
+          document.getElementById('propertyTitle').textContent = prop.title;
+          document.getElementById('propertySection').style.display = 'block';
+        }
+
+        if (comercialData) {
+          const iniciales = comercialData.nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+          document.getElementById('comercialAvatar').textContent = iniciales;
+          document.getElementById('comercialName').textContent = comercialData.nombre;
+          document.getElementById('comercialPhone').textContent = comercialData.telefono || 'Sin teléfono';
+          document.getElementById('comercialInfo').style.display = 'flex';
+        }
+
+        renderDates();
+      } catch (err) {
+        document.getElementById('leadName').textContent = 'Error cargando información';
+      }
+    }
+
+    function renderDates() {
+      const grid = document.getElementById('dateGrid');
+      grid.innerHTML = '';
+      const today = new Date();
+
+      for (let i = 1; i <= 14; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        const dayOfWeek = d.getDay();
+        if (!workDays.includes(dayOfWeek)) continue;
+
+        const btn = document.createElement('button');
+        btn.className = 'date-btn';
+        btn.innerHTML = `<div class="date-day">${days[dayOfWeek]}</div><div class="date-num">${d.getDate()}</div>`;
+        btn.onclick = () => selectDate(d, btn);
+        grid.appendChild(btn);
+      }
+    }
+
+    async function selectDate(date, btn) {
+      document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedDate = date.toISOString().slice(0, 10);
+      selectedSlot = null;
+      document.getElementById('confirmBtn').disabled = true;
+
+      const container = document.getElementById('slotsContainer');
+      container.innerHTML = '<div class="loading"><span class="spinner"></span>Cargando horarios...</div>';
+
+      try {
+        const res = await fetch(`${CONFIG.API_URL}/api/calendar/slots/${comercialId}/${selectedDate}`);
+        const data = await res.json();
+        renderSlots(data.slots || []);
+      } catch {
+        container.innerHTML = '<div class="no-slots">No se pudieron cargar los horarios</div>';
+      }
+    }
+
+    function renderSlots(slots) {
+      const container = document.getElementById('slotsContainer');
+      if (!slots.length) {
+        container.innerHTML = '<div class="no-slots">No hay horarios disponibles para este día</div>';
+        return;
+      }
+
+      container.innerHTML = '<div class="slots-grid">' +
+        slots.map(slot => `<button class="slot-btn" onclick="selectSlot('${slot}', this)">${slot}</button>`).join('') +
+        '</div>';
+    }
+
+    function selectSlot(slot, btn) {
+      document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSlot = slot;
+      document.getElementById('confirmBtn').disabled = false;
+    }
+
+    async function confirmBooking() {
+      if (!selectedDate || !selectedSlot) return;
+
+      const btn = document.getElementById('confirmBtn');
+      btn.innerHTML = '<span class="spinner"></span>Confirmando...';
+      btn.disabled = true;
+
+      try {
+        await fetch(`${CONFIG.API_URL}/api/visits`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            leadId,
+            comercialId,
+            fecha: selectedDate,
+            hora: selectedSlot,
+            adminId: leadData?.adminId,
+          }),
+        });
+
+        document.querySelector('.card-header').style.display = 'none';
+        document.getElementById('propertySection').style.display = 'none';
+        document.querySelector('.section').style.display = 'none';
+        document.getElementById('comercialInfo').style.display = 'none';
+        document.querySelector('.confirm-section').style.display = 'none';
+
+        const success = document.getElementById('successScreen');
+        success.style.display = 'flex';
+        document.getElementById('successSub').textContent =
+          `Tu visita para el ${selectedDate} a las ${selectedSlot} ha sido registrada. Recibirás un email de confirmación.`;
+
+      } catch (err) {
+        btn.innerHTML = 'Confirmar visita';
+        btn.disabled = false;
+        alert('Error al confirmar. Inténtalo de nuevo.');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
