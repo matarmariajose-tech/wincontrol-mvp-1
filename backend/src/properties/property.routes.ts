@@ -4,8 +4,10 @@ import { authMiddleware } from '../auth/auth.middleware';
 
 const router = Router();
 
-router.get('/', authMiddleware, propertyController.getAll);
-router.get('/:id', authMiddleware, propertyController.getById);
-router.patch('/:id/comercial', authMiddleware, propertyController.assignComercial);
+router.get('/:id', propertyController.getById);
+
+router.use(authMiddleware);
+router.get('/', propertyController.getAll);
+router.patch('/:id/comercial', propertyController.assignComercial);
 
 export default router;

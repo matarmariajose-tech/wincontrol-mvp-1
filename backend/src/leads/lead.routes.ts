@@ -3,10 +3,11 @@ import { getLeads, createLead, updateLead, deleteLead, changeState, getHistory, 
 import { authMiddleware } from '../auth/auth.middleware';
 
 const router = Router();
-router.use(authMiddleware);
 
-router.get('/', getLeads);
 router.get('/:id', getById);
+
+router.use(authMiddleware);
+router.get('/', getLeads);
 router.post('/', createLead);
 router.put('/:id', updateLead);
 router.delete('/:id', deleteLead);
