@@ -29,10 +29,29 @@ export const calendarService = {
     });
   },
 
+  getDefaultSlots: (date: string): string[] => {
+    const jornadas = [
+      { start: '10:00', end: '14:00' },
+      { start: '16:00', end: '20:00' },
+    ];
+    const available: string[] = [];
+    for (const jornada of jornadas) {
+      let current = new Date(`${date}T${jornada.start}:00`);
+      const end = new Date(`${date}T${jornada.end}:00`);
+      while (current < end) {
+        available.push(current.toTimeString().slice(0, 5));
+        current = new Date(current.getTime() + 60 * 60 * 1000);
+      }
+    }
+    return available;
+  },
+
   getAvailableSlots: async (comercialId: string, date: string): Promise<string[]> => {
     const repo = AppDataSource.getRepository(Comercial);
     const comercial = await repo.findOne({ where: { id: comercialId } });
-    if (!comercial?.googleRefreshToken) return [];
+    if (!comercial?.googleRefreshToken) {
+      return calendarService.getDefaultSlots(date);
+    }
 
     const oauth2Client = getOAuthClient();
     oauth2Client.setCredentials({
