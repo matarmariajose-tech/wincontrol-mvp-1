@@ -388,7 +388,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             leadId,
-            comercialId,
+            comercialId: comercialData?.nombre || comercialId,
+            propertyId: leadData?.propertyId || null,
             fecha: selectedDate,
             hora: selectedSlot,
             adminId: leadData?.adminId,
