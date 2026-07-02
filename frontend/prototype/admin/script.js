@@ -144,48 +144,64 @@ function statusBadge(status) {
 
 function computeStats() {
   const rows = state.rows;
-  const today = todayISO();
 
-  const leads = rows.filter(r => r.status === STATUS.LEAD_NUEVO).length;
-  const visitsToday = rows.filter(r => r.status === STATUS.VISITA_AGENDADA).length;
-  const offers = rows.filter(r => r.status === STATUS.INTENCION_OFERTA || r.status === STATUS.OFERTA_REALIZADA).length;
-  const sla = rows.filter(r => ["orange", "red"].includes(getSlaLevel(r))).length;
-  const vendido = rows.filter(r => r.status === STATUS.VENDIDO).length;
+  const getEstado = r => r.estado || r.status || '';
+
+  const leads = rows.filter(r => getEstado(r) === 'LEAD_NUEVO').length;
+  const agendadas = rows.filter(r => getEstado(r) === 'VISITA_AGENDADA').length;
+  const pendientes = rows.filter(r => getEstado(r) === 'PENDIENTE' || getEstado(r) === 'SEGUIMIENTO').length;
+  const ofertas = rows.filter(r => getEstado(r) === 'INTENCION_OFERTA' || getEstado(r) === 'OFERTA_REALIZADA').length;
+  const vendidos = rows.filter(r => getEstado(r) === 'VENDIDO').length;
+  const canceladas = rows.filter(r => getEstado(r) === 'VISITA_CANCELADA').length;
   const total = rows.length;
-  const conv = total ? Math.round((vendido / total) * 100) : 0;
+  const conv = total ? Math.round((vendidos / total) * 100) : 0;
 
-  $("#statLeads").textContent = leads;
-  $("#statLeadsSub").textContent = `${rows.filter(r => r.source === "Idealista").length} desde Idealista`;
-  $("#statVisitsToday").textContent = visitsToday;
-  $("#statVisitsTodaySub").textContent = `${rows.filter(r => r.status === STATUS.VISITA_MODIFICADA).length} modificadas`;
-  $("#statOffers").textContent = offers;
-  $("#statOffersSub").textContent = `${rows.filter(r => r.status === STATUS.OFERTA_REALIZADA).length} ofertas registradas`;
-  $("#statSla").textContent = sla;
-  $("#statSlaSub").textContent = `${rows.filter(r => getSlaLevel(r) === "red").length} críticas`;
+  $("#statLeads").textContent = total;
+  $("#statLeadsSub").textContent = `${leads} nuevos · ${agendadas} agendadas`;
+  $("#statVisitsToday").textContent = agendadas;
+  $("#statVisitsTodaySub").textContent = `${rows.filter(r => getEstado(r) === 'VISITA_MODIFICADA').length} modificadas`;
+  $("#statOffers").textContent = ofertas;
+  $("#statOffersSub").textContent = `${rows.filter(r => getEstado(r) === 'OFERTA_REALIZADA').length} ofertas registradas`;
+  $("#statSla").textContent = pendientes;
+  $("#statSlaSub").textContent = `${canceladas} canceladas`;
   $("#statConversion").textContent = `${conv}%`;
-  $("#statConversionSub").textContent = `${vendido} vendidos`;
-  $("#statBlocked").textContent = rows.filter(r => BLOCKING_STATES.has(r.status)).length;
-  $("#statBlockedSub").textContent = `${rows.filter(r => r.status === STATUS.VISITA_AGENDADA).length} agendadas`;
+  $("#statConversionSub").textContent = `${vendidos} vendidos`;
+  $("#statBlocked").textContent = agendadas + ofertas;
+  $("#statBlockedSub").textContent = `${agendadas} agendadas`;
 }
 
 function renderFunnel() {
   const total = Math.max(state.rows.length, 1);
+  const getE = r => r.estado || r.status || '';
+  const stateColors = {
+    'Lead nuevo': '#334155',
+    'Visita agendada': '#2563eb',
+    'Pendiente': '#8b5cf6',
+    'Seguimiento': '#6366f1',
+    'Intención oferta': '#f59e0b',
+    'Oferta realizada': '#f97316',
+    'Vendido': '#10b981',
+  };
   const steps = [
-    { label: "Leads", count: state.rows.filter(r => r.status === STATUS.LEAD_NUEVO).length },
-    { label: "Visitas", count: state.rows.filter(r => r.status === STATUS.VISITA_AGENDADA || r.status === STATUS.VISITA_MODIFICADA).length },
-    { label: "Seguimiento", count: state.rows.filter(r => r.status === STATUS.SEGUIMIENTO || r.status === STATUS.PENDIENTE).length },
-    { label: "Oferta", count: state.rows.filter(r => r.status === STATUS.INTENCION_OFERTA || r.status === STATUS.OFERTA_REALIZADA).length },
-    { label: "Vendido", count: state.rows.filter(r => r.status === STATUS.VENDIDO).length }
+    { label: "Lead nuevo", count: state.rows.filter(r => getE(r) === 'LEAD_NUEVO').length, color: stateColors['Lead nuevo'] },
+    { label: "Visita agendada", count: state.rows.filter(r => getE(r) === 'VISITA_AGENDADA' || getE(r) === 'VISITA_MODIFICADA').length, color: stateColors['Visita agendada'] },
+    { label: "Pendiente", count: state.rows.filter(r => getE(r) === 'PENDIENTE').length, color: stateColors['Pendiente'] },
+    { label: "Seguimiento", count: state.rows.filter(r => getE(r) === 'SEGUIMIENTO').length, color: stateColors['Seguimiento'] },
+    { label: "Intención oferta", count: state.rows.filter(r => getE(r) === 'INTENCION_OFERTA').length, color: stateColors['Intención oferta'] },
+    { label: "Oferta realizada", count: state.rows.filter(r => getE(r) === 'OFERTA_REALIZADA').length, color: stateColors['Oferta realizada'] },
+    { label: "Vendido", count: state.rows.filter(r => getE(r) === 'VENDIDO').length, color: stateColors['Vendido'] },
   ];
 
   $("#funnel").innerHTML = steps.map(step => {
-    const pct = Math.max(8, Math.round((step.count / total) * 100));
+    const pct = Math.max(4, Math.round((step.count / total) * 100));
     return `
       <div class="funnelStep">
-        <div class="funnelTop"><div class="funnelTitle">${step.label}</div><div>${step.count}</div></div>
-        <div class="funnelValue">${step.count}</div>
+        <div class="funnelTop">
+          <div class="funnelTitle">${step.label}</div>
+          <div style="font-size:18px;font-weight:700;color:#fff;">${step.count}</div>
+        </div>
         <div class="funnelSub">${Math.round((step.count / total) * 100)}% del total</div>
-        <div class="barTrack"><div class="barFill" style="width:${pct}%"></div></div>
+        <div class="barTrack"><div class="barFill" style="width:${pct}%;background:${step.color};"></div></div>
       </div>
     `;
   }).join("");
@@ -495,17 +511,26 @@ $("#exportBtn").onclick = () => exportCSV(state.rows);
 async function loadRowsFromAPI() {
   const res = await fetch(API_URL, { headers: authHeaders() });
   const data = await res.json();
+  const propRes = await fetch(`${CONFIG.API_URL}/api/properties`, { headers: authHeaders() });
+  const props = await propRes.json();
+  const propMap = {};
+  props.forEach(p => propMap[p.id] = p);
+
   state.rows = data.map(v => ({
     id: v.id,
     client: v.nombre || v.cliente || "—",
-    property: v.inmueble || "",
-    agent: v.comercialId || v.comercial || "",
+    property: v.propertyId && propMap[v.propertyId] ? propMap[v.propertyId].title : (v.inmueble || "—"),
+    propertyUrl: v.propertyId && propMap[v.propertyId] ? propMap[v.propertyId].sourceUrl : null,
+    agent: v.comercialId || v.comercial || "—",
     status: v.estado || STATUS.LEAD_NUEVO,
+    estado: v.estado || STATUS.LEAD_NUEVO,
     source: v.source || "—",
     phone: v.phone || "",
     email: v.email || "",
     sourceUrl: v.sourceUrl || "",
     createdAt: v.createdAt,
+    propertyId: v.propertyId,
+    adminId: v.adminId,
   }));
   render();
 }
