@@ -578,9 +578,27 @@ async function createLeadFromLink() {
 async function loadVisitsAdmin() {
   try {
     await loadComerciales();
-    const res = await fetch(VISITS_ADMIN_API, { headers: authHeaders() });
-    const visits = await res.json();
-    renderVisitsAdmin(visits);
+    const [visitsRes, leadsRes, propsRes] = await Promise.all([
+      fetch(VISITS_ADMIN_API, { headers: authHeaders() }),
+      fetch(API_URL, { headers: authHeaders() }),
+      fetch(`${CONFIG.API_URL}/api/properties`, { headers: authHeaders() }),
+    ]);
+    const visits = await visitsRes.json();
+    const leads = await leadsRes.json();
+    const props = await propsRes.json();
+
+    const leadMap = {};
+    leads.forEach(l => leadMap[l.id] = l);
+    const propMap = {};
+    props.forEach(p => propMap[p.id] = p);
+
+    const enriched = visits.map(v => ({
+      ...v,
+      clienteNombre: leadMap[v.leadId]?.nombre || '—',
+      inmuebleTitulo: propMap[v.propertyId]?.title || (leadMap[v.leadId]?.propertyId && propMap[leadMap[v.leadId].propertyId]?.title) || '—',
+    }));
+
+    renderVisitsAdmin(enriched);
   } catch (err) {
     document.getElementById('visitsAdminTbody').innerHTML = `<tr><td colspan="6" class="loading">Error cargando visitas</td></tr>`;
   }
@@ -595,8 +613,8 @@ function renderVisitsAdmin(visits) {
   tbody.innerHTML = visits.map(v => `
     <tr>
       <td class="mono">${v.id ? v.id.slice(0, 8) : '-'}</td>
-      <td><strong style="color:#fff">${v.leadId || '-'}</strong></td>
-      <td>${v.fecha || '-'} • ${v.hora || '-'}</td>
+      <td><strong style="color:#fff">${v.clienteNombre}</strong><div class="muted" style="font-size:11px">${v.inmuebleTitulo}</div></td>
+      <td>${v.fecha || '-'} • ${(v.hora || '').slice(0,5)}</td>
       <td>
         <select class="stateSelect adminVisitCommercial" data-id="${v.id}">
           ${(window.adminComerciales || []).map(c => `<option value="${c.nombre}" ${c.nombre === v.comercialId ? 'selected' : ''}>${c.nombre}</option>`).join('')}
