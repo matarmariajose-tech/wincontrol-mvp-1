@@ -113,13 +113,17 @@ export const leadService = {
       }
 
       if (comercialEmail) {
-        sendOfertaNotification({
-          toEmail: comercialEmail,
-          toName: comercialNombre,
-          clienteNombre: lead.nombre,
-          inmueble,
-          comercial: comercialNombre,
-        }).catch((err: unknown) => console.error('Oferta notif error:', err));
+        try {
+          await sendOfertaNotification({
+            toEmail: comercialEmail,
+            toName: comercialNombre,
+            clienteNombre: lead.nombre,
+            inmueble,
+            comercial: comercialNombre,
+          });
+        } catch (err: unknown) {
+          console.error('Oferta notif error:', err);
+        }
       }
     }
 
