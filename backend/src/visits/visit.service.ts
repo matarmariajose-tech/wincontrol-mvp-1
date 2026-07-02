@@ -25,7 +25,57 @@ export const visitService = {
   create: async (data: Partial<Visit> & { adminId: string; leadId?: string }) => {
     if (!data.fecha || !data.hora) throw new Error('fecha y hora son requeridas');
     const saved = await repo().save(repo().create({ ...data, estado: VisitStatus.PENDIENTE }));
-    if (saved.leadId) await updateLeadState(saved.leadId, LeadState.VISITA_AGENDADA, data.adminId);
+    if (saved.leadId) {
+      await updateLeadState(saved.leadId, LeadState.VISITA_AGENDADA, data.adminId);
+
+      const lead = await leadRepo().findOne({ where: { id: saved.leadId } });
+      if (lead) {
+        let inmueble = 'Tu inmueble de interés';
+        let comercialNombre = lead.comercialId || 'Tu comercial';
+        let comercialPhone: string | undefined;
+        let comercialEmail: string | undefined;
+
+        if (lead.propertyId) {
+          const prop = await propertyRepo().findOne({ where: { id: lead.propertyId } });
+          if (prop) inmueble = prop.title;
+        }
+
+        if (lead.comercialId) {
+          const com = await comercialRepo().findOne({ where: { nombre: lead.comercialId } });
+          if (com) {
+            comercialNombre = com.nombre;
+            comercialPhone = com.telefono;
+            comercialEmail = com.email;
+          }
+        }
+
+        if (lead.email) {
+          await sendVisitConfirmation({
+            toEmail: lead.email,
+            toName: lead.nombre,
+            comercial: comercialNombre,
+            comercialPhone,
+            fecha: saved.fecha,
+            hora: saved.hora.slice(0, 5),
+            inmueble,
+            ref: saved.id.slice(0, 8).toUpperCase(),
+          });
+        }
+
+        if (comercialEmail) {
+          await sendVisitNotificationToComercial({
+            toEmail: comercialEmail,
+            comercial: comercialNombre,
+            clienteNombre: lead.nombre,
+            clientePhone: lead.phone,
+            fecha: saved.fecha,
+            hora: saved.hora.slice(0, 5),
+            inmueble,
+            ref: saved.id.slice(0, 8).toUpperCase(),
+          });
+        }
+      }
+    }
     return saved;
   },
 
