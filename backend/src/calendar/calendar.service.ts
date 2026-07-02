@@ -1,6 +1,9 @@
 import { google } from 'googleapis';
 import { AppDataSource } from '../config/data-source';
 import { Comercial } from '../comerciales/comercial.entity';
+import { Visit } from '../visits/domain/visit.entity';
+import { Property } from '../properties/property.entity';
+import axios from 'axios';
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -46,6 +49,21 @@ export const calendarService = {
     return available;
   },
 
+  getBufferMinutes: async (fromAddress: string, toAddress: string): Promise<number> => {
+    try {
+      const key = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_CLIENT_ID?.split('-')[0];
+      const mapsKey = process.env.GOOGLE_MAPS_API_KEY;
+      if (!mapsKey) return 20;
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(fromAddress)},España&destinations=${encodeURIComponent(toAddress)},España&mode=driving&key=${mapsKey}`;
+      const res = await axios.get(url);
+      const duration = res.data?.rows?.[0]?.elements?.[0]?.duration?.value;
+      if (!duration) return 20;
+      return Math.ceil(duration / 60);
+    } catch {
+      return 20;
+    }
+  },
+
   getAvailableSlots: async (comercialId: string, date: string): Promise<string[]> => {
     const repo = AppDataSource.getRepository(Comercial);
     const comercial = await repo.findOne({ where: { id: comercialId } });
@@ -78,13 +96,40 @@ export const calendarService = {
       { start: '16:00', end: '20:00' },
     ];
 
+    const visitRepo = AppDataSource.getRepository(Visit);
+    const propRepo = AppDataSource.getRepository(Property);
+
+    const visitsOfDay = await visitRepo.find({ where: { comercialId: comercial.nombre } });
+    const visitsThisDay = visitsOfDay.filter(v => v.fecha === date).sort((a, b) => a.hora.localeCompare(b.hora));
+
     const available: string[] = [];
     for (const jornada of jornadas) {
       let current = new Date(`${date}T${jornada.start}:00`);
       const end = new Date(`${date}T${jornada.end}:00`);
       while (current < end) {
         const isBusy = busySlots.some(b => current >= b.start && current < b.end);
-        if (!isBusy) available.push(current.toTimeString().slice(0, 5));
+        if (!isBusy) {
+          let blocked = false;
+          if (visitsThisDay.length > 0) {
+            const currentStr = current.toTimeString().slice(0, 5);
+            const prevVisits = visitsThisDay.filter(v => v.hora.slice(0, 5) < currentStr);
+            if (prevVisits.length > 0) {
+              const lastVisit = prevVisits[prevVisits.length - 1];
+              if (lastVisit.propertyId) {
+                const lastProp = await propRepo.findOne({ where: { id: lastVisit.propertyId } });
+                if (lastProp?.address) {
+                  const lastHora = new Date(`${date}T${lastVisit.hora.slice(0,5)}:00`);
+                  const minutesSince = (current.getTime() - lastHora.getTime()) / 60000;
+                  if (minutesSince < 80) {
+                    const buffer = await calendarService.getBufferMinutes(lastProp.address, lastProp.address);
+                    if (minutesSince < buffer + 60) blocked = true;
+                  }
+                }
+              }
+            }
+          }
+          if (!blocked) available.push(current.toTimeString().slice(0, 5));
+        }
         current = new Date(current.getTime() + 60 * 60 * 1000);
       }
     }
