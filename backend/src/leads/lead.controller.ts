@@ -7,7 +7,7 @@ export const getLeads = async (req: Request, res: Response) => {
   if (user?.role === 'comercial') {
     res.json(await leadService.getByComercial(String(user.name)));
   } else {
-    res.json(await leadService.getAll(String(user?.id)));
+    res.json(await leadService.getAllForAdmin());
   }
 };
 

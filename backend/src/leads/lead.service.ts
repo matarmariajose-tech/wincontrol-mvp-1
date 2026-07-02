@@ -16,6 +16,10 @@ export const leadService = {
     return await repo().find({ where: { adminId } });
   },
 
+  getAllForAdmin: async (): Promise<Lead[]> => {
+    return await repo().find({ order: { createdAt: 'DESC' } });
+  },
+
   getById: async (id: string): Promise<Lead | null> => {
     return await repo().findOne({ where: { id } });
   },
