@@ -552,12 +552,97 @@ async function loadRowsFromAPI() {
 function openCreateLeadModal() {
   const modal = document.getElementById('createLeadModal');
   modal.style.display = 'flex';
+  document.getElementById('lead-nombre').value = '';
+  document.getElementById('lead-phone').value = '';
+  document.getElementById('lead-email').value = '';
   document.getElementById('lead-url').value = '';
-  document.getElementById('lead-url').focus();
+  document.getElementById('lead-property-id').value = '';
+  document.getElementById('lead-property-search').value = '';
+  document.getElementById('lead-property-selected').textContent = '';
+  document.getElementById('lead-property-dropdown').style.display = 'none';
+  loadLeadComerciales();
+  document.getElementById('lead-nombre').focus();
 }
 
 function closeCreateLeadModal() {
   document.getElementById('createLeadModal').style.display = 'none';
+}
+
+async function loadLeadComerciales() {
+  try {
+    const res = await fetch(COMERCIALES_API, { headers: authHeaders() });
+    const data = await res.json();
+    const sel = document.getElementById('lead-comercial');
+    sel.innerHTML = '<option value="">Sin asignar</option>' + data.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
+  } catch {}
+}
+
+let allPropertiesCache = [];
+async function searchProperties(query) {
+  const dropdown = document.getElementById('lead-property-dropdown');
+  if (!query || query.length < 2) { dropdown.style.display = 'none'; return; }
+
+  if (!allPropertiesCache.length) {
+    try {
+      const res = await fetch(`${CONFIG.API_URL}/api/properties`, { headers: authHeaders() });
+      allPropertiesCache = await res.json();
+    } catch { return; }
+  }
+
+  const q = query.toLowerCase();
+  const matches = allPropertiesCache.filter(p =>
+    p.title?.toLowerCase().includes(q) ||
+    String(p.id).includes(q) ||
+    p.sourceUrl?.includes(q)
+  ).slice(0, 6);
+
+  if (!matches.length) { dropdown.style.display = 'none'; return; }
+
+  dropdown.style.display = 'block';
+  dropdown.innerHTML = matches.map(p => `
+    <div onclick="selectProperty(${p.id}, '${p.title?.replace(/'/g, "\'")}' )" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'">
+      <div style="color:#7aa2ff;font-weight:600;">#${p.id}</div>
+      <div style="color:#94a3b8;">${p.title}</div>
+    </div>
+  `).join('');
+}
+
+function selectProperty(id, title) {
+  document.getElementById('lead-property-id').value = id;
+  document.getElementById('lead-property-search').value = title;
+  document.getElementById('lead-property-selected').textContent = '✓ Inmueble seleccionado';
+  document.getElementById('lead-property-dropdown').style.display = 'none';
+}
+
+async function createLeadFromForm() {
+  const nombre = document.getElementById('lead-nombre').value.trim();
+  if (!nombre) { showToast('El nombre es obligatorio'); return; }
+
+  const btn = document.getElementById('createLeadConfirm');
+  btn.disabled = true; btn.textContent = 'Creando...';
+
+  const propertyId = document.getElementById('lead-property-id').value;
+  const payload = {
+    nombre,
+    phone: document.getElementById('lead-phone').value.trim(),
+    email: document.getElementById('lead-email').value.trim(),
+    comercialId: document.getElementById('lead-comercial').value || null,
+    source: document.getElementById('lead-source').value,
+    sourceUrl: document.getElementById('lead-url').value.trim(),
+    propertyId: propertyId ? parseInt(propertyId) : null,
+  };
+
+  try {
+    const res = await fetch(API_URL, { method: 'POST', headers: authHeaders(), body: JSON.stringify(payload) });
+    if (!res.ok) throw new Error('Error en el servidor');
+    await loadRowsFromAPI();
+    closeCreateLeadModal();
+    showToast('Lead creado');
+  } catch (e) {
+    showToast(e.message || 'Error de red');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Crear lead';
+  }
 }
 
 window.addEventListener('click', (e) => {
