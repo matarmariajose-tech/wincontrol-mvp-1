@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Encuesta de satisfacción · Winallcontrol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <title>Encuesta · Winallcontrol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,96 +15,66 @@
       font-family: 'DM Sans', sans-serif;
       color: #e5e7eb;
       display: flex; flex-direction: column; align-items: center;
-      padding: 20px 16px;
+      padding: 16px;
     }
-    .brand { display:flex;align-items:center;gap:10px;margin-bottom:20px; }
-    .logo { width:32px;height:32px;background:linear-gradient(180deg,#2563eb,#1b3faa);border-radius:10px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:900;font-size:14px;color:#fff; }
-    .brand-name { font-family:'Syne',sans-serif;font-weight:900;font-size:14px;color:#fff; }
-    .brand-tag { font-size:10px;color:#64748b;margin-top:1px; }
+    .brand { display:flex;align-items:center;gap:8px;margin-bottom:14px; }
+    .logo { width:28px;height:28px;background:linear-gradient(180deg,#2563eb,#1b3faa);border-radius:8px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:900;font-size:12px;color:#fff; }
+    .brand-name { font-family:'Syne',sans-serif;font-weight:900;font-size:13px;color:#fff; }
 
-    .card { width:100%;max-width:480px;background:linear-gradient(180deg,rgba(11,18,32,.96),rgba(8,14,28,.92));border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5); }
+    .card { width:100%;max-width:520px;background:linear-gradient(180deg,rgba(11,18,32,.96),rgba(8,14,28,.92));border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5); }
 
-    .card-header { padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07); }
-    .card-header h1 { font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:3px; }
-    .card-header p { font-size:12px;color:#64748b; }
+    .card-header { padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07); }
+    .card-header h1 { font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px; }
+    .card-header p { font-size:11px;color:#64748b; }
 
-    .section { padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07); }
-    .section-title { font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px; }
+    .property-bar { padding:10px 18px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);font-size:12px;color:#94a3b8; }
+    .property-bar strong { color:#fff;font-size:12px; }
 
-    .property-card { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;margin-bottom:16px; }
-    .property-label { font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px; }
-    .property-title { font-size:13px;font-weight:600;color:#fff; }
+    .body { padding:14px 18px;display:flex;flex-direction:column;gap:14px; }
 
-    .stars { display:flex;gap:6px;margin-bottom:4px; }
-    .star { font-size:22px;cursor:pointer;color:#334155;transition:.15s; }
-    .star.active { color:#f59e0b; }
-    .star:hover { color:#fbbf24; }
+    .row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+    @media(max-width:400px) { .row { grid-template-columns:1fr; } }
 
-    .question { margin-bottom:16px; }
-    .question-label { font-size:12px;color:#94a3b8;margin-bottom:8px;display:block; }
+    .field label { font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px; }
 
-    .yn-btns { display:flex;gap:8px; }
-    .yn-btn {
-      flex:1;padding:9px;border-radius:8px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(2,6,23,.45);
-      color:#94a3b8;font-size:12px;font-weight:600;
-      cursor:pointer;transition:.2s;
-    }
-    .yn-btn:hover { border-color:rgba(37,99,235,.4);color:#fff; }
-    .yn-btn.selected-yes { border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.1);color:#10b981; }
-    .yn-btn.selected-no { border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:#ef4444; }
+    .stars { display:flex;gap:4px; }
+    .star { font-size:20px;cursor:pointer;color:#334155;transition:.15s;user-select:none; }
+    .star.on { color:#f59e0b; }
 
-    .range-wrap { display:flex;align-items:center;gap:10px; }
-    .range-wrap input[type=range] { flex:1;accent-color:#2563eb; }
-    .range-val { font-size:13px;font-weight:700;color:#fff;min-width:20px;text-align:center; }
+    .yn { display:flex;gap:6px; }
+    .yn-btn { flex:1;padding:7px;border-radius:7px;border:1px solid rgba(255,255,255,.08);background:rgba(2,6,23,.45);color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;text-align:center; }
+    .yn-btn.yes { border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.08);color:#10b981; }
+    .yn-btn.no { border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06);color:#ef4444; }
 
-    textarea {
-      width:100%;padding:10px 12px;background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);border-radius:8px;
-      color:#fff;font-size:12px;font-family:'DM Sans',sans-serif;
-      resize:none;min-height:80px;
-    }
+    .range-row { display:flex;align-items:center;gap:8px; }
+    .range-row input { flex:1;accent-color:#2563eb;height:4px; }
+    .range-val { font-size:12px;font-weight:700;color:#fff;min-width:14px;text-align:right; }
+
+    textarea { width:100%;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#fff;font-size:12px;font-family:'DM Sans',sans-serif;resize:none;height:60px; }
     textarea::placeholder { color:#475569; }
     textarea:focus { outline:none;border-color:rgba(37,99,235,.4); }
 
-    .oferta-section {
-      margin:16px 20px;
-      background:rgba(37,99,235,.08);
-      border:1px solid rgba(37,99,235,.2);
-      border-radius:10px;
-      padding:14px;
-    }
-    .oferta-label { font-size:13px;font-weight:600;color:#fff;margin-bottom:10px; }
-    .oferta-sub { font-size:11px;color:#64748b;margin-bottom:12px; }
+    .oferta-box { background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:12px 14px; }
+    .oferta-box p { font-size:12px;color:#fff;font-weight:600;margin-bottom:4px; }
+    .oferta-box small { font-size:11px;color:#64748b;display:block;margin-bottom:10px; }
 
-    .submit-section { padding:14px 20px; }
-    .submit-btn {
-      width:100%;padding:11px;border-radius:10px;
-      border:1px solid rgba(37,99,235,.45);
-      background:linear-gradient(180deg,#2563eb,#1d4ed8);
-      color:#fff;font-size:13px;font-weight:700;
-      cursor:pointer;font-family:'DM Sans',sans-serif;
-      transition:.2s;
-    }
-    .submit-btn:hover { transform:translateY(-1px);box-shadow:0 8px 20px rgba(37,99,235,.3); }
+    .footer-card { padding:12px 18px;border-top:1px solid rgba(255,255,255,.07); }
+    .submit-btn { width:100%;padding:10px;border-radius:9px;border:1px solid rgba(37,99,235,.45);background:linear-gradient(180deg,#2563eb,#1d4ed8);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s; }
+    .submit-btn:hover { transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.3); }
     .submit-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
 
-    .success-screen { display:none;flex-direction:column;align-items:center;padding:40px 20px;text-align:center; }
-    .success-icon { width:56px;height:56px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:grid;place-items:center;font-size:24px;margin-bottom:16px; }
-    .success-title { font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:6px; }
-    .success-sub { font-size:12px;color:#64748b;line-height:1.6; }
+    .success { display:none;flex-direction:column;align-items:center;padding:36px 20px;text-align:center; }
+    .success-icon { width:48px;height:48px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:grid;place-items:center;font-size:20px;margin-bottom:12px; }
+    .success h2 { font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:4px; }
+    .success p { font-size:12px;color:#64748b;line-height:1.5; }
 
-    .footer { margin-top:20px;font-size:11px;color:#334155;text-align:center; }
+    .page-footer { margin-top:14px;font-size:11px;color:#334155; }
   </style>
 </head>
 <body>
   <div class="brand">
     <div class="logo">W</div>
-    <div>
-      <div class="brand-name">WINALLCONTROL</div>
-      <div class="brand-tag">Plataforma de gestión comercial</div>
-    </div>
+    <div class="brand-name">WINALLCONTROL</div>
   </div>
 
   <div class="card">
@@ -113,100 +83,89 @@
       <p id="leadName">Cargando...</p>
     </div>
 
-    <div class="section" id="propertySection" style="display:none">
-      <div class="property-card">
-        <div class="property-label">Inmueble visitado</div>
-        <div class="property-title" id="propertyTitle">—</div>
-      </div>
+    <div class="property-bar" id="propertyBar" style="display:none">
+      <strong id="propertyTitle">—</strong>
     </div>
 
-    <div class="section">
-      <div class="section-title">Atención del comercial</div>
-      <div class="question">
-        <span class="question-label">¿Cómo valorarías la atención recibida?</span>
-        <div class="stars" id="starsComercial">
-          <span class="star" data-val="1">★</span>
-          <span class="star" data-val="2">★</span>
-          <span class="star" data-val="3">★</span>
-          <span class="star" data-val="4">★</span>
-          <span class="star" data-val="5">★</span>
+    <div class="body" id="formBody">
+      <div class="field">
+        <label>Atención del comercial</label>
+        <div class="stars" id="stars">
+          <span class="star" data-v="1">★</span>
+          <span class="star" data-v="2">★</span>
+          <span class="star" data-v="3">★</span>
+          <span class="star" data-v="4">★</span>
+          <span class="star" data-v="5">★</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>¿Te gustó el inmueble?</label>
+          <div class="yn">
+            <button class="yn-btn" data-g="gusta" data-v="si" onclick="yn(this)">Sí</button>
+            <button class="yn-btn" data-g="gusta" data-v="no" onclick="yn(this)">No</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Precio (0–5)</label>
+          <div class="range-row">
+            <input type="range" min="0" max="5" value="3" id="rPrecio" oninput="document.getElementById('vPrecio').textContent=this.value" />
+            <span class="range-val" id="vPrecio">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Distribución (1–5)</label>
+          <div class="range-row">
+            <input type="range" min="1" max="5" value="3" id="rDist" oninput="document.getElementById('vDist').textContent=this.value" />
+            <span class="range-val" id="vDist">3</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Estado inmueble (1–5)</label>
+          <div class="range-row">
+            <input type="range" min="1" max="5" value="3" id="rEst" oninput="document.getElementById('vEst').textContent=this.value" />
+            <span class="range-val" id="vEst">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Observaciones (opcional)</label>
+        <textarea id="obs" maxlength="450" placeholder="Escribe aquí tus comentarios..."></textarea>
+      </div>
+
+      <div class="oferta-box">
+        <p>¿Te interesa hacer una oferta?</p>
+        <small>Si respondes que sí, tu comercial se pondrá en contacto contigo.</small>
+        <div class="yn">
+          <button class="yn-btn" data-g="oferta" data-v="si" onclick="yn(this)">Sí, me interesa</button>
+          <button class="yn-btn" data-g="oferta" data-v="no" onclick="yn(this)">No por ahora</button>
         </div>
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">El inmueble</div>
-      <div class="question">
-        <span class="question-label">¿Te ha gustado el inmueble?</span>
-        <div class="yn-btns">
-          <button class="yn-btn" data-group="gusta" data-val="si" onclick="selectYN(this)">Sí</button>
-          <button class="yn-btn" data-group="gusta" data-val="no" onclick="selectYN(this)">No</button>
-        </div>
-      </div>
-      <div class="question">
-        <span class="question-label">Precio (0 = no me interesa, 5 = muy buen precio)</span>
-        <div class="range-wrap">
-          <input type="range" min="0" max="5" value="3" id="rangePrecio" oninput="document.getElementById('valPrecio').textContent=this.value" />
-          <span class="range-val" id="valPrecio">3</span>
-        </div>
-      </div>
-      <div class="question">
-        <span class="question-label">Distribución (1–5)</span>
-        <div class="range-wrap">
-          <input type="range" min="1" max="5" value="3" id="rangeDistribucion" oninput="document.getElementById('valDistribucion').textContent=this.value" />
-          <span class="range-val" id="valDistribucion">3</span>
-        </div>
-      </div>
-      <div class="question">
-        <span class="question-label">Estado del inmueble (1–5)</span>
-        <div class="range-wrap">
-          <input type="range" min="1" max="5" value="3" id="rangeEstado" oninput="document.getElementById('valEstado').textContent=this.value" />
-          <span class="range-val" id="valEstado">3</span>
-        </div>
-      </div>
-      <div class="question">
-        <span class="question-label">Observaciones (opcional, máx. 450 caracteres)</span>
-        <textarea id="observaciones" maxlength="450" placeholder="Escribe aquí tus comentarios..."></textarea>
-      </div>
+    <div class="footer-card" id="footerCard">
+      <button class="submit-btn" id="submitBtn" onclick="submit()">Enviar encuesta</button>
     </div>
 
-    <div class="oferta-section">
-      <div class="oferta-label">¿Te interesa hacer una oferta?</div>
-      <div class="oferta-sub">Si respondes que sí, tu comercial se pondrá en contacto contigo.</div>
-      <div class="yn-btns">
-        <button class="yn-btn" data-group="oferta" data-val="si" onclick="selectYN(this)">Sí, me interesa</button>
-        <button class="yn-btn" data-group="oferta" data-val="no" onclick="selectYN(this)">No por ahora</button>
-      </div>
-    </div>
-
-    <div class="submit-section">
-      <button class="submit-btn" id="submitBtn" onclick="submitSurvey()">Enviar encuesta</button>
-    </div>
-
-    <div class="success-screen" id="successScreen">
+    <div class="success" id="success">
       <div class="success-icon">✓</div>
-      <div class="success-title">¡Gracias por tu opinión!</div>
-      <div class="success-sub">Tu respuesta ha sido registrada. Tu comercial se pondrá en contacto contigo próximamente.</div>
+      <h2>¡Gracias por tu opinión!</h2>
+      <p>Tu respuesta ha sido registrada. Tu comercial se pondrá en contacto contigo próximamente.</p>
     </div>
   </div>
 
-  <div class="footer">Winallcontrol · Plataforma de gestión comercial</div>
+  <div class="page-footer">Winallcontrol · Plataforma de gestión comercial</div>
 
   <script src="../../config.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const leadId = params.get('leadId');
-    const visitId = params.get('visitId');
-
-    let answers = {
-      starsComercial: 0,
-      gusta: null,
-      precio: 3,
-      distribucion: 3,
-      estadoInmueble: 3,
-      observaciones: '',
-      oferta: null,
-    };
+    let starsVal = 0, gusta = null, oferta = null;
 
     async function init() {
       if (!leadId) return;
@@ -215,63 +174,46 @@
         const lead = await res.json();
         document.getElementById('leadName').textContent = `Hola ${lead.nombre}, cuéntanos tu experiencia`;
         if (lead.propertyId) {
-          const propRes = await fetch(`${CONFIG.API_URL}/api/properties/${lead.propertyId}`);
-          const prop = await propRes.json();
+          const p = await fetch(`${CONFIG.API_URL}/api/properties/${lead.propertyId}`);
+          const prop = await p.json();
           document.getElementById('propertyTitle').textContent = prop.title;
-          document.getElementById('propertySection').style.display = 'block';
+          document.getElementById('propertyBar').style.display = 'block';
         }
       } catch {}
     }
 
-    document.querySelectorAll('#starsComercial .star').forEach(star => {
-      star.addEventListener('click', () => {
-        const val = parseInt(star.dataset.val);
-        answers.starsComercial = val;
-        document.querySelectorAll('#starsComercial .star').forEach((s, i) => {
-          s.classList.toggle('active', i < val);
-        });
+    document.querySelectorAll('#stars .star').forEach(s => {
+      s.addEventListener('click', () => {
+        starsVal = parseInt(s.dataset.v);
+        document.querySelectorAll('#stars .star').forEach((x, i) => x.classList.toggle('on', i < starsVal));
       });
     });
 
-    function selectYN(btn) {
-      const group = btn.dataset.group;
-      const val = btn.dataset.val;
-      document.querySelectorAll(`[data-group="${group}"]`).forEach(b => {
-        b.classList.remove('selected-yes', 'selected-no');
-      });
-      btn.classList.add(val === 'si' ? 'selected-yes' : 'selected-no');
-      answers[group] = val;
+    function yn(btn) {
+      const g = btn.dataset.g, v = btn.dataset.v;
+      document.querySelectorAll(`[data-g="${g}"]`).forEach(b => b.classList.remove('yes','no'));
+      btn.classList.add(v === 'si' ? 'yes' : 'no');
+      if (g === 'gusta') gusta = v;
+      if (g === 'oferta') oferta = v;
     }
 
-    async function submitSurvey() {
-      answers.precio = parseInt(document.getElementById('rangePrecio').value);
-      answers.distribucion = parseInt(document.getElementById('rangeDistribucion').value);
-      answers.estadoInmueble = parseInt(document.getElementById('rangeEstado').value);
-      answers.observaciones = document.getElementById('observaciones').value;
-
+    async function submit() {
       const btn = document.getElementById('submitBtn');
-      btn.textContent = 'Enviando...';
-      btn.disabled = true;
-
+      btn.textContent = 'Enviando...'; btn.disabled = true;
       try {
-        if (answers.oferta === 'si' && leadId) {
+        if (oferta === 'si' && leadId) {
           await fetch(`${CONFIG.API_URL}/api/leads/${leadId}/state`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ state: 'INTENCION_OFERTA' }),
           });
         }
-
-        document.querySelector('.card-header').style.display = 'none';
-        document.getElementById('propertySection').style.display = 'none';
-        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-        document.querySelector('.oferta-section').style.display = 'none';
-        document.querySelector('.submit-section').style.display = 'none';
-        document.getElementById('successScreen').style.display = 'flex';
-
+        document.getElementById('formBody').style.display = 'none';
+        document.getElementById('footerCard').style.display = 'none';
+        document.getElementById('propertyBar').style.display = 'none';
+        document.getElementById('success').style.display = 'flex';
       } catch {
-        btn.textContent = 'Enviar encuesta';
-        btn.disabled = false;
+        btn.textContent = 'Enviar encuesta'; btn.disabled = false;
       }
     }
 
