@@ -2,8 +2,13 @@ import { AppDataSource } from '../config/data-source';
 import { Visit, VisitStatus } from './domain/visit.entity';
 import { Lead, LeadState } from '../leads/domain/lead.entity';
 import { LeadStateHistory } from '../leads/domain/lead-state-history.entity';
+import { Property } from '../properties/property.entity';
+import { Comercial } from '../comerciales/comercial.entity';
+import { sendSurveyToClient, sendSurveyToComercial, sendVisitConfirmation, sendVisitNotificationToComercial } from '../mail/mailer';
 
 const repo = () => AppDataSource.getRepository(Visit);
+const propertyRepo = () => AppDataSource.getRepository(Property);
+const comercialRepo = () => AppDataSource.getRepository(Comercial);
 const leadRepo = () => AppDataSource.getRepository(Lead);
 const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
 
