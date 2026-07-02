@@ -276,3 +276,40 @@ export async function sendSurveyToComercial({
     console.error('Error enviando notificación al comercial:', error);
   }
 }
+
+export async function sendOfertaNotification({
+  toEmail, toName, clienteNombre, inmueble, comercial,
+}: {
+  toEmail: string; toName: string; clienteNombre: string; inmueble: string; comercial: string;
+}) {
+  const resend = getResend();
+  if (!resend) return;
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: toEmail,
+      subject: `Intención de oferta · ${clienteNombre}`,
+      html: emailWrapper(`
+        <p style="font-size:20px;font-weight:700;color:#0f172a;margin:0 0 6px;">Intención de oferta</p>
+        <p style="font-size:14px;color:#94a3b8;margin:0 0 24px;">Hola ${toName}, un cliente ha indicado que quiere hacer una oferta.</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:16px;">
+          <tr><td style="padding:16px 18px;">
+            <p style="font-size:10px;color:#94a3b8;margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;">Cliente</p>
+            <p style="font-size:14px;font-weight:600;color:#0f172a;margin:0 0 12px;">${clienteNombre}</p>
+            <p style="font-size:10px;color:#94a3b8;margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;">Inmueble</p>
+            <p style="font-size:14px;font-weight:600;color:#0f172a;margin:0 0 12px;">${inmueble}</p>
+            <p style="font-size:10px;color:#94a3b8;margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;">Comercial</p>
+            <p style="font-size:14px;font-weight:600;color:#0f172a;margin:0;">${comercial}</p>
+          </td></tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;">
+          <tr><td style="padding:14px 18px;">
+            <p style="font-size:12px;color:#1d4ed8;margin:0;">El estado del lead ha cambiado automáticamente a <strong>INTENCIÓN DE OFERTA</strong>. Contacta con el cliente lo antes posible.</p>
+          </td></tr>
+        </table>
+      `),
+    });
+  } catch (error) {
+    console.error('Error enviando notificación de oferta:', error);
+  }
+}

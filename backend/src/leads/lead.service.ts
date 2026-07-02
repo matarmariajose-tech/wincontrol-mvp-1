@@ -4,7 +4,7 @@ import { LeadStateHistory } from './domain/lead-state-history.entity';
 import { Property } from '../properties/property.entity';
 import { Comercial } from '../comerciales/comercial.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import { sendLeadWelcome } from '../mail/mailer';
+import { sendLeadWelcome, sendOfertaNotification } from '../mail/mailer';
 
 const repo = () => AppDataSource.getRepository(Lead);
 const historyRepo = () => AppDataSource.getRepository(LeadStateHistory);
@@ -93,6 +93,36 @@ export const leadService = {
       toState: newState,
       changedBy: userId,
     }));
+
+    if (newState === LeadState.INTENCION_OFERTA) {
+      let inmueble = 'Inmueble sin especificar';
+      let comercialNombre = lead.comercialId || 'Comercial';
+      let comercialEmail: string | undefined;
+
+      if (lead.propertyId) {
+        const prop = await propertyRepo().findOne({ where: { id: lead.propertyId } });
+        if (prop) inmueble = prop.title;
+      }
+
+      if (lead.comercialId) {
+        const com = await comercialRepo().findOne({ where: { nombre: lead.comercialId } });
+        if (com) {
+          comercialNombre = com.nombre;
+          comercialEmail = com.email;
+        }
+      }
+
+      if (comercialEmail) {
+        sendOfertaNotification({
+          toEmail: comercialEmail,
+          toName: comercialNombre,
+          clienteNombre: lead.nombre,
+          inmueble,
+          comercial: comercialNombre,
+        }).catch((err: unknown) => console.error('Oferta notif error:', err));
+      }
+    }
+
     return updated;
   },
 
