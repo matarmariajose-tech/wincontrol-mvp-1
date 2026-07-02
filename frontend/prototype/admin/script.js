@@ -411,16 +411,29 @@ function closeDrawer() {
 }
 
 function exportCSV(rows) {
-  const header = ["id", "client", "phone", "email", "source", "agent", "status", "createdAt"];
-  const csv = [
-    header.join(","),
-    ...rows.map(r => header.map(k => `"${String(r[k] ?? "").replaceAll('"', '""')}"`).join(","))
-  ].join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const headers = ["ID", "Cliente", "Email", "Teléfono", "Inmueble", "Comercial", "Estado", "Fuente", "Fecha creación"];
+  const data = rows.map(r => [
+    r.id || '',
+    r.client || '',
+    r.email || '',
+    r.phone || '',
+    r.property || '',
+    r.agent || '',
+    r.estado || r.status || '',
+    r.source || '',
+    r.createdAt ? new Date(r.createdAt).toLocaleDateString('es-ES') : '',
+  ]);
+
+  const csv = [headers, ...data].map(row =>
+    row.map(v => `"${String(v).replaceAll('"', '""')}"`).join(',')
+  ).join('\n');
+
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = url;
-  a.download = "wincontrol_leads.csv";
+  a.download = `winallcontrol_leads_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
