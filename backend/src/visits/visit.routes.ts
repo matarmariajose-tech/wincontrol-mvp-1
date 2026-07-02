@@ -6,7 +6,7 @@ const router = Router();
 router.use(authMiddleware);
 
 router.get('/', visitController.getAll);
-router.get('/admin/all', visitController.getAll);
+router.get('/admin/all', visitController.getAllAdmin);
 router.get('/lead/:leadId', visitController.getByLead);
 router.post('/', visitController.create);
 router.put('/:id', visitController.update);

@@ -18,6 +18,7 @@ const updateLeadState = async (leadId: string, toState: LeadState, changedBy: st
 
 export const visitService = {
   getAll: async (adminId: string) => repo().find({ where: { adminId } }),
+  getAllForAdmin: async () => repo().find({ order: { createdAt: 'DESC' } }),
 
   getByLead: async (leadId: string) => repo().find({ where: { leadId } }),
 

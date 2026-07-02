@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { visitService } from './visit.service';
 
 export const visitController = {
+  getAllAdmin: async (req: Request, res: Response) => {
+    res.json(await visitService.getAllForAdmin());
+  },
   getAll: async (req: Request, res: Response) => {
     const adminId = String((req as any).user?.id);
     res.json(await visitService.getAll(adminId));
