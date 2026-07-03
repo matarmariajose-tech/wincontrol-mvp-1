@@ -239,9 +239,9 @@ export async function sendSurveyToClient({
 }
 
 export async function sendSurveyToComercial({
-  toEmail, comercial, clienteNombre, inmueble,
+  toEmail, comercial, clienteNombre, inmueble, valoracionUrl,
 }: {
-  toEmail: string; comercial: string; clienteNombre: string; inmueble: string;
+  toEmail: string; comercial: string; clienteNombre: string; inmueble: string; valoracionUrl?: string;
 }) {
   const resend = getResend();
   if (!resend) return;

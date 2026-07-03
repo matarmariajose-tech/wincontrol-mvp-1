@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valoración de visita · Winallcontrol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.18), transparent 60%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.10), transparent 55%),
+                  #020617;
+      font-family: 'DM Sans', sans-serif;
+      color: #e5e7eb;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 16px;
+    }
+    .brand { display:flex;align-items:center;gap:8px;margin-bottom:14px; }
+    .logo { width:28px;height:28px;background:linear-gradient(180deg,#2563eb,#1b3faa);border-radius:8px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:900;font-size:12px;color:#fff; }
+    .brand-name { font-family:'Syne',sans-serif;font-weight:900;font-size:13px;color:#fff; }
+
+    .card { width:100%;max-width:480px;background:linear-gradient(180deg,rgba(11,18,32,.96),rgba(8,14,28,.92));border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5); }
+
+    .card-header { padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07); }
+    .card-header h1 { font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px; }
+    .card-header p { font-size:11px;color:#64748b; }
+
+    .property-bar { padding:10px 18px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);font-size:12px;color:#94a3b8; }
+    .property-bar strong { color:#fff;font-size:12px; }
+
+    .body { padding:14px 18px;display:flex;flex-direction:column;gap:14px; }
+
+    .field label { font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px; }
+
+    .yn { display:flex;gap:6px; }
+    .yn-btn { flex:1;padding:9px;border-radius:7px;border:1px solid rgba(255,255,255,.08);background:rgba(2,6,23,.45);color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;text-align:center; }
+    .yn-btn.yes { border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.08);color:#10b981; }
+    .yn-btn.no { border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06);color:#ef4444; }
+
+    .range-row { display:flex;align-items:center;gap:8px; }
+    .range-row input { flex:1;accent-color:#2563eb;height:4px; }
+    .range-val { font-size:12px;font-weight:700;color:#fff;min-width:14px;text-align:right; }
+
+    .footer-card { padding:12px 18px;border-top:1px solid rgba(255,255,255,.07); }
+    .submit-btn { width:100%;padding:10px;border-radius:9px;border:1px solid rgba(37,99,235,.45);background:linear-gradient(180deg,#2563eb,#1d4ed8);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s; }
+    .submit-btn:disabled { opacity:.5;cursor:not-allowed; }
+
+    .success { display:none;flex-direction:column;align-items:center;padding:36px 20px;text-align:center; }
+    .success-icon { width:48px;height:48px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:grid;place-items:center;font-size:20px;margin-bottom:12px; }
+    .success h2 { font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:4px; }
+    .success p { font-size:12px;color:#64748b;line-height:1.5; }
+
+    .page-footer { margin-top:14px;font-size:11px;color:#334155; }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="logo">W</div>
+    <div class="brand-name">WINALLCONTROL</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h1>Valoración de visita</h1>
+      <p id="comercialName">Cargando...</p>
+    </div>
+
+    <div class="property-bar" id="propertyBar" style="display:none">
+      <strong id="propertyTitle">—</strong>
+    </div>
+
+    <div class="body" id="formBody">
+
+      <div class="field">
+        <label>¿El cliente fue puntual?</label>
+        <div class="yn">
+          <button class="yn-btn" data-g="puntual" data-v="si" onclick="yn(this)">Sí</button>
+          <button class="yn-btn" data-g="puntual" data-v="no" onclick="yn(this)">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Le gustó el inmueble al cliente? (1–5)</label>
+        <div class="range-row">
+          <input type="range" min="1" max="5" value="3" id="rGusta" oninput="document.getElementById('vGusta').textContent=this.value" />
+          <span class="range-val" id="vGusta">3</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>¿Hacer seguimiento?</label>
+        <div class="yn">
+          <button class="yn-btn" data-g="seguimiento" data-v="si" onclick="yn(this)">Sí, hacer seguimiento</button>
+          <button class="yn-btn" data-g="seguimiento" data-v="no" onclick="yn(this)">No, finalizar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-card" id="footerCard">
+      <button class="submit-btn" id="submitBtn" onclick="submit()">Enviar valoración</button>
+    </div>
+
+    <div class="success" id="success">
+      <div class="success-icon">✓</div>
+      <h2>¡Valoración registrada!</h2>
+      <p id="successMsg">El estado del lead ha sido actualizado.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">Winallcontrol · Plataforma de gestión comercial</div>
+
+  <script src="../../config.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const leadId = params.get('leadId');
+    let puntual = null, seguimiento = null;
+
+    async function init() {
+      if (!leadId) return;
+      try {
+        const res = await fetch(`${CONFIG.API_URL}/api/leads/${leadId}`);
+        const lead = await res.json();
+        document.getElementById('comercialName').textContent = `Visita con ${lead.nombre}`;
+        if (lead.propertyId) {
+          const p = await fetch(`${CONFIG.API_URL}/api/properties/${lead.propertyId}`);
+          const prop = await p.json();
+          document.getElementById('propertyTitle').textContent = prop.title;
+          document.getElementById('propertyBar').style.display = 'block';
+        }
+      } catch {}
+    }
+
+    function yn(btn) {
+      const g = btn.dataset.g, v = btn.dataset.v;
+      document.querySelectorAll(`[data-g="${g}"]`).forEach(b => b.classList.remove('yes','no'));
+      btn.classList.add(v === 'si' ? 'yes' : 'no');
+      if (g === 'puntual') puntual = v;
+      if (g === 'seguimiento') seguimiento = v;
+    }
+
+    async function submit() {
+      if (!seguimiento) { alert('Por favor indica si hacer seguimiento'); return; }
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Enviando...'; btn.disabled = true;
+
+      const newState = seguimiento === 'si' ? 'SEGUIMIENTO' : 'LEAD_NUEVO';
+
+      try {
+        await fetch(`${CONFIG.API_URL}/api/leads/${leadId}/state`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ state: newState }),
+        });
+
+        document.getElementById('formBody').style.display = 'none';
+        document.getElementById('footerCard').style.display = 'none';
+        document.getElementById('propertyBar').style.display = 'none';
+        document.getElementById('successMsg').textContent = seguimiento === 'si'
+          ? 'El lead pasa a SEGUIMIENTO. Contacta con el cliente próximamente.'
+          : 'Visita finalizada. El lead ha sido cerrado.';
+        document.getElementById('success').style.display = 'flex';
+      } catch {
+        btn.textContent = 'Enviar valoración'; btn.disabled = false;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
