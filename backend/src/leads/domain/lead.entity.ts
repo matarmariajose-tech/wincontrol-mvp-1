@@ -10,6 +10,7 @@ export enum LeadState {
   INTENCION_OFERTA = 'INTENCION_OFERTA',
   OFERTA_REALIZADA = 'OFERTA_REALIZADA',
   VENDIDO = 'VENDIDO',
+  PERDIDO = 'PERDIDO',
 }
 
 @Entity('leads')

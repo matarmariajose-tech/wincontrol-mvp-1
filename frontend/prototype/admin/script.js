@@ -137,6 +137,7 @@ function statusBadge(status) {
     INTENCION_OFERTA: "b-orange",
     OFERTA_REALIZADA: "b-emerald",
     VENDIDO: "b-emerald",
+    PERDIDO: "b-red",
   };
   const cls = map[status] || "b-slate";
   return `<span class="badge ${cls}">${escapeHTML(status)}</span>`;
