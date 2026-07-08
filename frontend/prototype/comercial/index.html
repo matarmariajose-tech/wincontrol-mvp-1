@@ -181,34 +181,30 @@
     <div class="modalPanel">
       <div class="modalHead">
         <div class="modalTitle">Nueva visita</div>
-        <button class="iconBtn" id="closeModal">×</button>
+        <button class="iconBtn" id="closeModal">&times;</button>
       </div>
       <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
-
         <div>
           <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Cliente (nombre) *</label>
           <input id="nv-nombre" type="text" placeholder="Nombre del cliente" class="input" style="width:100%" />
         </div>
-
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div>
             <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Email</label>
             <input id="nv-email" type="email" placeholder="cliente@email.com" class="input" style="width:100%" />
           </div>
           <div>
-            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Teléfono</label>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Telefono</label>
             <input id="nv-phone" type="tel" placeholder="+34 600 000 000" class="input" style="width:100%" />
           </div>
         </div>
-
         <div>
           <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Inmueble</label>
-          <input id="nv-property-search" type="text" placeholder="Buscar por título o referencia..." class="input" style="width:100%" oninput="nvSearchProperties(this.value)" />
+          <input id="nv-property-search" type="text" placeholder="Buscar por titulo o referencia..." class="input" style="width:100%" oninput="nvSearchProperties(this.value)" />
           <div id="nv-property-dropdown" style="display:none;background:#0b1220;border:1px solid #162032;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:4px;"></div>
           <input type="hidden" id="nv-property-id" />
           <div id="nv-property-selected" style="font-size:11px;color:#7aa2ff;margin-top:3px;"></div>
         </div>
-
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div>
             <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fecha *</label>
@@ -219,7 +215,6 @@
             <input id="nv-hora" type="time" class="input" style="width:100%" />
           </div>
         </div>
-
         <div>
           <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fuente</label>
           <select id="nv-source" class="input" style="width:100%">
@@ -231,7 +226,6 @@
             <option value="Referido">Referido</option>
           </select>
         </div>
-
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px;">
           <button class="btn ghost" onclick="document.getElementById('modal').setAttribute('aria-hidden','true')">Cancelar</button>
           <button class="btn primary" id="nv-submit" onclick="nvCreateLead()">Crear lead y visita</button>
@@ -240,15 +234,4 @@
     </div>
   </div>
 
-  <!-- DRAWER -->
-
-  <!-- DRAWER -->
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wincontrol Comercial</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-</body>
-</html>
+  >
