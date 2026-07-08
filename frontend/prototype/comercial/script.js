@@ -314,6 +314,21 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
   window.location.href = '../login/index.html';
 });
 
+document.getElementById('newVisitBtn')?.addEventListener('click', () => {
+  const modal = document.getElementById('modal');
+  if (modal) modal.setAttribute('aria-hidden', 'false');
+});
+
+document.getElementById('closeModal')?.addEventListener('click', () => {
+  const modal = document.getElementById('modal');
+  if (modal) modal.setAttribute('aria-hidden', 'true');
+});
+
+document.getElementById('modalBackdrop')?.addEventListener('click', () => {
+  const modal = document.getElementById('modal');
+  if (modal) modal.setAttribute('aria-hidden', 'true');
+});
+
 (function init() {
   $('#nowLabel').textContent = new Date().toLocaleString('es-ES');
   setInterval(() => $('#nowLabel').textContent = new Date().toLocaleString('es-ES'), 30000);
