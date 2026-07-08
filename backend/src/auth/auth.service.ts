@@ -10,7 +10,7 @@ export const authService = {
     const { name, email, password, role } = data;
     if (!name || !email || !password || !role) throw new Error('Missing required fields');
 
-    const existing = await authRepository.findByEmail(email);
+    const existing = await authRepository.findByEmailAndRole(email, role);
     if (existing) throw new Error('User already exists');
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -23,9 +23,8 @@ export const authService = {
   login: async (email: string, password: string, role: string) => {
     if (!email || !password || !role) throw new Error('Missing credentials');
 
-    const user = await authRepository.findByEmail(email);
+    const user = await authRepository.findByEmailAndRole(email, role);
     if (!user) throw new Error('Invalid credentials');
-    if (user.role !== role) throw new Error('Invalid credentials');
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error('Invalid credentials');
