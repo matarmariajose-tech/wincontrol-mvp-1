@@ -182,95 +182,60 @@
       <div class="modalHead">
         <div>
           <div class="modalTitle" id="modalTitle">Nueva visita</div>
-          <div class="modalSub" id="modalSub">Calendario con validación de slot</div>
         </div>
-        <button class="iconBtn" id="closeModal" title="Cerrar">×</button>
+        <button class="iconBtn" id="closeModal" title="Cerrar">&times;</button>
       </div>
- 
-      <form id="newVisitForm" class="form">
-        <div class="grid">
-          <label>
-            <span>Referencia</span>
-            <div style="position:relative">
-              <input name="ref" id="refInput" placeholder="Buscar por ref o dirección..." required autocomplete="off" />
-              <div id="refDropdown" style="
-                display:none;
-                position:absolute;
-                top:100%;
-                left:0;
-                right:0;
-                background:rgba(2,6,23,.98);
-                border:1px solid rgba(255,255,255,.10);
-                border-radius:14px;
-                margin-top:4px;
-                max-height:200px;
-                overflow-y:auto;
-                z-index:100;
-              "></div>
-            </div>
-          </label>
- 
-          <label>
-            <span>Cliente</span>
-            <input name="cliente" placeholder="Nombre del cliente" required />
-          </label>
-
-          <label>
-            <span>Email del cliente</span>
-            <input name="clienteEmail" type="email" placeholder="cliente@email.com" />
-          </label>
-
-          <label>
-            <span>Teléfono del cliente</span>
-            <input name="clientePhone" type="tel" placeholder="+34 600 000 000" />
-          </label>
- 
-          <label>
-            <span>Fecha</span>
-            <input name="fecha" type="date" required />
-          </label>
- 
-          <label>
-            <span>Hora</span>
-            <input name="hora" type="time" required />
-          </label>
- 
-          <label>
-            <span>Estado</span>
-            <select name="estado">
-              <option value="PENDIENTE">PENDIENTE</option>
-              <option value="MODIFICADA">MODIFICADA</option>
-              <option value="EN_OFERTA">EN OFERTA</option>
-              <option value="CONCERTADA">CONCERTADA</option>
-              <option value="REALIZADA">REALIZADA</option>
-              <option value="BLOQUEADA">BLOQUEADA</option>
-              <option value="CANCELADA">CANCELADA</option>
-              <option value="NO_SE_PRESENTA">NO SE PRESENTA</option>
-            </select>
-          </label>
- 
-          <label>
-            <span>Comercial</span>
-            <select name="comercial" id="comercialSelect"></select>
-          </label>
- 
-          <label class="full">
-            <span>Inmueble</span>
-            <input name="inmueble" placeholder="Piso 3 hab - Gràcia" required />
-          </label>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Cliente (nombre) *</label>
+          <input id="nv-nombre" type="text" placeholder="Nombre del cliente" class="input" style="width:100%" />
         </div>
- 
-        <div class="modalActions">
-          <button type="button" class="btn ghost" id="seedBtn">Cargar demo</button>
-          <button type="submit" class="btn primary">Guardar visita</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Email</label>
+            <input id="nv-email" type="email" placeholder="cliente@email.com" class="input" style="width:100%" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Telefono</label>
+            <input id="nv-phone" type="tel" placeholder="+34 600 000 000" class="input" style="width:100%" />
+          </div>
         </div>
- 
-        <div class="calendarHint" id="calendarHint">—</div>
-      </form>
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Inmueble</label>
+          <input id="nv-property-search" type="text" placeholder="Buscar por titulo o referencia..." class="input" style="width:100%" oninput="nvSearchProperties(this.value)" />
+          <div id="nv-property-dropdown" style="display:none;background:#0b1220;border:1px solid #162032;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:4px;"></div>
+          <input type="hidden" id="nv-property-id" />
+          <div id="nv-property-selected" style="font-size:11px;color:#7aa2ff;margin-top:3px;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fecha *</label>
+            <input id="nv-fecha" type="date" class="input" style="width:100%" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Hora *</label>
+            <input id="nv-hora" type="time" class="input" style="width:100%" />
+          </div>
+        </div>
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fuente</label>
+          <select id="nv-source" class="input" style="width:100%">
+            <option value="Idealista">Idealista</option>
+            <option value="Fotocasa">Fotocasa</option>
+            <option value="Habitaclia">Habitaclia</option>
+            <option value="Manual">Manual</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Referido">Referido</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px;">
+          <button class="btn ghost" onclick="document.getElementById('modal').setAttribute('aria-hidden','true')">Cancelar</button>
+          <button class="btn primary" id="nv-submit" onclick="nvCreateLead()">Crear lead y visita</button>
+        </div>
+      </div>
     </div>
   </div>
- 
-  <!-- MODAL (Flujo Idealista) -->
+
   <div class="modal" id="flowModal" aria-hidden="true">
     <div class="modalBackdrop" id="flowBackdrop"></div>
     <div class="modalPanel">
