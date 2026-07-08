@@ -180,6 +180,250 @@
     <div class="modalBackdrop" id="modalBackdrop"></div>
     <div class="modalPanel">
       <div class="modalHead">
+        <div class="modalTitle">Nueva visita</div>
+        <button class="iconBtn" id="closeModal">×</button>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Cliente (nombre) *</label>
+          <input id="nv-nombre" type="text" placeholder="Nombre del cliente" class="input" style="width:100%" />
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Email</label>
+            <input id="nv-email" type="email" placeholder="cliente@email.com" class="input" style="width:100%" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Teléfono</label>
+            <input id="nv-phone" type="tel" placeholder="+34 600 000 000" class="input" style="width:100%" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Inmueble</label>
+          <input id="nv-property-search" type="text" placeholder="Buscar por título o referencia..." class="input" style="width:100%" oninput="nvSearchProperties(this.value)" />
+          <div id="nv-property-dropdown" style="display:none;background:#0b1220;border:1px solid #162032;border-radius:8px;max-height:150px;overflow-y:auto;margin-top:4px;"></div>
+          <input type="hidden" id="nv-property-id" />
+          <div id="nv-property-selected" style="font-size:11px;color:#7aa2ff;margin-top:3px;"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fecha *</label>
+            <input id="nv-fecha" type="date" class="input" style="width:100%" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Hora *</label>
+            <input id="nv-hora" type="time" class="input" style="width:100%" />
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fuente</label>
+          <select id="nv-source" class="input" style="width:100%">
+            <option value="Idealista">Idealista</option>
+            <option value="Fotocasa">Fotocasa</option>
+            <option value="Habitaclia">Habitaclia</option>
+            <option value="Manual">Manual</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Referido">Referido</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px;">
+          <button class="btn ghost" onclick="document.getElementById('modal').setAttribute('aria-hidden','true')">Cancelar</button>
+          <button class="btn primary" id="nv-submit" onclick="nvCreateLead()">Crear lead y visita</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWER -->
+
+  <!-- DRAWER -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wincontrol Comercial</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+ 
+<body>
+<div class="app">
+ 
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">W</div>
+      <div class="brandText">
+        <div class="name">WINALLCONTROL</div>
+        <div class="tag">Gestión y reporting comercial</div>
+      </div>
+    </div>
+ 
+    <div class="topbarRight">
+      <div class="online">
+        <span class="dot"></span>
+        <span id="onlineAgents">3 agentes online</span>
+      </div>
+ 
+      <button class="btn ghost" id="flowBtn">Simular flujo Idealista</button>
+ 
+      <div class="user-wrapper">
+        <button class="user" id="userBtn" title="Perfil">
+          <div class="avatar" id="userAvatar">MJ</div>
+          <div class="userText">
+            <div class="userName">María José Matar</div>
+            <div class="userRole">Senior Tech Lead</div>
+          </div>
+        </button>
+
+        <div class="dropdown" id="userDropdown">
+          <button>👤 Ver perfil</button>
+          <button>⚙️ Configuración</button>
+          <hr />
+          <button id="logoutBtn">🚪 Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </header>
+ 
+  <!-- MAIN -->
+  <main class="container">
+    <section class="pageHeader">
+      <div>
+        <h1>Dashboard Comercial</h1>
+        <p class="sub" id="nowLabel">—</p>
+      </div>
+      <div class="headerActions">
+        <button class="btn ghost" id="exportBtn">Exportar CSV</button>
+        <button class="btn primary" id="newVisitBtn"><span class="plus">+</span>Nueva visita</button>
+      </div>
+    </section>
+ 
+    <section class="stats">
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Visitas hoy</div>
+          <div class="icon i-blue">📅</div>
+        </div>
+        <div class="value" id="statToday">0</div>
+      </article>
+ 
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Pendientes de finalizar</div>
+          <div class="icon i-amber">⏱️</div>
+        </div>
+        <div class="value" id="statPending">0</div>
+      </article>
+ 
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">En oferta</div>
+          <div class="icon i-orange">🏷️</div>
+        </div>
+        <div class="value" id="statOffers">0</div>
+      </article>
+ 
+      <article class="card stat">
+        <div class="cardHead">
+          <div class="label">Tasa conversión</div>
+          <div class="icon i-emerald">✅</div>
+        </div>
+        <div class="value" id="statConv">—</div>
+      </article>
+    </section>
+ 
+    <section class="card tableCard">
+      <div class="tableTop">
+        <div>
+          <h2>Próximas visitas y trazabilidad</h2>
+          <p class="hint">
+            • Click fila: ficha completa
+            • Estado: desplegable editable
+            • Si pones MODIFICADA, podrás re-agendar (valida calendario)
+            • EN_OFERTA / REALIZADA bloquean el calendario
+          </p>
+        </div>
+ 
+        <div class="controls">
+          <div class="segmented" id="statusFilter">
+            <button class="seg active" data-status="all">Todas</button>
+            <button class="seg" data-status="LEAD_NUEVO">LEAD NUEVO</button>
+            <button class="seg" data-status="VISITA_AGENDADA">VISITA AGENDADA</button>
+            <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
+            <button class="seg" data-status="SEGUIMIENTO">SEGUIMIENTO</button>
+            <button class="seg" data-status="INTENCION_OFERTA">INTENCIÓN OFERTA</button>
+            <button class="seg" data-status="OFERTA_REALIZADA">OFERTA REALIZADA</button>
+            <button class="seg danger" data-status="VISITA_CANCELADA">CANCELADA</button>
+            <button class="seg" data-status="VISITA_MODIFICADA">MODIFICADA</button>
+            <button class="seg danger" data-status="PERDIDO">PERDIDO</button>
+            <button class="seg" data-status="VENDIDO">VENDIDO</button>
+          </div>
+ 
+          <div class="search">
+            <span class="searchIcon">⌕</span>
+            <input id="searchInput" placeholder="Buscar por cliente, inmueble o referencia..." />
+            <button class="clear" id="clearSearch" title="Limpiar">×</button>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="ref">Ref <span class="sortMark"></span></th>
+              <th class="sortable" data-sort="inmueble">Inmueble <span class="sortMark"></span></th>
+              <th>Cliente</th>
+              <th class="sortable" data-sort="comercial">Comercial <span class="sortMark"></span></th>
+              <th class="sortable" data-sort="datetime">Fecha y hora <span class="sortMark"></span></th>
+              <th>Estado</th>
+              <th class="right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="7" class="loading">Cargando visitas...</td></tr>
+          </tbody>
+        </table>
+      </div>
+ 
+      <div class="tableFooter">
+        <div class="muted" id="countLabel">—</div>
+        <div class="muted">Wincontrol MVP Fase 1 • Links públicos /public/*</div>
+      </div>
+    </section>
+  </main>
+ 
+  <!-- DRAWER (Ficha completa) -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerBackdrop" id="drawerBackdrop"></div>
+    <div class="drawerPanel">
+      <div class="drawerHead">
+        <div>
+          <div class="drawerTitle" id="drawerTitle">Ficha completa</div>
+          <div class="drawerSub" id="drawerSub">—</div>
+        </div>
+        <button class="iconBtn" id="closeDrawer" title="Cerrar">×</button>
+      </div>
+      <div class="drawerBody" id="drawerBody"></div>
+      <div class="drawerActions">
+        <button class="btn ghost" id="copyPublicLinksBtn">Copiar links públicos</button>
+        <button class="btn danger" id="deleteBtn">Eliminar</button>
+        <button class="btn primary" id="saveBtn">Guardar</button>
+      </div>
+    </div>
+  </aside>
+ 
+  <!-- MODAL (Nueva visita) -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modalBackdrop" id="modalBackdrop"></div>
+    <div class="modalPanel">
+      <div class="modalHead">
         <div>
           <div class="modalTitle" id="modalTitle">Nueva visita</div>
           <div class="modalSub" id="modalSub">Calendario con validación de slot</div>
