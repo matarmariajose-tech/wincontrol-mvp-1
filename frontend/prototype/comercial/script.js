@@ -335,3 +335,80 @@ document.getElementById('modalBackdrop')?.addEventListener('click', () => {
   $('#tbody').innerHTML = `<tr><td colspan="6" class="loading">Cargando...</td></tr>`;
   loadLeads();
 })();
+
+let nvPropsCache = [];
+
+async function nvSearchProperties(query) {
+  const dropdown = document.getElementById('nv-property-dropdown');
+  if (!query || query.length < 2) { dropdown.style.display = 'none'; return; }
+  if (!nvPropsCache.length) {
+    try {
+      const res = await fetch(`${CONFIG.API_URL}/api/properties`, { headers: authHeaders() });
+      nvPropsCache = await res.json();
+    } catch { return; }
+  }
+  const q = query.toLowerCase();
+  const matches = nvPropsCache.filter(p =>
+    p.title?.toLowerCase().includes(q) || String(p.id).includes(q)
+  ).slice(0, 6);
+  if (!matches.length) { dropdown.style.display = 'none'; return; }
+  dropdown.style.display = 'block';
+  dropdown.innerHTML = matches.map(p => `
+    <div onclick="nvSelectProperty(${p.id}, '${(p.title || '').replace(/'/g, "\'")}')" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'">
+      <div style="color:#7aa2ff;font-weight:600;">#${p.id}</div>
+      <div style="color:#94a3b8;">${p.title}</div>
+    </div>
+  `).join('');
+}
+
+function nvSelectProperty(id, title) {
+  document.getElementById('nv-property-id').value = id;
+  document.getElementById('nv-property-search').value = title;
+  document.getElementById('nv-property-selected').textContent = 'Seleccionado';
+  document.getElementById('nv-property-dropdown').style.display = 'none';
+}
+
+async function nvCreateLead() {
+  const nombre = document.getElementById('nv-nombre').value.trim();
+  const fecha = document.getElementById('nv-fecha').value;
+  const hora = document.getElementById('nv-hora').value;
+  if (!nombre) { showToast('El nombre es obligatorio'); return; }
+  if (!fecha || !hora) { showToast('Fecha y hora son obligatorias'); return; }
+  const btn = document.getElementById('nv-submit');
+  btn.disabled = true; btn.textContent = 'Creando...';
+  const user = JSON.parse(localStorage.getItem('wc_user') || '{}');
+  const propertyId = document.getElementById('nv-property-id').value;
+  try {
+    const leadRes = await fetch(LEADS_API, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        nombre,
+        email: document.getElementById('nv-email').value.trim(),
+        phone: document.getElementById('nv-phone').value.trim(),
+        source: document.getElementById('nv-source').value,
+        comercialId: user.name,
+        propertyId: propertyId ? parseInt(propertyId) : null,
+      }),
+    });
+    const lead = await leadRes.json();
+    await fetch(`${CONFIG.API_URL}/api/visits`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        leadId: lead.id,
+        fecha,
+        hora,
+        comercialId: user.name,
+        propertyId: propertyId ? parseInt(propertyId) : null,
+      }),
+    });
+    document.getElementById('modal').setAttribute('aria-hidden', 'true');
+    await loadLeads();
+    showToast('Lead y visita creados');
+  } catch (err) {
+    showToast('Error al crear');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Crear lead y visita';
+  }
+}
