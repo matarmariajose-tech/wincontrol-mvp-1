@@ -507,3 +507,31 @@ th[data-dir="desc"] .sortMark::after{content:"▼";font-size:10px}
   justify-content: flex-end;
   gap: 12px;
 }
+body.light {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #475569;
+  --muted2: #64748b;
+}
+body.light {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.06), transparent 60%),
+    radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.04), transparent 55%),
+    var(--bg);
+}
+body.light .topbar {
+  background: rgba(255,255,255,.85);
+  border-color: var(--border);
+}
+body.light .brandText .name { color: #0f172a; }
+body.light .card { background: #fff; border-color: var(--border); }
+body.light .table thead th { background: #f1f5f9; color: #475569; }
+body.light .table tbody tr:hover { background: #f8fafc; }
+body.light .panel { background: #fff; border-color: var(--border); }
+body.light input, body.light select { background: #fff; border-color: #e2e8f0; color: #0f172a; }
+body.light .seg { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
+body.light .seg.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+body.light .drawer .drawerPanel { background: #fff; border-color: var(--border); }
+body.light .modal .modalPanel { background: #fff; border-color: var(--border); }

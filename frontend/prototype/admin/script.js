@@ -762,3 +762,13 @@ document.addEventListener('change', async (e) => {
   await loadRowsFromAPI();
   await loadVisitsAdmin();
 })();
+// Theme toggle
+(function() {
+  const saved = localStorage.getItem('wc_theme');
+  if (saved === 'light') document.body.classList.add('light');
+})();
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  localStorage.setItem('wc_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+});

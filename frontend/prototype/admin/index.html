@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wincontrol Admin</title>
   <link rel="stylesheet" href="./styles.css" />
+<style>
+.theme-toggle {
+  width:36px;height:20px;background:var(--border);border-radius:20px;
+  position:relative;cursor:pointer;border:none;transition:.2s;flex-shrink:0;
+}
+.theme-toggle::after {
+  content:'';width:14px;height:14px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;left:3px;transition:.2s;
+}
+body.light .theme-toggle { background:#2563eb; }
+body.light .theme-toggle::after { left:19px; }
+</style>
 </head>
 <body>
   <div class="app">
@@ -18,6 +30,7 @@
     </div>
 
     <div class="topbarRight">
+        <button class="theme-toggle" id="themeToggle" title="Cambiar tema"></button>
       <div class="online">
         <span class="dot"></span>
         <span id="onlineAdmins">Admin online · 4 comerciales activos</span>
