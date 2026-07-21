@@ -199,7 +199,7 @@ function renderFunnel() {
       <div class="funnelStep">
         <div class="funnelTop">
           <div class="funnelTitle">${step.label}</div>
-          <div style="font-size:18px;font-weight:700;color:#fff;">${step.count}</div>
+          <div class="textStrong" style="font-size:18px;font-weight:700;">${step.count}</div>
         </div>
         <div class="funnelSub">${Math.round((step.count / total) * 100)}% del total</div>
         <div class="barTrack"><div class="barFill" style="width:${pct}%;background:${step.color};"></div></div>
@@ -314,7 +314,7 @@ function renderTable() {
     <tr data-id="${row.id}">
       <td class="mono">${escapeHTML(row.id.slice(0, 8))}...</td>
       <td>
-        <strong style="color:#fff">${escapeHTML(row.client)}</strong>
+        <strong class="textStrong">${escapeHTML(row.client)}</strong>
         <div class="muted">${escapeHTML(row.email)}</div>
       </td>
       <td>${escapeHTML(row.source)}</td>
@@ -549,7 +549,6 @@ async function loadRowsFromAPI() {
   render();
 }
 
-// Modal crear lead
 function openCreateLeadModal() {
   const modal = document.getElementById('createLeadModal');
   modal.style.display = 'flex';
@@ -602,8 +601,8 @@ async function searchProperties(query) {
   dropdown.style.display = 'block';
   dropdown.innerHTML = matches.map(p => `
     <div onclick="selectProperty(${p.id}, '${p.title?.replace(/'/g, "\'")}' )" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'">
-      <div style="color:#7aa2ff;font-weight:600;">#${p.id}</div>
-      <div style="color:#94a3b8;">${p.title}</div>
+      <div class="linkAccent" style="font-weight:600;">#${p.id}</div>
+      <div style="color:var(--muted);">${p.title}</div>
     </div>
   `).join('');
 }
@@ -712,7 +711,7 @@ function renderVisitsAdmin(visits) {
   tbody.innerHTML = visits.map(v => `
     <tr>
       <td class="mono">${v.id ? v.id.slice(0, 8) : '-'}</td>
-      <td><strong style="color:#fff">${v.clienteNombre}</strong><div class="muted" style="font-size:11px">${v.inmuebleTitulo}</div></td>
+      <td><strong class="textStrong">${v.clienteNombre}</strong><div class="muted" style="font-size:11px">${v.inmuebleTitulo}</div></td>
       <td>${v.fecha || '-'} • ${(v.hora || '').slice(0,5)}</td>
       <td>
         <select class="stateSelect adminVisitCommercial" data-id="${v.id}">
@@ -762,13 +761,22 @@ document.addEventListener('change', async (e) => {
   await loadRowsFromAPI();
   await loadVisitsAdmin();
 })();
-// Theme toggle
-(function() {
-  const saved = localStorage.getItem('wc_theme');
-  if (saved === 'light') document.body.classList.add('light');
-})();
 
-document.getElementById('themeToggle')?.addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  localStorage.setItem('wc_theme', document.body.classList.contains('light') ? 'light' : 'dark');
-});
+(function () {
+  const THEME_KEY = 'wc-theme';
+  const themeToggle = document.getElementById('themeToggle');
+  if (!themeToggle) return;
+
+  function applyTheme(theme) {
+    document.body.classList.toggle('light', theme === 'light');
+    themeToggle.setAttribute('aria-checked', theme === 'light');
+  }
+
+  applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+
+  themeToggle.addEventListener('click', () => {
+    const next = document.body.classList.contains('light') ? 'dark' : 'light';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+})();

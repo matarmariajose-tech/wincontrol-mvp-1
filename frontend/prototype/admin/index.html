@@ -5,18 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wincontrol Admin</title>
   <link rel="stylesheet" href="./styles.css" />
-<style>
-.theme-toggle {
-  width:36px;height:20px;background:var(--border);border-radius:20px;
-  position:relative;cursor:pointer;border:none;transition:.2s;flex-shrink:0;
-}
-.theme-toggle::after {
-  content:'';width:14px;height:14px;background:#fff;border-radius:50%;
-  position:absolute;top:3px;left:3px;transition:.2s;
-}
-body.light .theme-toggle { background:#2563eb; }
-body.light .theme-toggle::after { left:19px; }
-</style>
 </head>
 <body>
   <div class="app">
@@ -30,14 +18,32 @@ body.light .theme-toggle::after { left:19px; }
     </div>
 
     <div class="topbarRight">
-        <button class="theme-toggle" id="themeToggle" title="Cambiar tema"></button>
+      <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+        <span class="theme-toggle-thumb">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.2"/>
+            <line x1="12" y1="1.5" x2="12" y2="4"/>
+            <line x1="12" y1="20" x2="12" y2="22.5"/>
+            <line x1="1.5" y1="12" x2="4" y2="12"/>
+            <line x1="20" y1="12" x2="22.5" y2="12"/>
+            <line x1="4.2" y1="4.2" x2="6" y2="6"/>
+            <line x1="18" y1="18" x2="19.8" y2="19.8"/>
+            <line x1="4.2" y1="19.8" x2="6" y2="18"/>
+            <line x1="18" y1="6" x2="19.8" y2="4.2"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3a9 9 0 108.485 12.02A7 7 0 0112 3z"/>
+          </svg>
+        </span>
+      </button>
+
       <div class="online">
         <span class="dot"></span>
         <span id="onlineAdmins">Admin online · 4 comerciales activos</span>
       </div>
 
       <div class="user-wrapper">
-        <button class="btn ghost" class="user" id="userBtn">
+        <button class="user" id="userBtn">
           <div class="avatar" id="userAvatar">AM</div>
           <div class="userText">
             <div class="userName" id="userName">Admin Wincontrol</div>
@@ -312,27 +318,27 @@ body.light .theme-toggle::after { left:19px; }
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <div>
-        <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Nombre *</label>
+        <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Nombre *</label>
         <input id="lead-nombre" type="text" placeholder="Nombre completo" class="modal-input" style="margin-bottom:0;" />
       </div>
       <div>
-        <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Teléfono</label>
+        <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Teléfono</label>
         <input id="lead-phone" type="tel" placeholder="+34 600 000 000" class="modal-input" style="margin-bottom:0;" />
       </div>
     </div>
 
     <div style="margin-bottom:10px;">
-      <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Email</label>
+      <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Email</label>
       <input id="lead-email" type="email" placeholder="cliente@email.com" class="modal-input" style="margin-bottom:0;" />
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <div>
-        <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Comercial asignado</label>
+        <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Comercial asignado</label>
         <select id="lead-comercial" class="modal-input" style="margin-bottom:0;"></select>
       </div>
       <div>
-        <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Fuente</label>
+        <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Fuente</label>
         <select id="lead-source" class="modal-input" style="margin-bottom:0;">
           <option value="Idealista">Idealista</option>
           <option value="Fotocasa">Fotocasa</option>
@@ -345,15 +351,15 @@ body.light .theme-toggle::after { left:19px; }
     </div>
 
     <div style="margin-bottom:10px;">
-      <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">Inmueble de interés</label>
+      <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">Inmueble de interés</label>
       <input id="lead-property-search" type="text" placeholder="Buscar por referencia o título..." class="modal-input" style="margin-bottom:4px;" oninput="searchProperties(this.value)" />
-      <div id="lead-property-dropdown" style="display:none;background:#0b1220;border:1px solid #162032;border-radius:8px;max-height:160px;overflow-y:auto;"></div>
+      <div id="lead-property-dropdown" style="display:none;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;max-height:160px;overflow-y:auto;"></div>
       <input type="hidden" id="lead-property-id" />
-      <div id="lead-property-selected" style="font-size:12px;color:#7aa2ff;margin-top:4px;"></div>
+      <div id="lead-property-selected" class="linkAccent" style="font-size:12px;margin-top:4px;"></div>
     </div>
 
     <div style="margin-bottom:10px;">
-      <label style="font-size:11px;color:#64748b;display:block;margin-bottom:4px;">URL de origen (opcional)</label>
+      <label style="font-size:11px;color:var(--muted2);display:block;margin-bottom:4px;">URL de origen (opcional)</label>
       <input id="lead-url" type="text" placeholder="https://www.idealista.com/inmueble/..." class="modal-input" style="margin-bottom:0;" />
     </div>
 

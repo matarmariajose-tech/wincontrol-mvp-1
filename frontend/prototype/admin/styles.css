@@ -463,7 +463,7 @@ th[data-dir="desc"] .sortMark::after{content:"▼";font-size:10px}
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  display: none; /* Se controla por JS */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -507,31 +507,173 @@ th[data-dir="desc"] .sortMark::after{content:"▼";font-size:10px}
   justify-content: flex-end;
   gap: 12px;
 }
+
+/* ============================================================
+   WINALLCONTROL — ADMIN · LIGHT MODE + TOGGLE (reescritura completa)
+   Reemplaza TODO desde el "body.light {" hacia abajo en styles.css
+   por este bloque completo.
+   ============================================================ */
+
+/* ---- 1. Tokens ---- */
 body.light {
-  --bg: #f8fafc;
+  --bg: #f6f5f2;
   --panel: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --muted: #475569;
-  --muted2: #64748b;
+  --panel-2: #f4f3ef;
+  --border: #e4e2da;
+  --border-strong: #d6d3c8;
+  --text: #0a0a0a;
+  --muted: #6b6a63;
+  --muted2: #98968d;
 }
+
 body.light {
   background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.06), transparent 60%),
-    radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.04), transparent 55%),
+    radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.05), transparent 60%),
+    radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.03), transparent 55%),
     var(--bg);
 }
-body.light .topbar {
-  background: rgba(255,255,255,.85);
+
+/* ---- 2. Topbar / marca ---- */
+body.light .topbar { background: rgba(255,255,255,.85); border-color: var(--border); }
+body.light .brandText .name { color: var(--text); }
+body.light .online { color: var(--muted); }
+
+/* ---- 3. Botones ---- */
+body.light .btn { border-color: var(--border); background: var(--panel-2); color: var(--text); }
+body.light .btn:hover { border-color: rgba(37,99,235,.35); }
+body.light .btn.danger { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.25); color: #b91c1c; }
+
+/* ---- 4. Cards y números KPI ---- */
+body.light .card {
+  background: #fff;
   border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 10px 24px rgba(15,23,42,.05);
 }
-body.light .brandText .name { color: #0f172a; }
-body.light .card { background: #fff; border-color: var(--border); }
-body.light .table thead th { background: #f1f5f9; color: #475569; }
-body.light .table tbody tr:hover { background: #f8fafc; }
-body.light .panel { background: #fff; border-color: var(--border); }
-body.light input, body.light select { background: #fff; border-color: #e2e8f0; color: #0f172a; }
-body.light .seg { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
-body.light .seg.active { background: #2563eb; color: #fff; border-color: #2563eb; }
-body.light .drawer .drawerPanel { background: #fff; border-color: var(--border); }
-body.light .modal .modalPanel { background: #fff; border-color: var(--border); }
+body.light .value { color: var(--text); }
+body.light .label { color: var(--muted); }
+body.light .miniStat { color: var(--muted2); }
+
+body.light .icon { border-color: var(--border); background: var(--panel-2); }
+body.light .i-blue    { box-shadow: 0 0 0 6px rgba(37,99,235,.10); }
+body.light .i-violet  { box-shadow: 0 0 0 6px rgba(139,92,246,.10); }
+body.light .i-amber   { box-shadow: 0 0 0 6px rgba(245,158,11,.10); }
+body.light .i-orange  { box-shadow: 0 0 0 6px rgba(249,115,22,.10); }
+body.light .i-emerald { box-shadow: 0 0 0 6px rgba(16,185,129,.10); }
+body.light .i-red     { box-shadow: 0 0 0 6px rgba(220,38,38,.10); }
+
+/* ---- 5. Funnel / pipeline de leads ---- */
+body.light .funnelStep { border-color: var(--border); background: var(--panel-2); }
+body.light .funnelValue { color: var(--text); }
+body.light .barTrack { background: rgba(15,23,42,.06); }
+
+/* ---- 6. Canales de entrada / centro de alertas ---- */
+body.light .sourceItem, body.light .alertItem { border-color: var(--border); background: var(--panel-2); }
+body.light .sourceBar { background: rgba(15,23,42,.06); }
+
+/* ---- 7. Tabla equipo comercial ---- */
+body.light .agentTable th { color: var(--muted); }
+body.light .agentTable th, body.light .agentTable td { border-color: var(--border); }
+
+/* ---- 8. Badges de estado ---- */
+body.light .b-blue    { background: rgba(37,99,235,.10);  color:#1d4ed8; border-color: rgba(37,99,235,.28); }
+body.light .b-emerald { background: rgba(16,185,129,.10); color:#047857; border-color: rgba(16,185,129,.28); }
+body.light .b-amber   { background: rgba(245,158,11,.12); color:#b45309; border-color: rgba(245,158,11,.30); }
+body.light .b-orange  { background: rgba(249,115,22,.12); color:#c2410c; border-color: rgba(249,115,22,.30); }
+body.light .b-red     { background: rgba(220,38,38,.10);  color:#b91c1c; border-color: rgba(220,38,38,.28); }
+body.light .b-violet  { background: rgba(139,92,246,.10); color:#6d28d9; border-color: rgba(139,92,246,.28); }
+body.light .b-slate   { background: rgba(100,116,139,.10);color:#475569; border-color: rgba(100,116,139,.24); }
+
+/* ---- 9. Segmented control / buscador ---- */
+body.light .segmented { background: var(--panel-2); border-color: var(--border); }
+body.light .seg:hover { border-color: rgba(15,23,42,.06); }
+body.light .seg.active { color: #fff; }
+body.light .search input { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+body.light .clear { background: rgba(15,23,42,.05); border-color: var(--border); color: var(--muted); }
+
+/* ---- 10. Tabla principal ---- */
+body.light thead th { background: var(--panel-2); color: var(--muted); border-color: var(--border); }
+body.light tbody td { border-color: var(--border); }
+body.light tbody tr:hover { background: rgba(15,23,42,.03); }
+body.light td.mono { color: #1d4ed8; }
+
+/* ---- 11. Selects de estado ---- */
+body.light .stateSelect,
+body.light .drawer select,
+body.light .drawer input { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+body.light .actionBtn { color: #1d4ed8; }
+
+/* ---- 12. Drawer lateral ---- */
+body.light .drawerPanel {
+  background: #fff;
+  border-left-color: var(--border);
+  box-shadow: -10px 0 30px rgba(15,23,42,.08);
+}
+body.light .drawerHead { border-color: var(--border); }
+body.light .drawerTitle { color: var(--text); }
+body.light .drawerSub { color: var(--muted); }
+body.light .drawerActions { border-color: var(--border); }
+body.light .iconBtn { background: rgba(15,23,42,.04); border-color: var(--border); }
+body.light .kv { background: var(--panel-2); border-color: var(--border); }
+body.light .kv .k { color: var(--muted2); }
+
+/* ---- 13. Modal de importación ---- */
+body.light .modal-content { background: #fff; border-color: var(--border); box-shadow: 0 20px 60px rgba(15,23,42,.12); }
+body.light .modal-input { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+
+/* ---- 14. Dropdown de usuario ---- */
+body.light .dropdown { background: #fff; border-color: var(--border); box-shadow: 0 10px 30px rgba(15,23,42,.12); }
+body.light .dropdown button { color: var(--text); }
+body.light .dropdown button:hover { background: rgba(15,23,42,.04); }
+body.light .dropdown hr { background: var(--border); }
+
+/* ---- 15. Pill / textos accent ---- */
+body.light .pill { color: #1d4ed8; }
+body.light .textStrong { color: var(--text); }
+body.light .linkAccent { color: #1d4ed8; }
+.textStrong { color: var(--text); }
+.linkAccent { color: #7aa2ff; }
+
+/* El toast se mantiene invertido (fondo oscuro) en los dos modos. */
+
+/* ---- 16. Toggle de tema (switch senior, reemplaza el circulo simple) ---- */
+.theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(2,6,23,.55);
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: rgba(37,99,235,.4); }
+body.light .theme-toggle { background: var(--panel-2); border-color: var(--border); }
+body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
+
+.theme-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--blue), #1d4ed8);
+  box-shadow: 0 4px 10px rgba(37,99,235,.4);
+  display: grid;
+  place-items: center;
+  position: relative;
+  transform: translateX(0);
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+  color: #fff;
+}
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb { transform: translateX(24px); }
+
+.theme-toggle-thumb svg {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.theme-toggle[aria-checked="false"] .icon-moon { opacity: 1; }
+.theme-toggle[aria-checked="true"] .icon-sun { opacity: 1; }
+.theme-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
