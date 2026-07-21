@@ -562,7 +562,7 @@ body.light .i-emerald { box-shadow: 0 0 0 6px rgba(16,185,129,.10); }
 body.light .i-red     { box-shadow: 0 0 0 6px rgba(220,38,38,.10); }
 
 /* ---- 5. Funnel / pipeline de leads ---- */
-body.light .funnelStep { border-color: var(--border); background: var(--panel-2); }
+body.light .funnelStep { border-color: var(--border); background: #fff; }
 body.light .funnelValue { color: var(--text); }
 body.light .barTrack { background: rgba(15,23,42,.06); }
 
