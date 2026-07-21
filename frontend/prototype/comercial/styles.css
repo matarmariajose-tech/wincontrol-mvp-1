@@ -1,4 +1,3 @@
-/* CSS (CodePen) */
 :root{
   --bg:#020617;
   --panel:#0b1220;
@@ -281,7 +280,6 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
 
 .loading{ color:var(--muted); text-align:center; padding:26px 10px; }
 
-/* Cliente popover */
 .clientCell{ position:relative; }
 .clientBtn{
   display:inline-flex; gap:8px; align-items:center;
@@ -311,7 +309,6 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
 .popK{ color:var(--muted2); font-size:12px; }
 .popV{ font-weight:800; font-size:12px; color:#fff; }
 
-/* Estado select en tabla */
 .stateSelect{
   width: 190px;
   max-width: 100%;
@@ -323,7 +320,6 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
   font-weight:900;
 }
 
-/* Drawer + Modals */
 .drawer, .modal{
   position:fixed;
   inset:0;
@@ -391,11 +387,11 @@ th[data-dir="desc"] .sortMark::after{ content:"▼"; font-size:10px; }
 @media (max-width: 520px){ .grid2{ grid-template-columns: 1fr; } }
 
 .modalPanel{
-  position:relative;   /* 👈 ya NO absolute */
+  position:relative;
   width: 720px;
   max-width: calc(100% - 24px);
-  max-height: 90vh;    /* 👈 evita que se rompa */
-  overflow-y: auto;    /* 👈 scroll interno */
+  max-height: 90vh;
+  overflow-y: auto;
   background: linear-gradient(180deg, rgba(11,18,32,.98), rgba(2,6,23,.92));
   border:1px solid rgba(255,255,255,.10);
   border-radius: 18px;
@@ -465,7 +461,6 @@ input[type="time"]::-webkit-datetime-edit-minute-field {
   background: rgba(2,6,23,.25);
 }
 
-/* Flow modal */
 .flowBody{ padding:14px; }
 .step{
   display:flex; gap:12px;
@@ -511,7 +506,6 @@ input[type="time"]::-webkit-datetime-edit-minute-field {
 }
 .flowActions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:12px; }
 
-/* Toast */
 .toast{
   position:fixed;
   left:50%; bottom:18px;
@@ -571,4 +565,179 @@ input[type="time"]::-webkit-datetime-edit-minute-field {
   border: none;
   border-top: 1px solid rgba(255,255,255,.08);
   margin: 6px 0;
+}
+/* ============================================================
+   WINALLCONTROL — COMERCIAL/LEADS · LIGHT MODE (nuevo)
+   Este archivo no tenía ningún bloque body.light — se agrega
+   desde cero. Pegalo al final del styles.css correspondiente.
+   Usa los mismos tokens que admin-light-mode.css para que ambas
+   pantallas se vean como un solo producto.
+   ============================================================ */
+
+/* ---- 1. Tokens ---- */
+body.light {
+  --bg: #f6f5f2;
+  --panel: #ffffff;
+  --panel-2: #f4f3ef;
+  --border: #e4e2da;
+  --border-strong: #d6d3c8;
+  --text: #0a0a0a;
+  --muted: #6b6a63;
+  --muted2: #98968d;
+}
+
+body.light {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.05), transparent 60%),
+    radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.03), transparent 55%),
+    var(--bg);
+}
+
+/* ---- 2. Topbar / marca ---- */
+body.light .topbar { background: rgba(255,255,255,.85); border-color: var(--border); }
+body.light .brandText .name { color: var(--text); }
+body.light .online { color: var(--muted); }
+body.light .user:hover { background: rgba(15,23,42,.03); }
+
+/* ---- 3. Botones ---- */
+body.light .btn { border-color: var(--border); background: var(--panel-2); color: var(--text); }
+body.light .btn:hover { border-color: rgba(37,99,235,.35); }
+body.light .btn.danger { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.25); color: #b91c1c; }
+
+/* ---- 4. Cards y números KPI ---- */
+body.light .card {
+  background: #fff;
+  border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 10px 24px rgba(15,23,42,.05);
+}
+body.light .value { color: var(--text); }
+body.light .label { color: var(--muted); }
+body.light .icon { border-color: var(--border); background: var(--panel-2); }
+body.light .i-blue    { box-shadow: 0 0 0 6px rgba(37,99,235,.10); }
+body.light .i-amber   { box-shadow: 0 0 0 6px rgba(245,158,11,.10); }
+body.light .i-orange  { box-shadow: 0 0 0 6px rgba(249,115,22,.10); }
+body.light .i-emerald { box-shadow: 0 0 0 6px rgba(16,185,129,.10); }
+
+/* ---- 5. Tabla de leads ---- */
+body.light .tableCard .tableTop { border-color: var(--border); }
+body.light .hint { color: var(--muted2); }
+body.light .segmented { background: var(--panel-2); border-color: var(--border); }
+body.light .seg:hover { border-color: rgba(15,23,42,.06); }
+body.light .search input { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+body.light .clear { background: rgba(15,23,42,.05); border-color: var(--border); color: var(--muted); }
+body.light thead th { background: var(--panel-2); color: var(--muted); border-color: var(--border); }
+body.light tbody td { border-color: var(--border); }
+body.light tbody tr:hover { background: rgba(15,23,42,.03); }
+body.light .muted { color: var(--muted2); }
+
+/* ---- 6. Badges de estado (misma corrección de contraste que admin) ---- */
+body.light .b-blue    { background: rgba(37,99,235,.10);  color:#1d4ed8; border-color: rgba(37,99,235,.28); }
+body.light .b-emerald { background: rgba(16,185,129,.10); color:#047857; border-color: rgba(16,185,129,.28); }
+body.light .b-amber   { background: rgba(245,158,11,.12); color:#b45309; border-color: rgba(245,158,11,.30); }
+body.light .b-orange  { background: rgba(249,115,22,.12); color:#c2410c; border-color: rgba(249,115,22,.30); }
+body.light .b-red     { background: rgba(220,38,38,.10);  color:#b91c1c; border-color: rgba(220,38,38,.28); }
+body.light .b-violet  { background: rgba(139,92,246,.10); color:#6d28d9; border-color: rgba(139,92,246,.28); }
+
+/* ---- 7. Popover de cliente ---- */
+body.light .clientBtn { border-color: var(--border); background: var(--panel-2); color: var(--text); }
+body.light .clientBtn .chev { color: var(--muted2); }
+body.light .popover { background: #fff; border-color: var(--border); box-shadow: 0 10px 30px rgba(15,23,42,.10); }
+body.light .popRow:hover { background: rgba(15,23,42,.03); }
+body.light .popK { color: var(--muted2); }
+body.light .popV { color: var(--text); }
+
+/* ---- 8. Select de estado en tabla ---- */
+body.light .stateSelect { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+
+/* ---- 9. Drawer ---- */
+body.light .drawerPanel { background: #fff; border-left-color: var(--border); box-shadow: -10px 0 30px rgba(15,23,42,.08); }
+body.light .drawerHead { border-color: var(--border); }
+body.light .drawerTitle { color: var(--text); }
+body.light .drawerSub { color: var(--muted); }
+body.light .iconBtn { background: rgba(15,23,42,.04); border-color: var(--border); }
+body.light .kv { background: var(--panel-2); border-color: var(--border); }
+body.light .kv .k { color: var(--muted2); }
+
+/* ---- 10. Modal de formulario (nueva visita) ---- */
+body.light .modalPanel {
+  background: #fff;
+  border-color: var(--border);
+  box-shadow: 0 20px 60px rgba(15,23,42,.12);
+}
+body.light .modalHead { border-color: var(--border); }
+body.light .modalTitle { color: var(--text); }
+body.light .modalSub { color: var(--muted); }
+body.light label span { color: var(--muted); }
+body.light input, body.light select {
+  background: var(--panel-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+body.light input[type="date"]::-webkit-calendar-picker-indicator,
+body.light input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none; /* el invert(1) era para fondo oscuro */
+}
+body.light .calendarHint { background: var(--panel-2); border-color: var(--border-strong); color: var(--muted2); }
+
+/* ---- 11. Modal de flujo (pasos) ---- */
+body.light .step { border-color: var(--border); background: var(--panel-2); }
+body.light .stepNum { background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.28); color: #1d4ed8; }
+body.light .stepTitle { color: var(--text); }
+body.light .stepDesc { color: var(--muted); }
+body.light .pill { background: var(--panel-2); border-color: var(--border); color: var(--text); }
+body.light .mini { background: rgba(15,23,42,.04); border-color: var(--border); color: var(--text); }
+body.light .mini.primary { background: rgba(249,115,22,.12); border-color: rgba(249,115,22,.30); color: #c2410c; }
+
+/* ---- 12. Dropdown de usuario ---- */
+body.light .dropdown { background: #fff; border-color: var(--border); box-shadow: 0 10px 30px rgba(15,23,42,.12); }
+body.light .dropdown button { color: var(--text); }
+body.light .dropdown button:hover { background: rgba(15,23,42,.04); }
+body.light .dropdown hr { background: var(--border); }
+
+/* El toast se mantiene invertido (fondo oscuro) igual que en admin,
+   por la misma razón: notificación corta, prioriza contraste. */
+.theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(2,6,23,.55);
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: rgba(37,99,235,.4); }
+body.light .theme-toggle { background: var(--panel-2); border-color: var(--border); }
+body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
+
+.theme-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--blue), #1d4ed8);
+  box-shadow: 0 4px 10px rgba(37,99,235,.4);
+  display: grid;
+  place-items: center;
+  position: relative;
+  transform: translateX(0);
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+  color: #fff;
+}
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb { transform: translateX(24px); }
+
+.theme-toggle-thumb svg {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.theme-toggle[aria-checked="false"] .icon-moon { opacity: 1; }
+.theme-toggle[aria-checked="true"] .icon-sun { opacity: 1; }
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }

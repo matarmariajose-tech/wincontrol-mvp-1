@@ -8,6 +8,11 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
+
+    :root {
+      --blue: #2563eb;
+    }
+
     body {
       min-height: 100vh;
       background: #020617;
@@ -16,13 +21,22 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      transition: background-color .2s ease, color .2s ease;
     }
+    body.light { background: #f6f5f2; color: #0a0a0a; }
+
     .bg {
       position: fixed; inset: 0; z-index: 0;
       background:
         radial-gradient(800px 600px at var(--mx, 30%) var(--my, 20%), rgba(37,99,235,.18), transparent 60%),
         radial-gradient(600px 400px at 80% 80%, rgba(139,92,246,.10), transparent 55%);
     }
+    body.light .bg {
+      background:
+        radial-gradient(800px 600px at var(--mx, 30%) var(--my, 20%), rgba(37,99,235,.06), transparent 60%),
+        radial-gradient(600px 400px at 80% 80%, rgba(139,92,246,.04), transparent 55%);
+    }
+
     .grid {
       position: fixed; inset: 0; z-index: 0;
       background-image:
@@ -30,19 +44,33 @@
         linear-gradient(90deg, rgba(37,99,235,.04) 1px, transparent 1px);
       background-size: 60px 60px;
     }
+    body.light .grid {
+      background-image:
+        linear-gradient(rgba(37,99,235,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,.03) 1px, transparent 1px);
+    }
+
     nav {
       display: flex; justify-content: space-between; align-items: center;
       padding: 24px 48px;
       border-bottom: 1px solid rgba(255,255,255,.06);
       position: relative; z-index: 10;
     }
+    body.light nav { border-bottom-color: rgba(15,23,42,.08); }
+
     .nav-logo {
       font-family: 'Syne', sans-serif; font-weight: 900;
       font-size: 14px; letter-spacing: .1em; color: #fff; text-decoration: none;
     }
-    .nav-right { display: flex; align-items: center; gap: 28px; }
+    body.light .nav-logo { color: #0a0a0a; }
+
+    .nav-right { display: flex; align-items: center; gap: 24px; }
+
     .nav-link { font-size: 13px; color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
     .nav-link:hover { color: #fff; }
+    body.light .nav-link { color: rgba(15,23,42,.45); }
+    body.light .nav-link:hover { color: #0a0a0a; }
+
     .nav-btn {
       font-size: 13px; font-weight: 500; color: #fff;
       background: rgba(37,99,235,.2); border: 1px solid rgba(37,99,235,.35);
@@ -50,6 +78,65 @@
       transition: background .2s, border-color .2s;
     }
     .nav-btn:hover { background: rgba(37,99,235,.35); border-color: rgba(37,99,235,.6); }
+    body.light .nav-btn {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+    body.light .nav-btn:hover { background: #1d4ed8; border-color: #1d4ed8; }
+
+    .theme-toggle {
+      position: relative;
+      width: 52px;
+      height: 28px;
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.55);
+      cursor: pointer;
+      transition: border-color .2s ease, background-color .2s ease;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: rgba(37,99,235,.4); }
+    body.light .theme-toggle { background: #ece9e2; border-color: rgba(15,23,42,.1); }
+    body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
+
+    .theme-toggle-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--blue), #1d4ed8);
+      box-shadow: 0 4px 10px rgba(37,99,235,.4);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transform: translateX(0);
+      transition: transform .25s cubic-bezier(.4,0,.2,1);
+      color: #fff;
+    }
+    .theme-toggle[aria-checked="true"] .theme-toggle-thumb { transform: translateX(24px); }
+
+    .theme-toggle-thumb svg {
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .theme-toggle[aria-checked="false"] .icon-moon { opacity: 1; }
+    .theme-toggle[aria-checked="true"] .icon-sun { opacity: 1; }
+
+    .theme-toggle:focus-visible,
+    .nav-link:focus-visible,
+    .nav-btn:focus-visible,
+    .cta:focus-visible,
+    .cta-ghost:focus-visible,
+    footer a:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
     .hero {
       flex: 1; display: flex; flex-direction: column; justify-content: center;
       padding: 80px 48px; max-width: 860px;
@@ -64,6 +151,8 @@
     .dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.15); animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.15)} 50%{box-shadow:0 0 0 6px rgba(34,197,94,.08)} }
     .eyebrow span { font-size: 11px; color: rgba(255,255,255,.3); letter-spacing: .1em; }
+    body.light .eyebrow span { color: rgba(15,23,42,.4); }
+
     h1 {
       font-family: 'Syne', sans-serif; font-weight: 900;
       font-size: clamp(40px, 7vw, 80px);
@@ -71,12 +160,17 @@
       margin-bottom: 24px;
       animation: fadeUp .8s ease .15s both;
     }
+    body.light h1 { color: #0a0a0a; }
     h1 em { font-style: normal; color: rgba(255,255,255,.18); }
+    body.light h1 em { color: rgba(15,23,42,.15); }
+
     .sub {
       font-size: 16px; color: rgba(255,255,255,.35); line-height: 1.7;
       max-width: 440px; margin-bottom: 44px; font-weight: 300;
       animation: fadeUp .8s ease .2s both;
     }
+    body.light .sub { color: rgba(15,23,42,.5); }
+
     .cta-group { display: flex; gap: 12px; flex-wrap: wrap; animation: fadeUp .8s ease .25s both; }
     .cta {
       display: inline-flex; align-items: center; gap: 8px;
@@ -87,6 +181,7 @@
     }
     .cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(37,99,235,.4); }
     .cta:active { transform: translateY(0); }
+
     .cta-ghost {
       display: inline-flex; align-items: center;
       padding: 13px 28px; background: transparent; color: rgba(255,255,255,.4);
@@ -95,20 +190,41 @@
       transition: color .2s, border-color .2s;
     }
     .cta-ghost:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+    body.light .cta-ghost { color: rgba(15,23,42,.55); border-color: rgba(15,23,42,.12); }
+    body.light .cta-ghost:hover { color: #0a0a0a; border-color: rgba(15,23,42,.25); }
+
     footer {
       padding: 20px 48px;
       border-top: 1px solid rgba(255,255,255,.05);
       display: flex; justify-content: space-between; align-items: center;
       position: relative; z-index: 1;
     }
+    body.light footer { border-top-color: rgba(15,23,42,.08); }
     footer span { font-size: 12px; color: rgba(255,255,255,.12); }
+    body.light footer span { color: rgba(15,23,42,.3); }
     footer a { font-size: 12px; color: rgba(255,255,255,.18); text-decoration: none; transition: color .2s; }
     footer a:hover { color: rgba(255,255,255,.5); }
+    body.light footer a { color: rgba(15,23,42,.35); }
+    body.light footer a:hover { color: #0a0a0a; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
     @media (max-width: 600px) {
       nav { padding: 20px 24px; }
       .nav-link { display: none; }
       .hero { padding: 60px 24px; }
       footer { padding: 20px 24px; }
+    }
+
+    @media (max-width: 380px) {
+      .nav-right { gap: 14px; }
+      .nav-btn { padding: 8px 14px; font-size: 12px; }
     }
   </style>
 </head>
@@ -120,6 +236,24 @@
     <a href="/" class="nav-logo">WINALLCONTROL</a>
     <div class="nav-right">
       <a href="mailto:info@winallcontrol.com" class="nav-link">Contacto</a>
+      <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+        <span class="theme-toggle-thumb">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.2"/>
+            <line x1="12" y1="1.5" x2="12" y2="4"/>
+            <line x1="12" y1="20" x2="12" y2="22.5"/>
+            <line x1="1.5" y1="12" x2="4" y2="12"/>
+            <line x1="20" y1="12" x2="22.5" y2="12"/>
+            <line x1="4.2" y1="4.2" x2="6" y2="6"/>
+            <line x1="18" y1="18" x2="19.8" y2="19.8"/>
+            <line x1="4.2" y1="19.8" x2="6" y2="18"/>
+            <line x1="18" y1="6" x2="19.8" y2="4.2"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3a9 9 0 108.485 12.02A7 7 0 0112 3z"/>
+          </svg>
+        </span>
+      </button>
       <a href="/prototype/login/" class="nav-btn">Acceder</a>
     </div>
   </nav>
@@ -144,11 +278,31 @@
 
   <script>
     const bg = document.getElementById('bg');
-    document.addEventListener('mousemove', (e) => {
-      const x = Math.round((e.clientX / window.innerWidth) * 100);
-      const y = Math.round((e.clientY / window.innerHeight) * 100);
-      bg.style.setProperty('--mx', x + '%');
-      bg.style.setProperty('--my', y + '%');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion) {
+      document.addEventListener('mousemove', (e) => {
+        const x = Math.round((e.clientX / window.innerWidth) * 100);
+        const y = Math.round((e.clientY / window.innerHeight) * 100);
+        bg.style.setProperty('--mx', x + '%');
+        bg.style.setProperty('--my', y + '%');
+      });
+    }
+
+    const THEME_KEY = 'wc-theme';
+    const themeToggle = document.getElementById('themeToggle');
+
+    function applyTheme(theme) {
+      document.body.classList.toggle('light', theme === 'light');
+      themeToggle.setAttribute('aria-checked', theme === 'light');
+    }
+
+    applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+
+    themeToggle.addEventListener('click', () => {
+      const next = document.body.classList.contains('light') ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
     });
   </script>
 </body>
