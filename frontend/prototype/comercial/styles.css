@@ -741,3 +741,7 @@ body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
+
+.textStrong { color: var(--text); }
+.linkAccent { color: #7aa2ff; }
+body.light .linkAccent { color: #1d4ed8; }

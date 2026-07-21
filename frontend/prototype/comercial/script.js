@@ -114,10 +114,10 @@ function render() {
   tbody.innerHTML = sorted.map(lead => `
     <tr data-id="${lead.id}">
       <td>
-        <strong style="color:#fff">${escapeHTML(lead.nombre)}</strong>
+        <strong class="textStrong">${escapeHTML(lead.nombre)}</strong>
         <div class="muted">${escapeHTML(lead.email || '—')}</div>
       </td>
-      <td>${lead.propertyTitle ? `<span style="font-size:12px;color:#fff;font-weight:600;">${escapeHTML(lead.propertyTitle)}</span>` : escapeHTML(lead.source || '—')}</td>
+      <td>${lead.propertyTitle ? `<span class="textStrong" style="font-size:12px;font-weight:600;">${escapeHTML(lead.propertyTitle)}</span>` : escapeHTML(lead.source || '—')}</td>
       <td>${escapeHTML(lead.phone || '—')}</td>
       <td>${new Date(lead.createdAt).toLocaleDateString('es-ES')}</td>
       <td>
@@ -165,13 +165,13 @@ async function openDrawer(id) {
   $('#drawerBody').innerHTML = `
     <div class="kv">
       <div class="k">Cliente</div>
-      <div class="v"><strong style="color:#fff">${escapeHTML(lead.nombre)}</strong></div>
+      <div class="v"><strong class="textStrong">${escapeHTML(lead.nombre)}</strong></div>
     </div>
     <div class="kv">
       <div class="k">Email</div>
       <div class="v">
         ${lead.email
-          ? `<a href="mailto:${escapeHTML(lead.email)}" style="color:#7aa2ff">${escapeHTML(lead.email)}</a>`
+          ? `<a href="mailto:${escapeHTML(lead.email)}" class="linkAccent">${escapeHTML(lead.email)}</a>`
           : '—'}
       </div>
     </div>
@@ -179,7 +179,7 @@ async function openDrawer(id) {
       <div class="k">Teléfono</div>
       <div class="v">
         ${lead.phone
-          ? `<a href="tel:${escapeHTML(lead.phone)}" style="color:#7aa2ff">${escapeHTML(lead.phone)}</a>`
+          ? `<a href="tel:${escapeHTML(lead.phone)}" class="linkAccent">${escapeHTML(lead.phone)}</a>`
           : '—'}
       </div>
     </div>
@@ -187,10 +187,10 @@ async function openDrawer(id) {
       <div class="k">Inmueble</div>
       <div class="v">
         ${lead.propertyTitle
-          ? `<span style="color:#fff;font-weight:600">${escapeHTML(lead.propertyTitle)}</span>`
+          ? `<span class="textStrong" style="font-weight:600">${escapeHTML(lead.propertyTitle)}</span>`
           : escapeHTML(lead.source || '—')}
         ${lead.propertyUrl
-          ? `<a href="${escapeHTML(lead.propertyUrl)}" target="_blank" style="display:block;color:#7aa2ff;font-size:11px;margin-top:3px;">Ver en Idealista →</a>`
+          ? `<a href="${escapeHTML(lead.propertyUrl)}" target="_blank" class="linkAccent" style="display:block;font-size:11px;margin-top:3px;">Ver en Idealista →</a>`
           : ''}
       </div>
     </div>
@@ -355,7 +355,7 @@ async function nvSearchProperties(query) {
   dropdown.style.display = 'block';
   dropdown.innerHTML = matches.map(p => `
     <div onclick="nvSelectProperty(${p.id}, '${(p.title || '').replace(/'/g, "\'")}')" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'">
-      <div style="color:#7aa2ff;font-weight:600;">#${p.id}</div>
+      <div class="linkAccent" style="font-weight:600;">#${p.id}</div>
       <div style="color:#94a3b8;">${p.title}</div>
     </div>
   `).join('');
