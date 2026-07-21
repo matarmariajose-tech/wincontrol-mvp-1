@@ -10,7 +10,6 @@
 <body>
 <div class="app">
  
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="brand">
       <div class="logo">W</div>
@@ -26,8 +25,6 @@
         <span id="onlineAgents">3 agentes online</span>
       </div>
  
-      <button class="btn ghost" id="flowBtn">Simular flujo Idealista</button>
- 
       <div class="user-wrapper">
         <button class="user" id="userBtn" title="Perfil">
           <div class="avatar" id="userAvatar">MJ</div>
@@ -38,16 +35,15 @@
         </button>
 
         <div class="dropdown" id="userDropdown">
-          <button>👤 Ver perfil</button>
-          <button>⚙️ Configuración</button>
+          <button>Perfil</button>
+          <button>Configuración</button>
           <hr />
-          <button id="logoutBtn">🚪 Cerrar sesión</button>
+          <button id="logoutBtn">Cerrar sesión</button>
         </div>
       </div>
     </div>
   </header>
  
-  <!-- MAIN -->
   <main class="container">
     <section class="pageHeader">
       <div>
@@ -64,7 +60,6 @@
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Visitas hoy</div>
-          <div class="icon i-blue">📅</div>
         </div>
         <div class="value" id="statToday">0</div>
       </article>
@@ -72,7 +67,6 @@
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Pendientes de finalizar</div>
-          <div class="icon i-amber">⏱️</div>
         </div>
         <div class="value" id="statPending">0</div>
       </article>
@@ -80,7 +74,6 @@
       <article class="card stat">
         <div class="cardHead">
           <div class="label">En oferta</div>
-          <div class="icon i-orange">🏷️</div>
         </div>
         <div class="value" id="statOffers">0</div>
       </article>
@@ -88,7 +81,6 @@
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Tasa conversión</div>
-          <div class="icon i-emerald">✅</div>
         </div>
         <div class="value" id="statConv">—</div>
       </article>
@@ -109,16 +101,16 @@
         <div class="controls">
           <div class="segmented" id="statusFilter">
             <button class="seg active" data-status="all">Todas</button>
-            <button class="seg" data-status="LEAD_NUEVO">LEAD NUEVO</button>
-            <button class="seg" data-status="VISITA_AGENDADA">VISITA AGENDADA</button>
-            <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
-            <button class="seg" data-status="SEGUIMIENTO">SEGUIMIENTO</button>
-            <button class="seg" data-status="INTENCION_OFERTA">INTENCIÓN OFERTA</button>
-            <button class="seg" data-status="OFERTA_REALIZADA">OFERTA REALIZADA</button>
-            <button class="seg danger" data-status="VISITA_CANCELADA">CANCELADA</button>
-            <button class="seg" data-status="VISITA_MODIFICADA">MODIFICADA</button>
-            <button class="seg danger" data-status="PERDIDO">PERDIDO</button>
-            <button class="seg" data-status="VENDIDO">VENDIDO</button>
+            <button class="seg" data-status="LEAD_NUEVO">Lead Nuevo</button>
+            <button class="seg" data-status="VISITA_AGENDADA">Visita Agendada</button>
+            <button class="seg" data-status="PENDIENTE">Pendiente</button>
+            <button class="seg" data-status="SEGUIMIENTO">Seguimiento</button>
+            <button class="seg" data-status="INTENCION_OFERTA">Intención Oferta</button>
+            <button class="seg" data-status="OFERTA_REALIZADA">Oferta Realizada</button>
+            <button class="seg danger" data-status="VISITA_CANCELADA">Cancelada</button>
+            <button class="seg" data-status="VISITA_MODIFICADA">Modificada</button>
+            <button class="seg danger" data-status="PERDIDO">Perdido</button>
+            <button class="seg" data-status="VENDIDO">Vendido</button>
           </div>
  
           <div class="search">
@@ -155,7 +147,6 @@
     </section>
   </main>
  
-  <!-- DRAWER (Ficha completa) -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawerBackdrop" id="drawerBackdrop"></div>
     <div class="drawerPanel">
@@ -175,7 +166,6 @@
     </div>
   </aside>
  
-  <!-- MODAL (Nueva visita) -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modalBackdrop" id="modalBackdrop"></div>
     <div class="modalPanel">

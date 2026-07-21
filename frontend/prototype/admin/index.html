@@ -46,10 +46,10 @@ body.light .theme-toggle::after { left:19px; }
         </button>
 
         <div class="dropdown" id="userDropdown">
-          <button>👤 Ver perfil</button>
-          <button>⚙️ Configuración</button>
+          <button>Perfil</button>
+          <button>Configuración</button>
           <hr />
-          <button id="logoutBtn">🚪 Cerrar sesión</button>
+          <button id="logoutBtn">Cerrar sesión</button>
         </div>
       </div>
     </div>
@@ -77,7 +77,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Leads activos</div>
-          <div class="icon i-blue">👥</div>
         </div>
         <div class="value" id="statLeads">0</div>
         <div class="miniStat" id="statLeadsSub">—</div>
@@ -86,7 +85,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Visitas hoy</div>
-          <div class="icon i-violet">📅</div>
         </div>
         <div class="value" id="statVisitsToday">0</div>
         <div class="miniStat" id="statVisitsTodaySub">—</div>
@@ -95,7 +93,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Ofertas en curso</div>
-          <div class="icon i-orange">🏷️</div>
         </div>
         <div class="value" id="statOffers">0</div>
         <div class="miniStat" id="statOffersSub">—</div>
@@ -104,7 +101,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">SLA pendientes</div>
-          <div class="icon i-amber">⏱️</div>
         </div>
         <div class="value" id="statSla">0</div>
         <div class="miniStat" id="statSlaSub">—</div>
@@ -113,7 +109,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Conversión a oferta</div>
-          <div class="icon i-emerald">📈</div>
         </div>
         <div class="value" id="statConversion">—</div>
         <div class="miniStat" id="statConversionSub">—</div>
@@ -122,7 +117,6 @@ body.light .theme-toggle::after { left:19px; }
       <article class="card stat">
         <div class="cardHead">
           <div class="label">Slots bloqueados</div>
-          <div class="icon i-red">🚫</div>
         </div>
         <div class="value" id="statBlocked">0</div>
         <div class="miniStat" id="statBlockedSub">—</div>
@@ -204,16 +198,16 @@ body.light .theme-toggle::after { left:19px; }
         <div class="controls">
           <div class="segmented" id="statusFilter">
             <button class="seg active" data-status="all">Todos</button>
-            <button class="seg" data-status="LEAD_NUEVO">LEAD NUEVO</button>
-            <button class="seg" data-status="VISITA_AGENDADA">VISITA AGENDADA</button>
-            <button class="seg" data-status="PENDIENTE">PENDIENTE</button>
-            <button class="seg" data-status="SEGUIMIENTO">SEGUIMIENTO</button>
-            <button class="seg" data-status="INTENCION_OFERTA">INTENCIÓN OFERTA</button>
-            <button class="seg" data-status="OFERTA_REALIZADA">OFERTA REALIZADA</button>
-            <button class="seg" data-status="VENDIDO">VENDIDO</button>
-            <button class="seg danger" data-status="VISITA_CANCELADA">CANCELADA</button>
-            <button class="seg" data-status="VISITA_MODIFICADA">MODIFICADA</button>
-            <button class="seg danger" data-status="PERDIDO">PERDIDO</button>
+            <button class="seg" data-status="LEAD_NUEVO">Lead Nuevo</button>
+            <button class="seg" data-status="VISITA_AGENDADA">Visita Agendada</button>
+            <button class="seg" data-status="PENDIENTE">Pendiente</button>
+            <button class="seg" data-status="SEGUIMIENTO">Seguimiento</button>
+            <button class="seg" data-status="INTENCION_OFERTA">Intención Oferta</button>
+            <button class="seg" data-status="OFERTA_REALIZADA">Oferta Realizada</button>
+            <button class="seg" data-status="VENDIDO">Vendido</button>
+            <button class="seg danger" data-status="VISITA_CANCELADA">Cancelada</button>
+            <button class="seg" data-status="VISITA_MODIFICADA">Modificada</button>
+            <button class="seg danger" data-status="PERDIDO">Perdido</button>
           </div>
 
           <div class="search">
@@ -389,7 +383,6 @@ body.light .theme-toggle::after { left:19px; }
   const user = JSON.parse(localStorage.getItem('wc_user'));
 
   if (user) {
-    // Nombre completo
     document.querySelector('.userName').textContent = user.name;
 
     document.querySelector('.userRole').textContent = `${user.email}`;
@@ -409,7 +402,6 @@ body.light .theme-toggle::after { left:19px; }
   const dropdown = document.getElementById('userDropdown');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Toggle dropdown
   userBtn.addEventListener('click', () => {
     dropdown.classList.toggle('show');
   });

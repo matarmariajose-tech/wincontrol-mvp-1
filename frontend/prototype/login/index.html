@@ -10,6 +10,7 @@
     :root {
       --bg: #020617;
       --panel: #0b1220;
+      --panel-2: #0e1626;
       --border: #162032;
       --text: #e5e7eb;
       --muted: #94a3b8;
@@ -23,6 +24,16 @@
       --radius: 16px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --shadow2: 0 6px 18px rgba(0,0,0,.35);
+    }
+
+    body.light {
+      --bg: #f6f5f2;
+      --panel: #ffffff;
+      --panel-2: #f4f3ef;
+      --border: #e4e2da;
+      --text: #0a0a0a;
+      --muted: #6b6a63;
+      --muted2: #98968d;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,11 +56,20 @@
       align-items: center;
       justify-content: center;
       padding: 40px 24px;
+      padding-top: max(40px, calc(env(safe-area-inset-top, 0px) + 24px));
+      padding-bottom: max(40px, calc(env(safe-area-inset-bottom, 0px) + 24px));
       position: relative;
       overflow: hidden;
+      transition: background-color .2s ease, color .2s ease;
+    }
+    body.light {
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.06), transparent 60%),
+        radial-gradient(900px 500px at 85% 10%, rgba(139,92,246,.04), transparent 55%),
+        radial-gradient(600px 400px at 50% 100%, rgba(37,99,235,.03), transparent 60%),
+        var(--bg);
     }
 
-    /* Decorative grid */
     body::before {
       content: '';
       position: fixed;
@@ -60,8 +80,12 @@
       background-size: 60px 60px;
       pointer-events: none;
     }
+    body.light::before {
+      background-image:
+        linear-gradient(rgba(37,99,235,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,.03) 1px, transparent 1px);
+    }
 
-    /* Floating orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -87,13 +111,60 @@
       top: 50%; left: 60%;
       animation-delay: -8s;
     }
+    body.light .orb-1 { background: rgba(37,99,235,.06); }
+    body.light .orb-2 { background: rgba(139,92,246,.05); }
+    body.light .orb-3 { background: rgba(16,185,129,.04); }
 
     @keyframes drift {
       from { transform: translate(0, 0) scale(1); }
       to { transform: translate(30px, 20px) scale(1.05); }
     }
 
-    /* Brand header */
+    .theme-toggle {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + 20px);
+      right: calc(env(safe-area-inset-right, 0px) + 20px);
+      z-index: 20;
+      width: 52px;
+      height: 28px;
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.55);
+      cursor: pointer;
+      transition: border-color .2s ease, background-color .2s ease;
+    }
+    .theme-toggle:hover { border-color: rgba(37,99,235,.4); }
+    body.light .theme-toggle { background: var(--panel-2); border-color: var(--border); }
+    body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
+
+    .theme-toggle-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--blue), #1d4ed8);
+      box-shadow: 0 4px 10px rgba(37,99,235,.4);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transform: translateX(0);
+      transition: transform .25s cubic-bezier(.4,0,.2,1);
+      color: #fff;
+    }
+    .theme-toggle[aria-checked="true"] .theme-toggle-thumb {
+      transform: translateX(24px);
+    }
+
+    .theme-toggle-thumb svg {
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .theme-toggle[aria-checked="false"] .icon-moon { opacity: 1; }
+    .theme-toggle[aria-checked="true"] .icon-sun { opacity: 1; }
+
     .brand {
       display: flex;
       align-items: center;
@@ -123,6 +194,7 @@
       letter-spacing: -.03em;
       color: #fff;
     }
+    body.light .brand-text .name { color: var(--text); }
     .brand-text .tag {
       font-size: 12px;
       color: var(--muted2);
@@ -130,7 +202,6 @@
       font-weight: 500;
     }
 
-    /* Card */
     .card {
         width: 100%;
         max-width: 440px;
@@ -138,24 +209,26 @@
         border: 1px solid rgba(255,255,255,.08);
         border-radius: 24px;
         box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(37,99,235,.06) inset;
-  
-        /* CAMBIOS AQUÍ */
         display: flex;
         flex-direction: column;
-        max-height: 80vh; /* Para que no se pegue a los bordes de la pantalla */
-        overflow: hidden; /* Mantiene las esquinas redondeadas */
-  
+        max-height: 80vh;
+        overflow: hidden;
         animation: fadeUp .6s ease both .1s;
         position: relative;
         z-index: 1;
     }
+    body.light .card {
+      background: #fff;
+      border-color: var(--border);
+      box-shadow: 0 20px 50px rgba(15,23,42,.10), 0 0 0 1px rgba(37,99,235,.04) inset;
+    }
 
-    /* Tabs */
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
       border-bottom: 1px solid rgba(255,255,255,.07);
     }
+    body.light .tabs { border-bottom-color: var(--border); }
 
     .tab {
       padding: 16px;
@@ -181,32 +254,27 @@
       transform: scaleX(0);
       transition: transform .25s ease;
     }
-    .tab.active {
-      color: #fff;
-    }
-    .tab.active::after {
-      transform: scaleX(1);
-    }
+    .tab.active { color: #fff; }
+    body.light .tab.active { color: var(--text); }
+    .tab.active::after { transform: scaleX(1); }
     .tab:hover:not(.active) {
       color: var(--muted);
       background: rgba(255,255,255,.02);
     }
+    body.light .tab:hover:not(.active) { background: rgba(15,23,42,.03); }
 
-    /* Form body */
     .form-body {
         padding: 24px;
-        overflow-y: auto; /* Esto permite el scroll solo en el formulario */
+        overflow-y: auto;
         flex: 1;
     }
-
-    /* Opcional: Para que la barra de scroll sea finita y no afee el diseño */
-    .form-body::-webkit-scrollbar {
-        width: 6px;
-    }   
+    .form-body::-webkit-scrollbar { width: 6px; }
     .form-body::-webkit-scrollbar-thumb {
         background: rgba(255,255,255,0.1);
         border-radius: 10px;
     }
+    body.light .form-body::-webkit-scrollbar-thumb { background: rgba(15,23,42,.15); }
+
     .form-title {
       font-family: 'Syne', sans-serif;
       font-size: 20px;
@@ -215,6 +283,7 @@
       letter-spacing: -.02em;
       margin-bottom: 6px;
     }
+    body.light .form-title { color: var(--text); }
     .form-subtitle {
       font-size: 13px;
       color: var(--muted2);
@@ -222,17 +291,10 @@
       line-height: 1.5;
     }
 
-    #panel-register .field {
-        margin-bottom: 10px; /* Reducido de 14px */
-    }
-    #panel-register .role-selector {
-        margin-bottom: 16px; /* Reducido de 20px */
-    }
-    #panel-register .form-subtitle {
-        margin-bottom: 16px; /* Reducido de 24px */
-    }
+    #panel-register .field { margin-bottom: 10px; }
+    #panel-register .role-selector { margin-bottom: 16px; }
+    #panel-register .form-subtitle { margin-bottom: 16px; }
 
-    /* Role selector */
     .role-label {
       font-size: 12px;
       color: var(--muted);
@@ -264,6 +326,7 @@
       position: relative;
       overflow: hidden;
     }
+    body.light .role-btn { border-color: var(--border); background: var(--panel-2); }
     .role-btn::before {
       content: '';
       position: absolute;
@@ -278,40 +341,22 @@
       background: radial-gradient(circle at center, rgba(139,92,246,.15), transparent 70%);
     }
     .role-btn:hover::before,
-    .role-btn.selected::before {
-      opacity: 1;
-    }
+    .role-btn.selected::before { opacity: 1; }
 
     .role-btn.admin.selected,
-    .role-btn.admin:hover {
-      border-color: rgba(37,99,235,.5);
-      color: #fff;
-    }
+    .role-btn.admin:hover { border-color: rgba(37,99,235,.5); color: #fff; }
     .role-btn.comercial.selected,
-    .role-btn.comercial:hover {
-      border-color: rgba(139,92,246,.5);
-      color: #fff;
-    }
+    .role-btn.comercial:hover { border-color: rgba(139,92,246,.5); color: #fff; }
+    body.light .role-btn.admin.selected,
+    body.light .role-btn.admin:hover,
+    body.light .role-btn.comercial.selected,
+    body.light .role-btn.comercial:hover { color: var(--text); }
 
-    .role-btn .role-icon {
-      font-size: 24px;
-      line-height: 1;
-    }
-    .role-btn .role-name {
-      font-weight: 800;
-      font-size: 13px;
-      letter-spacing: -.01em;
-    }
-    .role-btn .role-desc {
-      font-size: 11px;
-      color: var(--muted2);
-      text-align: center;
-      line-height: 1.3;
-    }
+    .role-btn .role-icon { font-size: 24px; line-height: 1; }
+    .role-btn .role-name { font-weight: 800; font-size: 13px; letter-spacing: -.01em; }
+    .role-btn .role-desc { font-size: 11px; color: var(--muted2); text-align: center; line-height: 1.3; }
 
-    .role-btn.selected .role-check {
-      display: flex;
-    }
+    .role-btn.selected .role-check { display: flex; }
     .role-check {
       display: none;
       position: absolute;
@@ -325,14 +370,9 @@
       color: #fff;
       font-weight: 900;
     }
-    .role-btn.comercial.selected .role-check {
-      background: var(--violet);
-    }
+    .role-btn.comercial.selected .role-check { background: var(--violet); }
 
-    /* Fields */
-    .field {
-      margin-bottom: 14px;
-    }
+    .field { margin-bottom: 14px; }
     .field label {
       display: block;
       font-size: 12px;
@@ -355,16 +395,13 @@
       font-family: 'DM Sans', sans-serif;
       transition: .2s ease;
     }
-    .field input::placeholder {
-      color: var(--muted2);
-      font-weight: 400;
-    }
+    body.light .field input { border-color: var(--border); background: var(--panel-2); }
+    .field input::placeholder { color: var(--muted2); font-weight: 400; }
     .field input:focus {
       border-color: rgba(37,99,235,.55);
       box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
 
-    /* Submit button */
     .submit-btn {
       width: 100%;
       padding: 13px 16px;
@@ -391,26 +428,19 @@
       opacity: 0;
       transition: opacity .2s;
     }
-    .submit-btn:hover::before {
-      opacity: 1;
-    }
+    .submit-btn:hover::before { opacity: 1; }
     .submit-btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 12px 32px rgba(37,99,235,.3);
     }
-    .submit-btn:active {
-      transform: translateY(0);
-    }
+    .submit-btn:active { transform: translateY(0); }
     .submit-btn.violet {
       background: linear-gradient(180deg, var(--violet), #7c3aed);
       border-color: rgba(139,92,246,.45);
       box-shadow: 0 8px 24px rgba(139,92,246,.2);
     }
-    .submit-btn.violet:hover {
-      box-shadow: 0 12px 32px rgba(139,92,246,.3);
-    }
+    .submit-btn.violet:hover { box-shadow: 0 12px 32px rgba(139,92,246,.3); }
 
-    /* Error / success */
     .alert {
       padding: 10px 14px;
       border-radius: 12px;
@@ -425,16 +455,23 @@
       border: 1px solid rgba(220,38,38,.3);
       color: #fca5a5;
     }
+    body.light .alert.error {
+      background: rgba(220,38,38,.08);
+      border-color: rgba(220,38,38,.25);
+      color: #b91c1c;
+    }
     .alert.success {
       background: rgba(16,185,129,.12);
       border: 1px solid rgba(16,185,129,.3);
       color: #6ee7b7;
     }
-    .alert.show {
-      display: block;
+    body.light .alert.success {
+      background: rgba(16,185,129,.08);
+      border-color: rgba(16,185,129,.25);
+      color: #047857;
     }
+    .alert.show { display: block; }
 
-    /* Divider */
     .divider {
       display: flex;
       align-items: center;
@@ -448,12 +485,10 @@
       height: 1px;
       background: rgba(255,255,255,.06);
     }
-    .divider span {
-      font-size: 11px;
-      color: var(--muted2);
-    }
+    body.light .divider::before,
+    body.light .divider::after { background: var(--border); }
+    .divider span { font-size: 11px; color: var(--muted2); }
 
-    /* Footer */
     .footer {
       margin-top: 20px;
       text-align: center;
@@ -463,15 +498,9 @@
       position: relative;
       z-index: 1;
     }
-    .footer a {
-      color: var(--muted);
-      text-decoration: none;
-    }
-    .footer a:hover {
-      color: var(--text);
-    }
+    .footer a { color: var(--muted); text-decoration: none; }
+    .footer a:hover { color: var(--text); }
 
-    /* Animations */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
@@ -480,16 +509,11 @@
       from { opacity: 0; transform: translateY(-12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Panel visibility */
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* Spinner */
     .spinner {
       display: inline-block;
       width: 14px; height: 14px;
@@ -500,11 +524,8 @@
       vertical-align: middle;
       margin-right: 6px;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Online indicator */
     .status-bar {
       display: flex;
       align-items: center;
@@ -529,13 +550,8 @@
       100% { transform: scale(.9); opacity: .9; }
     }
 
-    /* Password toggle */
-    .field-wrap {
-      position: relative;
-    }
-    .field-wrap input {
-      padding-right: 40px;
-    }
+    .field-wrap { position: relative; }
+    .field-wrap input { padding-right: 40px; }
     .toggle-pwd {
       position: absolute;
       right: 12px; top: 50%;
@@ -556,12 +572,60 @@
       color: var(--muted2);
       letter-spacing: .04em;
     }
+
+    .theme-toggle:focus-visible,
+    .tab:focus-visible,
+    .role-btn:focus-visible,
+    .submit-btn:focus-visible,
+    .toggle-pwd:focus-visible,
+    .footer a:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      body { padding-left: 16px; padding-right: 16px; }
+      .form-body { padding: 20px; }
+      .role-selector { gap: 6px; }
+      .role-btn { padding: 12px 8px; }
+      .logo { width: 42px; height: 42px; font-size: 19px; }
+      .brand-text .name { font-size: 21px; }
+      .brand { gap: 12px; margin-bottom: 24px; }
+    }
   </style>
 </head>
 <body>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
+
+  <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+    <span class="theme-toggle-thumb">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4.2"/>
+        <line x1="12" y1="1.5" x2="12" y2="4"/>
+        <line x1="12" y1="20" x2="12" y2="22.5"/>
+        <line x1="1.5" y1="12" x2="4" y2="12"/>
+        <line x1="20" y1="12" x2="22.5" y2="12"/>
+        <line x1="4.2" y1="4.2" x2="6" y2="6"/>
+        <line x1="18" y1="18" x2="19.8" y2="19.8"/>
+        <line x1="4.2" y1="19.8" x2="6" y2="18"/>
+        <line x1="18" y1="6" x2="19.8" y2="4.2"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3a9 9 0 108.485 12.02A7 7 0 0112 3z"/>
+      </svg>
+    </span>
+  </button>
 
   <div class="brand">
     <div class="logo">W</div>
@@ -582,7 +646,6 @@
       <button class="tab" data-tab="register">Crear cuenta</button>
     </div>
 
-    <!-- LOGIN PANEL -->
     <div class="form-body panel active" id="panel-login">
       <div class="form-title">Bienvenido de nuevo</div>
       <div class="form-subtitle">Ingresá tus credenciales y seleccioná tu rol para continuar.</div>
@@ -591,13 +654,11 @@
       <div class="role-selector" id="login-roles">
         <button class="role-btn admin" data-role="admin">
           <div class="role-check">✓</div>
-          <div class="role-icon">🛡️</div>
           <div class="role-name">Admin</div>
           <div class="role-desc">Control global y dirección</div>
         </button>
         <button class="role-btn comercial" data-role="comercial">
           <div class="role-check">✓</div>
-          <div class="role-icon">👤</div>
           <div class="role-name">Comercial</div>
           <div class="role-desc">Gestión de visitas y leads</div>
         </button>
@@ -623,7 +684,6 @@
       </button>
     </div>
 
-    <!-- REGISTER PANEL -->
     <div class="form-body panel" id="panel-register">
       <div class="form-title">Crear cuenta</div>
       <div class="form-subtitle">Completá los datos y elegí tu rol dentro de Wincontrol.</div>
@@ -632,13 +692,11 @@
       <div class="role-selector" id="register-roles">
         <button class="role-btn admin" data-role="admin">
           <div class="role-check">✓</div>
-          <div class="role-icon">🛡️</div>
           <div class="role-name">Admin</div>
           <div class="role-desc">Control global y dirección</div>
         </button>
         <button class="role-btn comercial" data-role="comercial">
           <div class="role-check">✓</div>
-          <div class="role-icon">👤</div>
           <div class="role-name">Comercial</div>
           <div class="role-desc">Gestión de visitas y leads</div>
         </button>
@@ -686,10 +744,24 @@
   <script src="./config.js"></script>
 
   <script>
-    // ─── Estado de roles seleccionados ───────────────────────────────────────
+    const THEME_KEY = 'wc-theme';
+    const themeToggle = document.getElementById('themeToggle');
+
+    function applyTheme(theme) {
+      document.body.classList.toggle('light', theme === 'light');
+      themeToggle.setAttribute('aria-checked', theme === 'light');
+    }
+
+    applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+
+    themeToggle.addEventListener('click', () => {
+      const next = document.body.classList.contains('light') ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+
     const selectedRole = { login: null, register: null };
 
-    // ─── Tabs ────────────────────────────────────────────────────────────────
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -699,7 +771,6 @@
       });
     });
 
-    // ─── Role selectors ──────────────────────────────────────────────────────
     function setupRoles(containerId, key) {
       const container = document.getElementById(containerId);
       container.querySelectorAll('.role-btn').forEach(btn => {
@@ -708,7 +779,6 @@
           btn.classList.add('selected');
           selectedRole[key] = btn.dataset.role;
 
-          // Cambia color del botón submit según rol
           const submitId = key === 'login' ? 'login-btn' : 'register-btn';
           const submitBtn = document.getElementById(submitId);
           if (btn.dataset.role === 'admin') {
@@ -723,7 +793,6 @@
     setupRoles('login-roles', 'login');
     setupRoles('register-roles', 'register');
 
-    // ─── Password toggle ─────────────────────────────────────────────────────
     function togglePwd(inputId, btn) {
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
@@ -735,7 +804,6 @@
       }
     }
 
-    // ─── Alerts ──────────────────────────────────────────────────────────────
     function showAlert(id, msg, type = 'error') {
       const el = document.getElementById(id);
       el.textContent = msg;
@@ -747,16 +815,13 @@
       el.textContent = '';
     }
 
-    // ─── Redirigir según rol ─────────────────────────────────────────────────
-    // Cambiá estas URLs por las URLs reales de tus páginas CodePen o de tu servidor
     const ROUTES = {
-      admin:     '../admin/',       // ← tu página admin
-      comercial: '../comercial/'    // ← tu página comercial/usuario
+      admin: '../admin/',
+      comercial: '../comercial/'
     };
 
     function redirectTo(role) {
       const url = ROUTES[role];
-      // Efecto de salida antes de redirigir
       document.querySelector('.card').style.transition = 'opacity .3s ease, transform .3s ease';
       document.querySelector('.card').style.opacity = '0';
       document.querySelector('.card').style.transform = 'translateY(-8px)';
@@ -765,7 +830,6 @@
       setTimeout(() => { window.location.href = url; }, 320);
     }
 
-    // ─── LOGIN ───────────────────────────────────────────────────────────────
     async function handleLogin() {
       clearAlert('login-alert');
 
@@ -774,15 +838,15 @@
       const role     = selectedRole.login;
 
       if (!role) {
-        showAlert('login-alert', '⚠️ Seleccioná tu rol antes de continuar.');
+        showAlert('login-alert', 'Seleccioná tu rol antes de continuar.');
         return;
       }
       if (!email) {
-        showAlert('login-alert', '⚠️ Ingresá tu email.');
+        showAlert('login-alert', 'Ingresá tu email.');
         return;
       }
       if (!password) {
-        showAlert('login-alert', '⚠️ Ingresá tu contraseña.');
+        showAlert('login-alert', 'Ingresá tu contraseña.');
         return;
       }
 
@@ -791,9 +855,6 @@
       btn.disabled = true;
 
       try {
-        // ── Conectar con tu backend ──────────────────────────────────────────
-        // Ejemplo de llamada real:
-        //
         const res = await fetch(`${CONFIG.API_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -804,26 +865,17 @@
         localStorage.setItem('wc_token', data.token);
         localStorage.setItem('wc_role', role);
         localStorage.setItem('wc_user', JSON.stringify(data.user));
-        //
-        // ── Demo sin backend (eliminá este bloque cuando conectes el backend) ─
-        // await new Promise(r => setTimeout(r, 900));
-        // const users = JSON.parse(localStorage.getItem('wc_users') || '[]');
-        // const found = users.find(u => u.email === email && u.password === password && u.role === role);
-        // if (!found) throw new Error('Email, contraseña o rol incorrecto.');
-        // localStorage.setItem('wc_session', JSON.stringify({ email, role, name: found.name }));
-        // ────────────────────────────────────────────────────────────────────
 
-        showAlert('login-alert', `✅ Acceso correcto. Redirigiendo...`, 'success');
+        showAlert('login-alert', `Acceso correcto. Redirigiendo...`, 'success');
         setTimeout(() => redirectTo(role), 700);
 
       } catch (err) {
-        showAlert('login-alert', `❌ ${err.message}`);
+        showAlert('login-alert', ` ${err.message}`);
         btn.innerHTML = 'Ingresar al sistema';
         btn.disabled = false;
       }
     }
 
-    // ─── REGISTER ────────────────────────────────────────────────────────────
     async function handleRegister() {
       clearAlert('register-alert');
 
@@ -834,23 +886,23 @@
       const role  = selectedRole.register;
 
       if (!role) {
-        showAlert('register-alert', '⚠️ Seleccioná tu rol.');
+        showAlert('register-alert', 'Seleccioná tu rol.');
         return;
       }
       if (!name) {
-        showAlert('register-alert', '⚠️ Ingresá tu nombre completo.');
+        showAlert('register-alert', 'Ingresá tu nombre completo.');
         return;
       }
       if (!email || !email.includes('@')) {
-        showAlert('register-alert', '⚠️ Ingresá un email válido.');
+        showAlert('register-alert', 'Ingresá un email válido.');
         return;
       }
       if (pwd1.length < 6) {
-        showAlert('register-alert', '⚠️ La contraseña debe tener al menos 6 caracteres.');
+        showAlert('register-alert', 'La contraseña debe tener al menos 6 caracteres.');
         return;
       }
       if (pwd1 !== pwd2) {
-        showAlert('register-alert', '⚠️ Las contraseñas no coinciden.');
+        showAlert('register-alert', 'Las contraseñas no coinciden.');
         return;
       }
 
@@ -859,9 +911,7 @@
       btn.disabled = true;
 
       try {
-        // ── Conectar con tu backend ──────────────────────────────────────────
-        // Ejemplo de llamada real:
-        //
+
         const res = await fetch(`${CONFIG.API_URL}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -872,29 +922,16 @@
         localStorage.setItem('wc_token', data.token);
         localStorage.setItem('wc_role', role);
         localStorage.setItem('wc_user', JSON.stringify(data.user));
-        //
-        // ── Demo sin backend (eliminá este bloque cuando conectes el backend) ─
-        // await new Promise(r => setTimeout(r, 900));
-        // const users = JSON.parse(localStorage.getItem('wc_users') || '[]');
-        // if (users.find(u => u.email === email)) {
-        //   throw new Error('Ya existe una cuenta con ese email.');
-        // }
-        // users.push({ name, email, password: pwd1, role });
-        // localStorage.setItem('wc_users', JSON.stringify(users));
-        // localStorage.setItem('wc_session', JSON.stringify({ email, role, name }));
-        // ────────────────────────────────────────────────────────────────────
-
-        showAlert('register-alert', `✅ Cuenta creada. Redirigiendo...`, 'success');
+        showAlert('register-alert', `Cuenta creada. Redirigiendo...`, 'success');
         setTimeout(() => redirectTo(role), 700);
 
       } catch (err) {
-        showAlert('register-alert', `❌ ${err.message}`);
+        showAlert('register-alert', `${err.message}`);
         btn.innerHTML = 'Crear cuenta';
         btn.disabled = false;
       }
     }
 
-    // ─── Enter key support ───────────────────────────────────────────────────
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       const loginActive = document.getElementById('panel-login').classList.contains('active');
