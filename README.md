@@ -1,267 +1,126 @@
-# 🚀 Wincontrol
+# Winallcontrol
 
-Wincontrol is a real estate management platform designed to streamline the full commercial workflow:
+Plataforma de gestión comercial para inmobiliarias. Centraliza el ciclo completo de un lead — desde la captación hasta la venta — automatizando agendamiento, encuestas de satisfacción y métricas por comercial y producto.
 
-**Lead → Scheduling → Visit → Offer → Closing**
+**Lead → Agendamiento → Visita → Encuesta → Oferta → Venta**
 
-This project is currently in **MVP phase**, with a functional backend, a connected frontend prototype, and a PostgreSQL database running via Docker.
+🔗 **Producción:** [winallcontrol.com](https://www.winallcontrol.com)
 
----
+## Estado del proyecto
 
-# 🎯 Project Goal
+**Fase actual:** Fase 2 — CRM inmobiliario completo, desplegado en producción.
 
-The main objective is to build a platform that allows:
+Implementado:
+- Autenticación con jerarquía de roles: WAC Admin → Admin Empresa/Cliente → Comercial
+- Gestión de leads con máquina de estados (Lead Nuevo → Visita Agendada → ... → Vendido) e historial de cambios
+- Agendamiento público sin login, con integración a Google Calendar y cálculo de buffers por categoría de inmueble
+- Gestión de comerciales y de productos (inmuebles)
+- Envío de emails automatizados (Resend)
+- Documentación de API con Swagger
 
-* Lead capture and management
-* Visit scheduling and tracking
-* Status management across the commercial pipeline
-* Centralized data persistence (PostgreSQL)
-* Future integrations (Email, WhatsApp, external platforms)
+En curso / próximos pasos:
+- Integración de WhatsApp Business API (pendiente aprobación de Meta)
+- Encuestas de satisfacción post-visita (email + WhatsApp)
+- Dashboards de métricas por comercial y por producto, con exportación CSV/XLSX
+- Conexión con portales inmobiliarios (Idealista, Fotocasa, Habitaclia) — pendiente de acuerdos comerciales
 
----
+## Arquitectura
 
-# 🧱 Project Structure
-
-```
-wincontrol/
+\`\`\`
+wincontrol-mvp/
 │
-├── backend/                # API (TypeScript, Express, TypeORM)
+├── backend/                 # API (TypeScript, Express, TypeORM)
 │   ├── src/
-│   │   ├── config/         # DB config + Swagger
-│   │   ├── leads/          # Leads module
-│   │   ├── visits/         # Visits module
+│   │   ├── auth/             # Autenticación JWT y control de roles
+│   │   ├── leads/             # Gestión de leads y máquina de estados
+│   │   ├── visits/            # Agendamiento y ciclo de visitas
+│   │   ├── comerciales/       # Gestión de comerciales
+│   │   ├── properties/        # Gestión de inmuebles
+│   │   ├── calendar/          # Integración con Google Calendar
+│   │   ├── mail/              # Envío de emails transaccionales
 │   │   └── app.ts
-│   │
-│   ├── .env                # Environment variables (NOT committed)
-│   ├── package.json
-│   └── tsconfig.json
+│   ├── .env                  # Variables de entorno (no versionado)
+│   └── package.json
 │
 ├── frontend/
 │   └── prototype/
-│       ├── admin/          # Admin dashboard (connected to API)
-│       │   ├── index.html
-│       │   ├── styles.css
-│       │   └── script.js
-│       │
-│       └── comercial/      # Commercial dashboard (UI prototype)
-│           ├── index.html
-│           ├── styles.css
-│           └── script.js
+│       ├── admin/             # Panel de administración
+│       ├── comercial/         # Panel del comercial
+│       ├── login/             # Autenticación
+│       ├── schedule/          # Agendamiento público (sin login)
+│       ├── survey/            # Encuesta de satisfacción
+│       └── valoracion/        # Valoración del comercial
 │
-├── docker-compose.yml      # PostgreSQL container
-├── .gitignore
+├── docker-compose.yml        # PostgreSQL local para desarrollo
 └── README.md
-```
+\`\`\`
 
----
+El backend sigue una arquitectura modular por dominio: cada módulo agrupa su entidad, DTOs, repositorio, servicio, controlador y rutas.
 
-# 🧠 Architecture
+## Stack técnico
 
-Backend follows a **modular architecture inspired by Clean Architecture**:
+**Backend:** Node.js · TypeScript · Express · TypeORM · JWT · Helmet · Swagger
+**Base de datos:** PostgreSQL (Neon en producción, Docker en local)
+**Frontend:** HTML / CSS / JavaScript vanilla, Fetch API
+**Infraestructura:** Render (backend) · Vercel (frontend) · Google Calendar API · Resend (email)
 
-* **domain/** → entities (TypeORM)
-* **dto/** → input validation
-* **infrastructure/** → repositories (DB access)
-* **service** → business logic
-* **controller** → request handling
-* **routes** → API endpoints
+## Seguridad
 
----
+- Autenticación basada en JWT, con rutas públicas explícitamente separadas de las protegidas
+- Cabeceras HTTP de seguridad (Content-Security-Policy, HSTS, X-Frame-Options, etc.) vía Helmet en el backend y configuración equivalente en Vercel para el frontend
+- Variables de entorno y credenciales nunca versionadas — ver \`.env.example\` para las variables requeridas
+- Dependencias auditadas regularmente (\`npm audit\`)
 
-# 🗄️ Database
+## Cómo levantarlo en local
 
-The project uses **PostgreSQL running in Docker**.
+**1. Clonar el repositorio**
+\`\`\`bash
+git clone https://github.com/matarmariajose-tech/wincontrol-mvp-1.git
+cd wincontrol-mvp-1
+\`\`\`
 
-### Main Entity
-
-**Visit**
-
-Fields include:
-
-* ref, cliente, inmueble, comercial
-* fecha, hora, estado
-* source, phone, email
-* questionnaire, offer
-* createdAt
-
----
-
-# 🔗 API Endpoints
-
-### Visits
-
-* GET /api/visits → Get all visits
-* POST /api/visits → Create visit
-* PUT /api/visits/:id → Update visit
-* DELETE /api/visits/:id → Delete visit
-
----
-
-# ⚙️ Tech Stack
-
-### Backend
-
-* Node.js
-* TypeScript
-* Express
-* TypeORM
-* PostgreSQL
-* Swagger
-
-### Frontend (MVP)
-
-* HTML / CSS / JavaScript
-* Fetch API
-
-### DevOps
-
-* Docker
-* Docker Compose
-
----
-
-# ▶️ Getting Started
-
-## 1. Clone the repository
-
-```
-git clone <your-repo-url>
-cd wincontrol
-```
-
----
-
-## 2. Start database (Docker)
-
-```
+**2. Levantar la base de datos**
+\`\`\`bash
 docker compose up -d
-```
+\`\`\`
 
----
-
-## 3. Backend setup
-
-```
+**3. Configurar el backend**
+\`\`\`bash
 cd backend
 npm install
-```
-
-Create `.env` file inside `/backend`:
-
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=wincontrol
-```
-
----
-
-## 4. Run backend
-
-```
+cp .env.example .env
 npm run dev
-```
+\`\`\`
 
-Expected output:
-
-```
+Salida esperada:
+\`\`\`
 DB connected
 Server running on port 3000
-```
+\`\`\`
+
+- Health check: \`http://localhost:3000/health\`
+- Documentación de API: \`http://localhost:3000/api-docs\`
+
+**4. Configurar el frontend**
+\`\`\`bash
+cd frontend
+npm install
+\`\`\`
+Servir los archivos estáticos de \`prototype/\` con cualquier servidor local, apuntando \`config.js\` a tu backend local.
+
+## API — endpoints principales
+
+| Recurso | Endpoints |
+|---|---|
+| Auth | \`POST /api/auth/login\` · \`POST /api/auth/register\` |
+| Leads | \`GET/POST/PUT/DELETE /api/leads\` · \`PATCH /api/leads/:id/state\` |
+| Visits | \`GET/POST/PUT/DELETE /api/visits\` · \`PATCH /api/visits/:id/cancel\` · \`PATCH /api/visits/:id/complete\` |
+| Comerciales | \`GET/POST/PUT/DELETE /api/comerciales\` |
+| Properties | \`GET /api/properties\` · \`PATCH /api/properties/:id/comercial\` |
+| Calendar | \`GET /api/calendar/slots/:comercialId/:date\` · \`GET /api/calendar/auth/:comercialId\` |
+
+Documentación completa e interactiva disponible en \`/api-docs\` (Swagger).
 
 ---
 
-## 5. Test API
-
-Health check:
-
-```
-http://localhost:3000/health
-```
-
-Swagger docs:
-
-```
-http://localhost:3000/api-docs
-```
-
----
-
-# 🖥️ Frontend
-
-## Admin Dashboard
-
-Location:
-
-```
-/frontend/prototype/admin
-```
-
-Features:
-
-* Create leads
-* Edit visits
-* Delete visits
-* Status tracking
-* Filtering and sorting
-* Connected to backend API
-
----
-
-## Commercial Dashboard
-
-Location:
-
-```
-/frontend/prototype/comercial
-```
-
-Features:
-
-* UI prototype for commercial users
-* Visit visualization
-* Workflow simulation
-
-> Note: Currently not fully connected to backend.
-
----
-
-# 🧪 Current Status
-
-**Phase: MVP - Functional Backend + DB + UI**
-
-Implemented:
-
-* Backend API (CRUD visits)
-* PostgreSQL with Docker
-* TypeORM integration
-* Admin frontend connected to API
-* Full flow working: create → edit → delete → persist
-
----
-
-# 🔜 Next Steps
-
-* Add TypeORM migrations
-* Persist Leads in database
-* Authentication & roles
-* Move frontend to React
-* Deploy (Docker + cloud)
-* Integrations (Email / WhatsApp)
-
----
-
-# 📌 Notes
-
-* Project evolved from **in-memory storage → PostgreSQL DB**
-* Frontend is still a prototype but already integrated
-* Architecture is ready to scale
-
----
-
-# 👨‍💻 Author
-
-Developed as part of an MVP for a real estate platform.
-
+Desarrollado como plataforma de gestión comercial inmobiliaria para Winallcontrol.
