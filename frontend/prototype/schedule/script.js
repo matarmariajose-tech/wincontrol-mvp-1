@@ -121,7 +121,7 @@ async function confirmBooking() {
   btn.disabled = true;
 
   try {
-    await fetch(`${CONFIG.API_URL}/api/visits`, {
+    const res = await fetch(`${CONFIG.API_URL}/api/visits`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -133,6 +133,11 @@ async function confirmBooking() {
         adminId: leadData?.adminId,
       }),
     });
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.message || `Error del servidor (${res.status})`);
+    }
 
     document.querySelector('.card-header').style.display = 'none';
     document.getElementById('propertySection').style.display = 'none';
@@ -148,7 +153,7 @@ async function confirmBooking() {
   } catch (err) {
     btn.innerHTML = 'Confirmar visita';
     btn.disabled = false;
-    alert('Error al confirmar. Inténtalo de nuevo.');
+    alert('No se pudo confirmar la visita. Inténtalo de nuevo o contacta con soporte.');
   }
 }
 
