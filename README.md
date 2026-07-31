@@ -1,6 +1,6 @@
 # Winallcontrol
 
-Plataforma de gestión comercial para inmobiliarias. Centraliza el ciclo completo de un lead (desde la captación hasta la venta) automatizando agendamiento, encuestas de satisfacción y métricas por comercial y producto.
+Plataforma de gestión comercial para inmobiliarias. Centraliza el ciclo completo de un lead — desde la captación hasta la venta — automatizando agendamiento, encuestas de satisfacción y métricas por comercial y producto.
 
 **Lead → Agendamiento → Visita → Encuesta → Oferta → Venta**
 
@@ -26,6 +26,7 @@ En curso / próximos pasos:
 
 ## Arquitectura
 
+```
 wincontrol-mvp/
 │
 ├── backend/                 # API (TypeScript, Express, TypeORM)
@@ -52,6 +53,7 @@ wincontrol-mvp/
 │
 ├── docker-compose.yml        # PostgreSQL local para desarrollo
 └── README.md
+```
 
 El backend sigue una arquitectura modular por dominio: cada módulo agrupa su entidad, DTOs, repositorio, servicio, controlador y rutas.
 
@@ -66,58 +68,58 @@ El backend sigue una arquitectura modular por dominio: cada módulo agrupa su en
 
 - Autenticación basada en JWT, con rutas públicas explícitamente separadas de las protegidas
 - Cabeceras HTTP de seguridad (Content-Security-Policy, HSTS, X-Frame-Options, etc.) vía Helmet en el backend y configuración equivalente en Vercel para el frontend
-- Variables de entorno y credenciales nunca versionadas — ver \`.env.example\` para las variables requeridas
-- Dependencias auditadas regularmente (\`npm audit\`)
+- Variables de entorno y credenciales nunca versionadas — ver `.env.example` para las variables requeridas
+- Dependencias auditadas regularmente (`npm audit`)
 
 ## Cómo levantarlo en local
 
 **1. Clonar el repositorio**
-\`\`\`bash
+```bash
 git clone https://github.com/matarmariajose-tech/wincontrol-mvp-1.git
 cd wincontrol-mvp-1
-\`\`\`
+```
 
 **2. Levantar la base de datos**
-\`\`\`bash
+```bash
 docker compose up -d
-\`\`\`
+```
 
 **3. Configurar el backend**
-\`\`\`bash
+```bash
 cd backend
 npm install
 cp .env.example .env
 npm run dev
-\`\`\`
+```
 
 Salida esperada:
-\`\`\`
+```
 DB connected
 Server running on port 3000
-\`\`\`
+```
 
-- Health check: \`http://localhost:3000/health\`
-- Documentación de API: \`http://localhost:3000/api-docs\`
+- Health check: `http://localhost:3000/health`
+- Documentación de API: `http://localhost:3000/api-docs`
 
 **4. Configurar el frontend**
-\`\`\`bash
+```bash
 cd frontend
 npm install
-\`\`\`
-Servir los archivos estáticos de \`prototype/\` con cualquier servidor local, apuntando \`config.js\` a tu backend local.
+```
+Servir los archivos estáticos de `prototype/` con cualquier servidor local, apuntando `config.js` a tu backend local.
 
 ## API — endpoints principales
 
 | Recurso | Endpoints |
 |---|---|
-| Auth | \`POST /api/auth/login\` · \`POST /api/auth/register\` |
-| Leads | \`GET/POST/PUT/DELETE /api/leads\` · \`PATCH /api/leads/:id/state\` |
-| Visits | \`GET/POST/PUT/DELETE /api/visits\` · \`PATCH /api/visits/:id/cancel\` · \`PATCH /api/visits/:id/complete\` |
-| Comerciales | \`GET/POST/PUT/DELETE /api/comerciales\` |
-| Properties | \`GET /api/properties\` · \`PATCH /api/properties/:id/comercial\` |
-| Calendar | \`GET /api/calendar/slots/:comercialId/:date\` · \`GET /api/calendar/auth/:comercialId\` |
+| Auth | `POST /api/auth/login` · `POST /api/auth/register` |
+| Leads | `GET/POST/PUT/DELETE /api/leads` · `PATCH /api/leads/:id/state` |
+| Visits | `GET/POST/PUT/DELETE /api/visits` · `PATCH /api/visits/:id/cancel` · `PATCH /api/visits/:id/complete` |
+| Comerciales | `GET/POST/PUT/DELETE /api/comerciales` |
+| Properties | `GET /api/properties` · `PATCH /api/properties/:id/comercial` |
+| Calendar | `GET /api/calendar/slots/:comercialId/:date` · `GET /api/calendar/auth/:comercialId` |
 
-Documentación completa e interactiva disponible en \`/api-docs\` (Swagger).
+Documentación completa e interactiva disponible en `/api-docs` (Swagger).
 
 ---
 
