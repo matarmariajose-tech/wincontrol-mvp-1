@@ -26,7 +26,6 @@ En curso / próximos pasos:
 
 ## Arquitectura
 
-\`\`\`
 wincontrol-mvp/
 │
 ├── backend/                 # API (TypeScript, Express, TypeORM)
@@ -53,7 +52,6 @@ wincontrol-mvp/
 │
 ├── docker-compose.yml        # PostgreSQL local para desarrollo
 └── README.md
-\`\`\`
 
 El backend sigue una arquitectura modular por dominio: cada módulo agrupa su entidad, DTOs, repositorio, servicio, controlador y rutas.
 
