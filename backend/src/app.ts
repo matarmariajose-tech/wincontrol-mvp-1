@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';                       
 import leadRoutes from './leads/lead.routes';
 import visitRoutes from './visits/visit.routes';
 import swaggerUi from "swagger-ui-express";
@@ -13,6 +14,7 @@ import calendarRoutes from './calendar/calendar.routes'
 
 const app = express();
 
+app.use(helmet());                                     
 app.use(cors());
 app.use(express.json());
 
