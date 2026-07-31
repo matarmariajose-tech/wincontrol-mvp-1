@@ -1,6 +1,6 @@
 # Winallcontrol
 
-Plataforma de gestión comercial para inmobiliarias. Centraliza el ciclo completo de un lead — desde la captación hasta la venta — automatizando agendamiento, encuestas de satisfacción y métricas por comercial y producto.
+Plataforma de gestión comercial para inmobiliarias. Centraliza el ciclo completo de un lead (desde la captación hasta la venta) automatizando agendamiento, encuestas de satisfacción y métricas por comercial y producto.
 
 **Lead → Agendamiento → Visita → Encuesta → Oferta → Venta**
 
