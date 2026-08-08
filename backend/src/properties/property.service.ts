@@ -1,23 +1,26 @@
 import { AppDataSource } from '../config/data-source';
 import { Property } from './property.entity';
+import { TenantContext } from '../shared/tenant/tenant-context';
 
 const repo = () => AppDataSource.getRepository(Property);
+const empresa = () => TenantContext.requireEmpresaId();
 
 export const propertyService = {
   getAll: async (): Promise<Property[]> => {
-    return await repo().find();
+    return repo().find({ where: { empresaId: empresa() } });
   },
 
   getById: async (id: number): Promise<Property | null> => {
-    return await repo().findOne({ where: { id } });
+    return repo().findOne({ where: { id, empresaId: empresa() } });
   },
 
   getByComercial: async (comercialId: string): Promise<Property[]> => {
-    return await repo().find({ where: { comercialId } });
+    return repo().find({ where: { comercialId, empresaId: empresa() } });
   },
 
   assignComercial: async (id: number, comercialId: string): Promise<Property | null> => {
-    await repo().update(id, { comercialId });
-    return await repo().findOne({ where: { id } });
+    const empresaId = empresa();
+    await repo().update({ id, empresaId }, { comercialId });
+    return repo().findOne({ where: { id, empresaId } });
   },
 };

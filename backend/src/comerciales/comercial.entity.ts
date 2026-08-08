@@ -20,6 +20,9 @@ export class Comercial {
   @Column({ nullable: true })
   userId?: number;
 
+  @Column({ name: 'empresa_id', type: 'integer' })
+  empresaId!: number;
+
   @Column({ nullable: true })
   googleAccessToken?: string;
 

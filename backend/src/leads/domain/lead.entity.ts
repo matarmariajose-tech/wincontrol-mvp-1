@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 export enum LeadState {
   LEAD_NUEVO = 'LEAD_NUEVO',
@@ -17,6 +17,9 @@ export enum LeadState {
 export class Lead {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({ name: 'empresa_id', type: 'integer' })
+  empresaId!: number;
 
   @Column()
   adminId!: string;

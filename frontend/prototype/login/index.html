@@ -17,13 +17,9 @@
       --muted2: #64748b;
       --blue: #2563eb;
       --emerald: #10b981;
-      --amber: #f59e0b;
-      --orange: #f97316;
       --red: #dc2626;
       --violet: #8b5cf6;
       --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --shadow2: 0 6px 18px rgba(0,0,0,.35);
     }
 
     body.light {
@@ -93,24 +89,9 @@
       filter: blur(80px);
       animation: drift 12s ease-in-out infinite alternate;
     }
-    .orb-1 {
-      width: 400px; height: 400px;
-      background: rgba(37,99,235,.12);
-      top: -100px; left: -100px;
-      animation-delay: 0s;
-    }
-    .orb-2 {
-      width: 300px; height: 300px;
-      background: rgba(139,92,246,.10);
-      bottom: -80px; right: -80px;
-      animation-delay: -4s;
-    }
-    .orb-3 {
-      width: 200px; height: 200px;
-      background: rgba(16,185,129,.06);
-      top: 50%; left: 60%;
-      animation-delay: -8s;
-    }
+    .orb-1 { width: 400px; height: 400px; background: rgba(37,99,235,.12); top: -100px; left: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: rgba(139,92,246,.10); bottom: -80px; right: -80px; animation-delay: -4s; }
+    .orb-3 { width: 200px; height: 200px; background: rgba(16,185,129,.06); top: 50%; left: 60%; animation-delay: -8s; }
     body.light .orb-1 { background: rgba(37,99,235,.06); }
     body.light .orb-2 { background: rgba(139,92,246,.05); }
     body.light .orb-3 { background: rgba(16,185,129,.04); }
@@ -136,7 +117,6 @@
     }
     .theme-toggle:hover { border-color: rgba(37,99,235,.4); }
     body.light .theme-toggle { background: var(--panel-2); border-color: var(--border); }
-    body.light .theme-toggle:hover { border-color: rgba(37,99,235,.35); }
 
     .theme-toggle-thumb {
       width: 20px;
@@ -151,9 +131,7 @@
       transition: transform .25s cubic-bezier(.4,0,.2,1);
       color: #fff;
     }
-    .theme-toggle[aria-checked="true"] .theme-toggle-thumb {
-      transform: translateX(24px);
-    }
+    .theme-toggle[aria-checked="true"] .theme-toggle-thumb { transform: translateX(24px); }
 
     .theme-toggle-thumb svg {
       width: 12px;
@@ -195,27 +173,22 @@
       color: #fff;
     }
     body.light .brand-text .name { color: var(--text); }
-    .brand-text .tag {
-      font-size: 12px;
-      color: var(--muted2);
-      margin-top: 2px;
-      font-weight: 500;
-    }
+    .brand-text .tag { font-size: 12px; color: var(--muted2); margin-top: 2px; font-weight: 500; }
 
     .card {
-        width: 100%;
-        max-width: 440px;
-        background: linear-gradient(180deg, rgba(11,18,32,.96), rgba(8,14,28,.92));
-        border: 1px solid rgba(255,255,255,.08);
-        border-radius: 24px;
-        box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(37,99,235,.06) inset;
-        display: flex;
-        flex-direction: column;
-        max-height: 80vh;
-        overflow: hidden;
-        animation: fadeUp .6s ease both .1s;
-        position: relative;
-        z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(180deg, rgba(11,18,32,.96), rgba(8,14,28,.92));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(37,99,235,.06) inset;
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+      overflow: hidden;
+      animation: fadeUp .6s ease both .1s;
+      position: relative;
+      z-index: 1;
     }
     body.light .card {
       background: #fff;
@@ -223,56 +196,17 @@
       box-shadow: 0 20px 50px rgba(15,23,42,.10), 0 0 0 1px rgba(37,99,235,.04) inset;
     }
 
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-bottom: 1px solid rgba(255,255,255,.07);
+    .card-head {
+      padding: 20px 24px 0;
     }
-    body.light .tabs { border-bottom-color: var(--border); }
-
-    .tab {
-      padding: 16px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--muted2);
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      transition: .2s ease;
-      position: relative;
-      letter-spacing: .01em;
-    }
-    .tab::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; left: 20%; right: 20%;
-      height: 2px;
-      background: var(--blue);
-      border-radius: 999px;
-      transform: scaleX(0);
-      transition: transform .25s ease;
-    }
-    .tab.active { color: #fff; }
-    body.light .tab.active { color: var(--text); }
-    .tab.active::after { transform: scaleX(1); }
-    .tab:hover:not(.active) {
-      color: var(--muted);
-      background: rgba(255,255,255,.02);
-    }
-    body.light .tab:hover:not(.active) { background: rgba(15,23,42,.03); }
 
     .form-body {
-        padding: 24px;
-        overflow-y: auto;
-        flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
     }
     .form-body::-webkit-scrollbar { width: 6px; }
-    .form-body::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-    }
+    .form-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     body.light .form-body::-webkit-scrollbar-thumb { background: rgba(15,23,42,.15); }
 
     .form-title {
@@ -284,93 +218,7 @@
       margin-bottom: 6px;
     }
     body.light .form-title { color: var(--text); }
-    .form-subtitle {
-      font-size: 13px;
-      color: var(--muted2);
-      margin-bottom: 24px;
-      line-height: 1.5;
-    }
-
-    #panel-register .field { margin-bottom: 10px; }
-    #panel-register .role-selector { margin-bottom: 16px; }
-    #panel-register .form-subtitle { margin-bottom: 16px; }
-
-    .role-label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .role-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .role-btn {
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(2,6,23,.45);
-      border-radius: 14px;
-      padding: 14px 12px;
-      cursor: pointer;
-      transition: .2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      position: relative;
-      overflow: hidden;
-    }
-    body.light .role-btn { border-color: var(--border); background: var(--panel-2); }
-    .role-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity .2s ease;
-    }
-    .role-btn.admin::before {
-      background: radial-gradient(circle at center, rgba(37,99,235,.15), transparent 70%);
-    }
-    .role-btn.comercial::before {
-      background: radial-gradient(circle at center, rgba(139,92,246,.15), transparent 70%);
-    }
-    .role-btn:hover::before,
-    .role-btn.selected::before { opacity: 1; }
-
-    .role-btn.admin.selected,
-    .role-btn.admin:hover { border-color: rgba(37,99,235,.5); color: #fff; }
-    .role-btn.comercial.selected,
-    .role-btn.comercial:hover { border-color: rgba(139,92,246,.5); color: #fff; }
-    body.light .role-btn.admin.selected,
-    body.light .role-btn.admin:hover,
-    body.light .role-btn.comercial.selected,
-    body.light .role-btn.comercial:hover { color: var(--text); }
-
-    .role-btn .role-icon { font-size: 24px; line-height: 1; }
-    .role-btn .role-name { font-weight: 800; font-size: 13px; letter-spacing: -.01em; }
-    .role-btn .role-desc { font-size: 11px; color: var(--muted2); text-align: center; line-height: 1.3; }
-
-    .role-btn.selected .role-check { display: flex; }
-    .role-check {
-      display: none;
-      position: absolute;
-      top: 8px; right: 8px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: var(--blue);
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #fff;
-      font-weight: 900;
-    }
-    .role-btn.comercial.selected .role-check { background: var(--violet); }
+    .form-subtitle { font-size: 13px; color: var(--muted2); margin-bottom: 24px; line-height: 1.5; }
 
     .field { margin-bottom: 14px; }
     .field label {
@@ -420,26 +268,49 @@
       position: relative;
       overflow: hidden;
     }
-    .submit-btn::before {
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(37,99,235,.3); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: .7; cursor: default; transform: none; }
+
+    .view-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .view-btn {
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.45);
+      border-radius: 14px;
+      padding: 18px 12px;
+      cursor: pointer;
+      transition: .2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      position: relative;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+    body.light .view-btn { border-color: var(--border); background: var(--panel-2); }
+    .view-btn::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,.1), transparent);
       opacity: 0;
-      transition: opacity .2s;
+      transition: opacity .2s ease;
     }
-    .submit-btn:hover::before { opacity: 1; }
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 32px rgba(37,99,235,.3);
-    }
-    .submit-btn:active { transform: translateY(0); }
-    .submit-btn.violet {
-      background: linear-gradient(180deg, var(--violet), #7c3aed);
-      border-color: rgba(139,92,246,.45);
-      box-shadow: 0 8px 24px rgba(139,92,246,.2);
-    }
-    .submit-btn.violet:hover { box-shadow: 0 12px 32px rgba(139,92,246,.3); }
+    .view-btn.admin::before { background: radial-gradient(circle at center, rgba(37,99,235,.15), transparent 70%); }
+    .view-btn.comercial::before { background: radial-gradient(circle at center, rgba(139,92,246,.15), transparent 70%); }
+    .view-btn:hover::before { opacity: 1; }
+    .view-btn.admin:hover { border-color: rgba(37,99,235,.5); color: #fff; }
+    .view-btn.comercial:hover { border-color: rgba(139,92,246,.5); color: #fff; }
+    body.light .view-btn.admin:hover, body.light .view-btn.comercial:hover { color: var(--text); }
+    .view-btn .view-name { font-weight: 800; font-size: 14px; letter-spacing: -.01em; }
+    .view-btn .view-desc { font-size: 11px; color: var(--muted2); text-align: center; line-height: 1.3; }
 
     .alert {
       padding: 10px 14px;
@@ -471,23 +342,6 @@
       color: #047857;
     }
     .alert.show { display: block; }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 6px 0 0;
-    }
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,.06);
-    }
-    body.light .divider::before,
-    body.light .divider::after { background: var(--border); }
-    .divider span { font-size: 11px; color: var(--muted2); }
 
     .footer {
       margin-top: 20px;
@@ -574,8 +428,7 @@
     }
 
     .theme-toggle:focus-visible,
-    .tab:focus-visible,
-    .role-btn:focus-visible,
+    .view-btn:focus-visible,
     .submit-btn:focus-visible,
     .toggle-pwd:focus-visible,
     .footer a:focus-visible {
@@ -595,8 +448,6 @@
     @media (max-width: 380px) {
       body { padding-left: 16px; padding-right: 16px; }
       .form-body { padding: 20px; }
-      .role-selector { gap: 6px; }
-      .role-btn { padding: 12px 8px; }
       .logo { width: 42px; height: 42px; font-size: 19px; }
       .brand-text .name { font-size: 21px; }
       .brand { gap: 12px; margin-bottom: 24px; }
@@ -641,28 +492,9 @@
   </div>
 
   <div class="card">
-    <div class="tabs">
-      <button class="tab active" data-tab="login">Iniciar sesión</button>
-      <button class="tab" data-tab="register">Crear cuenta</button>
-    </div>
-
     <div class="form-body panel active" id="panel-login">
       <div class="form-title">Bienvenido de nuevo</div>
-      <div class="form-subtitle">Ingresá tus credenciales y seleccioná tu rol para continuar.</div>
-
-      <div class="role-label">Tu rol</div>
-      <div class="role-selector" id="login-roles">
-        <button class="role-btn admin" data-role="admin">
-          <div class="role-check">✓</div>
-          <div class="role-name">Admin</div>
-          <div class="role-desc">Control global y dirección</div>
-        </button>
-        <button class="role-btn comercial" data-role="comercial">
-          <div class="role-check">✓</div>
-          <div class="role-name">Comercial</div>
-          <div class="role-desc">Gestión de visitas y leads</div>
-        </button>
-      </div>
+      <div class="form-subtitle">Ingresá tus credenciales para continuar.</div>
 
       <div class="field">
         <label>Email</label>
@@ -673,66 +505,29 @@
         <label>Contraseña</label>
         <div class="field-wrap">
           <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
-          <button class="toggle-pwd" onclick="togglePwd('login-password', this)" tabindex="-1">Show</button>
+          <button class="toggle-pwd" id="toggle-login-pwd" type="button" tabindex="-1">Show</button>
         </div>
       </div>
 
       <div class="alert" id="login-alert"></div>
 
-      <button class="submit-btn" id="login-btn" onclick="handleLogin()">
-        Ingresar al sistema
-      </button>
+      <button class="submit-btn" id="login-btn" type="button">Ingresar al sistema</button>
     </div>
 
-    <div class="form-body panel" id="panel-register">
-      <div class="form-title">Crear cuenta</div>
-      <div class="form-subtitle">Completá los datos y elegí tu rol dentro de Wincontrol.</div>
+    <div class="form-body panel" id="panel-view">
+      <div class="form-title" id="view-title">Elegí tu vista</div>
+      <div class="form-subtitle">Tenés acceso a más de un panel. Podés cambiar cerrando sesión.</div>
 
-      <div class="role-label">Tu rol</div>
-      <div class="role-selector" id="register-roles">
-        <button class="role-btn admin" data-role="admin">
-          <div class="role-check">✓</div>
-          <div class="role-name">Admin</div>
-          <div class="role-desc">Control global y dirección</div>
+      <div class="view-selector">
+        <button class="view-btn admin" data-view="admin" type="button">
+          <div class="view-name">Admin</div>
+          <div class="view-desc">Control global y dirección</div>
         </button>
-        <button class="role-btn comercial" data-role="comercial">
-          <div class="role-check">✓</div>
-          <div class="role-name">Comercial</div>
-          <div class="role-desc">Gestión de visitas y leads</div>
+        <button class="view-btn comercial" data-view="comercial" type="button">
+          <div class="view-name">Comercial</div>
+          <div class="view-desc">Gestión de visitas y leads</div>
         </button>
       </div>
-
-      <div class="field">
-        <label>Nombre completo</label>
-        <input id="reg-name" type="text" placeholder="Ej: María García" autocomplete="name" />
-      </div>
-
-      <div class="field">
-        <label>Email</label>
-        <input id="reg-email" type="email" placeholder="tu@email.com" autocomplete="email" />
-      </div>
-
-      <div class="field">
-        <label>Contraseña</label>
-        <div class="field-wrap">
-          <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
-          <button class="toggle-pwd" onclick="togglePwd('reg-password', this)" tabindex="-1">Show</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Confirmar contraseña</label>
-        <div class="field-wrap">
-          <input id="reg-password2" type="password" placeholder="Repetí tu contraseña" autocomplete="new-password" />
-          <button class="toggle-pwd" onclick="togglePwd('reg-password2', this)" tabindex="-1">Show</button>
-        </div>
-      </div>
-
-      <div class="alert" id="register-alert"></div>
-
-      <button class="submit-btn" id="register-btn" onclick="handleRegister()">
-        Crear cuenta
-      </button>
     </div>
   </div>
 
@@ -745,6 +540,8 @@
 
   <script>
     const THEME_KEY = 'wc-theme';
+    const ROUTES = { admin: '../admin/', comercial: '../comercial/' };
+
     const themeToggle = document.getElementById('themeToggle');
 
     function applyTheme(theme) {
@@ -760,183 +557,109 @@
       applyTheme(next);
     });
 
-    const selectedRole = { login: null, register: null };
-
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-      });
+    document.getElementById('toggle-login-pwd').addEventListener('click', (e) => {
+      const input = document.getElementById('login-password');
+      const shown = input.type === 'text';
+      input.type = shown ? 'password' : 'text';
+      e.currentTarget.textContent = shown ? 'Show' : 'Hide';
     });
 
-    function setupRoles(containerId, key) {
-      const container = document.getElementById(containerId);
-      container.querySelectorAll('.role-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          container.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          selectedRole[key] = btn.dataset.role;
-
-          const submitId = key === 'login' ? 'login-btn' : 'register-btn';
-          const submitBtn = document.getElementById(submitId);
-          if (btn.dataset.role === 'admin') {
-            submitBtn.classList.remove('violet');
-          } else {
-            submitBtn.classList.add('violet');
-          }
-        });
-      });
-    }
-
-    setupRoles('login-roles', 'login');
-    setupRoles('register-roles', 'register');
-
-    function togglePwd(inputId, btn) {
-      const input = document.getElementById(inputId);
-      if (input.type === 'password') {
-        input.type = 'text';
-        btn.textContent = 'Hide';
-      } else {
-        input.type = 'password';
-        btn.textContent = 'Show';
-      }
-    }
-
-    function showAlert(id, msg, type = 'error') {
+    function showAlert(id, msg, type) {
       const el = document.getElementById(id);
       el.textContent = msg;
-      el.className = `alert ${type} show`;
+      el.className = 'alert ' + (type || 'error') + ' show';
     }
+
     function clearAlert(id) {
       const el = document.getElementById(id);
       el.className = 'alert';
       el.textContent = '';
     }
 
-    const ROUTES = {
-      admin: '../admin/',
-      comercial: '../comercial/'
-    };
-
-    function redirectTo(role) {
-      const url = ROUTES[role];
-      document.querySelector('.card').style.transition = 'opacity .3s ease, transform .3s ease';
-      document.querySelector('.card').style.opacity = '0';
-      document.querySelector('.card').style.transform = 'translateY(-8px)';
-      document.querySelector('.brand').style.transition = 'opacity .3s ease';
-      document.querySelector('.brand').style.opacity = '0';
-      setTimeout(() => { window.location.href = url; }, 320);
+    function vistasDisponibles(roles) {
+      const vistas = [];
+      if (roles.includes('MASTER') || roles.includes('ADMIN')) vistas.push('admin');
+      if (roles.includes('COMERCIAL')) vistas.push('comercial');
+      return vistas;
     }
+
+    function redirectTo(vista) {
+      localStorage.setItem('wc_role', vista);
+      localStorage.setItem('wc_view', vista);
+      const card = document.querySelector('.card');
+      const brand = document.querySelector('.brand');
+      card.style.transition = 'opacity .3s ease, transform .3s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(-8px)';
+      brand.style.transition = 'opacity .3s ease';
+      brand.style.opacity = '0';
+      setTimeout(() => { window.location.href = ROUTES[vista]; }, 320);
+    }
+
+    function mostrarSelectorDeVista(nombre) {
+      document.getElementById('panel-login').classList.remove('active');
+      document.getElementById('panel-view').classList.add('active');
+      document.getElementById('view-title').textContent = 'Hola, ' + nombre.split(' ')[0];
+    }
+
+    document.querySelectorAll('.view-btn').forEach((btn) => {
+      btn.addEventListener('click', () => redirectTo(btn.dataset.view));
+    });
 
     async function handleLogin() {
       clearAlert('login-alert');
 
-      const email    = document.getElementById('login-email').value.trim();
+      const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
-      const role     = selectedRole.login;
 
-      if (!role) {
-        showAlert('login-alert', 'Seleccioná tu rol antes de continuar.');
-        return;
-      }
-      if (!email) {
-        showAlert('login-alert', 'Ingresá tu email.');
-        return;
-      }
-      if (!password) {
-        showAlert('login-alert', 'Ingresá tu contraseña.');
-        return;
-      }
+      if (!email) return showAlert('login-alert', 'Ingresá tu email.');
+      if (!password) return showAlert('login-alert', 'Ingresá tu contraseña.');
 
       const btn = document.getElementById('login-btn');
       btn.innerHTML = '<span class="spinner"></span>Verificando...';
       btn.disabled = true;
 
       try {
-        const res = await fetch(`${CONFIG.API_URL}/api/auth/login`, {
+        const res = await fetch(CONFIG.API_URL + '/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, role })
+          body: JSON.stringify({ email, password })
         });
+
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Credenciales incorrectas');
+
+        const roles = data.user.roles || [];
+        const vistas = vistasDisponibles(roles);
+
+        if (vistas.length === 0) {
+          throw new Error('Tu cuenta no tiene un panel asignado. Contactá al administrador.');
+        }
+
         localStorage.setItem('wc_token', data.token);
-        localStorage.setItem('wc_role', role);
         localStorage.setItem('wc_user', JSON.stringify(data.user));
+        localStorage.setItem('wc_roles', JSON.stringify(roles));
+        localStorage.setItem('wc_empresa_id', data.user.empresaId === null ? '' : String(data.user.empresaId));
 
-        showAlert('login-alert', `Acceso correcto. Redirigiendo...`, 'success');
-        setTimeout(() => redirectTo(role), 700);
+        if (vistas.length === 1) {
+          showAlert('login-alert', 'Acceso correcto. Redirigiendo...', 'success');
+          setTimeout(() => redirectTo(vistas[0]), 700);
+          return;
+        }
 
+        mostrarSelectorDeVista(data.user.name || '');
       } catch (err) {
-        showAlert('login-alert', ` ${err.message}`);
+        showAlert('login-alert', err.message);
         btn.innerHTML = 'Ingresar al sistema';
         btn.disabled = false;
       }
     }
 
-    async function handleRegister() {
-      clearAlert('register-alert');
-
-      const name  = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const pwd1  = document.getElementById('reg-password').value;
-      const pwd2  = document.getElementById('reg-password2').value;
-      const role  = selectedRole.register;
-
-      if (!role) {
-        showAlert('register-alert', 'Seleccioná tu rol.');
-        return;
-      }
-      if (!name) {
-        showAlert('register-alert', 'Ingresá tu nombre completo.');
-        return;
-      }
-      if (!email || !email.includes('@')) {
-        showAlert('register-alert', 'Ingresá un email válido.');
-        return;
-      }
-      if (pwd1.length < 6) {
-        showAlert('register-alert', 'La contraseña debe tener al menos 6 caracteres.');
-        return;
-      }
-      if (pwd1 !== pwd2) {
-        showAlert('register-alert', 'Las contraseñas no coinciden.');
-        return;
-      }
-
-      const btn = document.getElementById('register-btn');
-      btn.innerHTML = '<span class="spinner"></span>Creando cuenta...';
-      btn.disabled = true;
-
-      try {
-
-        const res = await fetch(`${CONFIG.API_URL}/api/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password: pwd1, role })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Error al crear la cuenta');
-        localStorage.setItem('wc_token', data.token);
-        localStorage.setItem('wc_role', role);
-        localStorage.setItem('wc_user', JSON.stringify(data.user));
-        showAlert('register-alert', `Cuenta creada. Redirigiendo...`, 'success');
-        setTimeout(() => redirectTo(role), 700);
-
-      } catch (err) {
-        showAlert('register-alert', `${err.message}`);
-        btn.innerHTML = 'Crear cuenta';
-        btn.disabled = false;
-      }
-    }
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
 
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
-      const loginActive = document.getElementById('panel-login').classList.contains('active');
-      if (loginActive) handleLogin();
-      else handleRegister();
+      if (document.getElementById('panel-login').classList.contains('active')) handleLogin();
     });
   </script>
 </body>

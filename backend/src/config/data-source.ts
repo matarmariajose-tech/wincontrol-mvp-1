@@ -6,7 +6,8 @@ import { User } from "../users/user.entity";
 import { Lead } from "../leads/domain/lead.entity";
 import { LeadStateHistory } from "../leads/domain/lead-state-history.entity";
 import { Property } from "../properties/property.entity";
-import { Comercial } from '../comerciales/comercial.entity';
+import { Comercial } from "../comerciales/comercial.entity";
+import { Empresa } from "../empresas/empresa.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -22,7 +23,9 @@ export const AppDataSource = new DataSource({
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
       }),
-  synchronize: true,
+  synchronize: false,
   logging: false,
-  entities: [User, Visit, Lead, LeadStateHistory, Property, Comercial],
+  entities: [User, Visit, Lead, LeadStateHistory, Property, Comercial, Empresa],
+  migrations: ["src/migrations/*.ts"],
+  migrationsTableName: "migrations",
 });

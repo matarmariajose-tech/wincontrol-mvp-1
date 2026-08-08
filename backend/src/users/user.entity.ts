@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Empresa } from '../empresas/empresa.entity';
+import { Rol } from '../shared/tenant/tenant-context';
 
-@Entity()
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -8,14 +10,21 @@ export class User {
   @Column()
   name!: string;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Column()
   password!: string;
 
-  @Column()
-  role!: string;
+  @Column({ type: 'text', array: true })
+  roles!: Rol[];
+
+  @Column({ name: 'empresa_id', type: 'integer', nullable: true })
+  empresaId!: number | null;
+
+  @ManyToOne(() => Empresa, { nullable: true, onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'empresa_id' })
+  empresa!: Empresa | null;
 
   @Column({ default: true })
   active!: boolean;

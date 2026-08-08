@@ -14,6 +14,9 @@ export class Visit {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'empresa_id', type: 'integer' })
+  empresaId!: number;
+
   @Column({ nullable: true })
   leadId?: string;
 

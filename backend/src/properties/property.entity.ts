@@ -5,6 +5,9 @@ export class Property {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ name: 'empresa_id', type: 'integer' })
+  empresaId!: number;
+
   @Column({ nullable: true })
   title!: string;
 
